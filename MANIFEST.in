@@ -1,0 +1,6 @@
+include AUTHORS
+include LICENSE
+include MANIFEST.in
+include COPYING
+include pipboy-clientlib.spec
+recursive-include docs *.rst *.py
