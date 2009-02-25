@@ -22,7 +22,7 @@ import sys
 from os import path
 from distutils.core import Command, setup
 
-from pipboy.client import __version__, __license__, __author__
+from poseidon import __version__, __license__, __author__
 
 
 class SetupBuildCommand(Command):
@@ -145,17 +145,17 @@ class ViewDocCommand(SetupBuildCommand):
             print >> sys.stderr, "Could not open on your webbrowser."
 
 
-setup(name = "pipboy-clientlib",
+setup(name = "python-poseidon",
     version = __version__,
-    description = "Client library for interacting with pipboy",
-    long_description = "Client library for interacting with pipboy",
+    description = "Client library for performing deployments with func",
+    long_description = "Client library for performing deployments with func",
     author = __author__,
     author_email = 'jeckersb@redhat.com',
     platforms = ['any'],
 
     license = __license__,
 
-    packages = ['pipboy', 'pipboy/client'],
+    packages = ['poseidon'],
 
     classifiers = [
         'License :: OSI Approved :: GNU General Public License (GPL)',

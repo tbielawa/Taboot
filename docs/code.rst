@@ -1,9 +1,9 @@
 Code
 ====
 
-Pipboy Client
--------------
-.. automodule:: pipboy.client
+Poseidon
+--------
+.. automodule:: poseidon
    :members:
    :undoc-members:
    :inherited-members:

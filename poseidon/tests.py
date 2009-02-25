@@ -8,10 +8,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
-The pipboy client library.
+Unittests for poseidon.
 """
 
-__docformat__ = 'restructuredtext'
-__author__ = "John Eckersberg"
-__license__ = 'GPLv3+'
-__version__ = '0.0.1'
+import unittest
+
+# FIXME add tests!

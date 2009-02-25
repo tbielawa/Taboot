@@ -1,9 +1,9 @@
 Tests
 =====
 
-PipBoy Tests
-------------
-.. automodule:: pipboy.tests
+Poseidon Tests
+--------------
+.. automodule:: poseidon.tests
    :members:
    :undoc-members:
    :inherited-members:

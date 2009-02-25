@@ -3,7 +3,7 @@ Development
 
 Tools
 -----
-PipBoy uses what is becoming a pretty standard and a quite simple toolset.
+Poseidon uses what is becoming a pretty standard and a quite simple toolset.
 
 
 Required Tools
@@ -11,6 +11,7 @@ Required Tools
  #. `python <http://www.python.org>`_ - The python programming language
  #. `distutils <http://docs.python.org/lib/module-distutils.html>`_ - Python building and packaging library
  #. `git <http://git.or.cz/>`_ - Source code management 
+ #. `Func <https://fedorahosted.org/func/>`_ - The Fedora Unified Network Controller.
  #. `an <http://www.vim.org>`_ `editor <http://www.gnu.org/software/emacs/>`_ or `ide <http://pida.co.uk/>`_ `that <http://scribes.sourceforge.net/>`_ doesn't suck
 
 Optional Tools
@@ -22,7 +23,7 @@ Source
 ------
 You can clone the repo over http via :program:`git` through the following command:::
 
-   $ git clone git://git.corp.redhat.com/pub/git/RE/pipboy-clientlib.git
+   $ git clone git://git.corp.redhat.com/pub/git/RE/poseidon.git
 
 
 Style
@@ -68,7 +69,7 @@ Git
 
 Branching
 `````````
-The best way to develop on PipBoy is to branch feature sets. For instance, if you were to add xml deserialization you would want to branch locally and work on that branch.::
+The best way to develop on Poseidon is to branch feature sets. For instance, if you were to add xml deserialization you would want to branch locally and work on that branch.::
 
    $  git branch
    * master

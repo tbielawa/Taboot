@@ -27,4 +27,4 @@ Building An RPM
 Installing An RPM
 `````````````````
 - Become root (or a root like) user
-- :command:`rpm -ivh pipboy-clientlib*rpm`
+- :command:`rpm -ivh python-poseidon*rpm`

@@ -1,12 +1,12 @@
 About
 =====
 
-pipboy-clientlib is a client library for interacting with pipboy.  It
-provides useful helper utilities to perform common task patterns using pipboy.
+Client library for performing deployments with func.  Provides useful
+helper utilities to perform common task patterns using func.
 
 Get it
 ------
-You can find downloads in at our `Trac instance <https://engineering.redhat.com/trac/GIT-RE/wiki/pipboy-clientlib>`_. If you want to get the latest, greatest source check out the `Development page <development.html>`_.
+You can find downloads in at our `Trac instance <https://engineering.redhat.com/trac/GIT-RE/wiki/poseidon>`_. If you want to get the latest, greatest source check out the `Development page <development.html>`_.
 
 Development
 -----------

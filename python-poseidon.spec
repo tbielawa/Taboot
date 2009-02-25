@@ -1,24 +1,26 @@
 # sitelib for noarch packages
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-Name:           pipboy-clientlib
+Name:           python-poseidon
 Version:        0.0.1
 Release:        1%{?dist}
-Summary:        Client library for interacting with pipboy
+Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
 License:        GPLv3+
-URL:            https://engineering.redhat.com/trac/GIT-RE/wiki/pipboy-clientlib
+URL:            https://engineering.redhat.com/trac/GIT-RE/wiki/poseidon
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
 BuildRequires:  python-devel
 
+Requires:       func
+
 
 %description
-Client library for interacting with pipboy.  Provides useful helper
-utilities to perform common task patterns using pipboy.
+Client library for performing deployments with func.  Provides useful
+helper utilities to perform common task patterns using func.
 
 
 %prep
