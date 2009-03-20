@@ -2,6 +2,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           python-poseidon
+%define _name   poseidon
 Version:        0.0.1
 Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
@@ -22,6 +23,15 @@ Requires:       func
 Client library for performing deployments with func.  Provides useful
 helper utilities to perform common task patterns using func.
 
+%package -n func-poseidon
+Summary:        Func minion modules for use in conjunction with %{name}
+Group:          Development/Libraries
+Requires:       func
+
+
+%description -n func-poseidon
+Func minion modules for use in conjunction with %{name}.
+
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -34,6 +44,8 @@ helper utilities to perform common task patterns using func.
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules
+mv $RPM_BUILD_ROOT%{python_sitelib}/%{_name}/func $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
 
 
 %clean
@@ -44,9 +56,17 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc docs/*rst COPYING LICENSE AUTHORS
 # For noarch packages: sitelib
-%{python_sitelib}/*
+%{python_sitelib}/%{_name}
+%{python_sitelib}/*.egg-info
+
+%files -n func-poseidon
+%defattr(-,root,root,-)
+%{python_sitelib}/func/minion/modules/%{_name}
 
 
 %changelog
+* Mon Mar 20 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-2
+- Split into python-poseidon and func-poseidon
+
 * Tue Feb 24 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-1
 - Initial spec

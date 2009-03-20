@@ -22,7 +22,7 @@ import sys
 from os import path
 from distutils.core import Command, setup
 
-from poseidon import __version__, __license__, __author__
+from poseidon import __version__, __license__, __author__, __url__
 
 
 class SetupBuildCommand(Command):
@@ -154,8 +154,10 @@ setup(name = "python-poseidon",
     platforms = ['any'],
 
     license = __license__,
+    url = __url__,
 
-    packages = ['poseidon'],
+    packages = ['poseidon',
+                'poseidon.func'],
 
     classifiers = [
         'License :: OSI Approved :: GNU General Public License (GPL)',

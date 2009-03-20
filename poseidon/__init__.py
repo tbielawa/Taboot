@@ -15,3 +15,4 @@ __docformat__ = 'restructuredtext'
 __author__ = "John Eckersberg"
 __license__ = 'GPLv3+'
 __version__ = '0.0.1'
+__url__ = 'https://engineering.redhat.com/trac/GIT-RE/wiki/poseidon'
