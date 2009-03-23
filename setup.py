@@ -157,7 +157,7 @@ setup(name = "python-poseidon",
     url = __url__,
 
     packages = ['poseidon',
-                'poseidon.func'],
+                'poseidon-func'],
 
     classifiers = [
         'License :: OSI Approved :: GNU General Public License (GPL)',
