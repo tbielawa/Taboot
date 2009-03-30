@@ -50,8 +50,10 @@ class Runner(object):
 
         for group in self.host_groups:
             for task in self.tasks:
-                d = Dispatcher(group, task, dry_run)
-                success = d.run()
+                task.set_hosts(group)
+                success = task()
+                if success == False:
+                    raise Exception, "AHHHHHHH!"
 
     def check(self):
         """
@@ -66,7 +68,7 @@ class Runner(object):
         Returns the hosts that expand out from globs.
         """
         #DEBUG
-        return ['host1', 'host2', 'host3', 'host4', 'host5', 'host6']
+#        return ['host1', 'host2', 'host3', 'host4', 'host5', 'host6']
         if not self.hostglobs:
             return []
         if isinstance(self.hostglobs, basestring):
@@ -102,20 +104,3 @@ class Runner(object):
             groups.append(this_group)
         return groups
 
-class Dispatcher(object):
-    """
-    Run a task.
-    """
-
-    def __init__(self, hosts, task, dry_run):
-        self.hosts = hosts
-        self.task = task
-        self.dry_run = dry_run
-
-    def run(self):
-        """
-        Run the task.  If dry_run, just print what you're doing.
-        """
-        if self.dry_run:
-            print "Executing task '%s' on hosts %s" % (self.task, self.hosts)
-            return
