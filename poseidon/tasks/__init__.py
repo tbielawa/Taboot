@@ -1,19 +1,38 @@
-from poseidon.dispatch import BaseDispatcher
-
 class BaseTask(object):
     """
     Base Task
     """
-    def __init__(self, dispatcher=BaseDispatcher):
-        self._dispatcher = dispatcher()
+    def __init__(self):
         print "Created task: %s" % self
 
-    def __str__(self):
-        return "<%s: %s>" % (self.__class__.__name__, self._dispatcher)
+    def __repr__(self):
+        return "<%s: %s>" % (self.__class__.__name__, id(self))
 
-    def __call__(self, *args, **kwargs):
-        print "Running task: %s with dispatcher %s" % (self, self._dispatcher)
-        return self._dispatcher(self._hosts, args, kwargs)
+class FuncTask(BaseTask):
+    """
+    A Func-based Task
+    """
+    import func.overlord.client
+    import func.jobthing
 
-    def set_hosts(self, hosts):
-        self._hosts = hosts
+    def __init__(self, *args):
+        self._args = args
+
+    def set_host(self, host):
+        self._host = host
+
+    def func_run(self, func_command, *args):
+        import time
+        try:
+            client = self.func.overlord.client.Client(self._host, async=True)
+            job_id = reduce(lambda x, y: getattr(x, y),
+                            func_command.split('.'),
+                            client)(*args)
+            # poll until the job completes
+            (status, result) = (None, None)
+            while status != self.func.jobthing.JOB_ID_FINISHED:
+                (status, result) = client.job_status(job_id)
+                time.sleep(1)
+            return (True, result)
+        except Exception, ex:
+            return (False, repr(ex))

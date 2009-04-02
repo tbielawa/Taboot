@@ -10,6 +10,7 @@
 """
 runner for poseidon that does all the heavy lifting.
 """
+import threading
 
 class CheckFailed(Exception):
     pass
@@ -20,6 +21,7 @@ class Runner(object):
     """
 
     import func.overlord.client as fc
+    import threading
 
     def __init__(self, hostglobs, tasks, concurrency=1):
         """
@@ -33,8 +35,9 @@ class Runner(object):
         self.hostglobs = hostglobs
         self.tasks = tasks
         self.concurrency = concurrency
+        self.task_q = []
         self.hosts = self._expand_globs()
-        self.host_groups = self._host_groups()
+        self.event = self.threading.Event()
 
     def run(self, check=True, ignore_errors=False, dry_run=False):
         """
@@ -45,15 +48,25 @@ class Runner(object):
            - `ignore_errors`: whether to ignore faults in tasks.
            - `dry_run`: if True, don't actually execute tasks, just print info
         """
+        from poseidon.tasks import FuncTask
         if check:
             self.check()
 
-        for group in self.host_groups:
-            for task in self.tasks:
-                task.set_hosts(group)
-                success = task()
-                if success == False:
-                    raise Exception, "AHHHHHHH!"
+        for host in self.hosts:
+            if len(self.task_q) == self.concurrency:
+                self.event.wait()
+                self.event.clear()
+                self._task_cleanup()
+            t = TaskRunner(host, self.tasks[:], self.event)
+            t.start()
+            self.task_q.append(t)
+
+    def _task_cleanup(self):
+        new_task_q = []
+        for task in self.task_q:
+            if task.isAlive():
+                new_task_q.append(task)
+        self.task_q = new_task_q
 
     def check(self):
         """
@@ -67,8 +80,6 @@ class Runner(object):
         """
         Returns the hosts that expand out from globs.
         """
-        #DEBUG
-#        return ['host1', 'host2', 'host3', 'host4', 'host5', 'host6']
         if not self.hostglobs:
             return []
         if isinstance(self.hostglobs, basestring):
@@ -78,29 +89,44 @@ class Runner(object):
         c = self.fc.Client(glob)
         return c.list_minions()
 
-    def _host_groups(self):
-        """
-        Returns a List of Lists which subdivides the hosts into chunks
-        based on concurrency.
+#     def _host_groups(self):
+#         """
+#         Returns a List of Lists which subdivides the hosts into chunks
+#         based on concurrency.
 
-        Example:
+#         Example:
 
-        If self.hosts = ['host1', 'host2', 'host3', 'host4'] and
-        concurrency = 2, then return
+#         If self.hosts = ['host1', 'host2', 'host3', 'host4'] and
+#         concurrency = 2, then return
 
-        [['host1', 'host2'], ['host3', 'host4']]
-        """
-        if self.concurrency >= len(self.hosts):
-            return [self.hosts]
+#         [['host1', 'host2'], ['host3', 'host4']]
+#         """
+#         if self.concurrency >= len(self.hosts):
+#             return [self.hosts]
 
-        groups = []
-        this_group = []
-        for host in self.hosts:
-            this_group.append(host)
-            if len(this_group) == self.concurrency:
-                groups.append(this_group)
-                this_group = []
-        if this_group:
-            groups.append(this_group)
-        return groups
+#         groups = []
+#         this_group = []
+#         for host in self.hosts:
+#             this_group.append(host)
+#             if len(this_group) == self.concurrency:
+#                 groups.append(this_group)
+#                 this_group = []
+#         if this_group:
+#             groups.append(this_group)
+#         return groups
 
+
+class TaskRunner(threading.Thread):
+    def __init__(self, host, tasks, event):
+        threading.Thread.__init__(self)
+        self._host = host
+        self._tasks = tasks
+        self._event = event
+
+    def run(self):
+        from poseidon.tasks import FuncTask
+        for task in self._tasks:
+            if isinstance(task, FuncTask):
+                task.set_host(self._host)
+            task.run()
+        self._event.set()
