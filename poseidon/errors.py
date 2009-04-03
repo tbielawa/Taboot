@@ -1,0 +1,2 @@
+class FuncException(Exception):
+    pass

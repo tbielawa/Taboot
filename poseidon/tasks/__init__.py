@@ -14,6 +14,7 @@ class FuncTask(BaseTask):
     """
     import func.overlord.client
     import func.jobthing
+    from poseidon.errors import FuncException
 
     def __init__(self, *args):
         self._args = args
@@ -33,6 +34,9 @@ class FuncTask(BaseTask):
             while status != self.func.jobthing.JOB_ID_FINISHED:
                 (status, result) = client.job_status(job_id)
                 time.sleep(1)
-            return (True, self._host, result[self._host])
+            result = result[self._host]
+            if result[0] == 'REMOTE_ERROR':
+                raise self.FuncException, "%s: %s" % (result[1], result[2])
+            return (True, self._host, result)
         except Exception, ex:
             return (False, self._host, repr(ex))
