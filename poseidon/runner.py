@@ -11,6 +11,7 @@
 runner for poseidon that does all the heavy lifting.
 """
 import threading
+import poseidon.output
 
 class CheckFailed(Exception):
     pass
@@ -23,7 +24,7 @@ class Runner(object):
     import func.overlord.client as fc
     import threading
 
-    def __init__(self, hostglobs, tasks, concurrency=1):
+    def __init__(self, hostglobs, tasks, concurrency=1, output=poseidon.output.CLIOutput()):
         """
         Initialize the Runner.
 
@@ -31,10 +32,12 @@ class Runner(object):
            - `hostglobs`: a List of Func-compatible host-globs to operate on.
            - `tasks`: a List of tasks to execute.
            - `concurrency`: the number of hosts on which to operate on simultaneously.
+           - `output`: an object that implements BaseOutput.
         """
         self.hostglobs = hostglobs
         self.tasks = tasks
         self.concurrency = concurrency
+        self.output = output
         self.task_q = []
         self.hosts = self._expand_globs()
         self.event = self.threading.Event()
@@ -57,7 +60,7 @@ class Runner(object):
                 self.event.wait()
                 self.event.clear()
                 self._task_cleanup()
-            t = TaskRunner(host, self.tasks[:], self.event)
+            t = TaskRunner(host, self.tasks, self.event, self.output)
             t.start()
             self.task_q.append(t)
 
@@ -89,44 +92,20 @@ class Runner(object):
         c = self.fc.Client(glob)
         return c.list_minions()
 
-#     def _host_groups(self):
-#         """
-#         Returns a List of Lists which subdivides the hosts into chunks
-#         based on concurrency.
-
-#         Example:
-
-#         If self.hosts = ['host1', 'host2', 'host3', 'host4'] and
-#         concurrency = 2, then return
-
-#         [['host1', 'host2'], ['host3', 'host4']]
-#         """
-#         if self.concurrency >= len(self.hosts):
-#             return [self.hosts]
-
-#         groups = []
-#         this_group = []
-#         for host in self.hosts:
-#             this_group.append(host)
-#             if len(this_group) == self.concurrency:
-#                 groups.append(this_group)
-#                 this_group = []
-#         if this_group:
-#             groups.append(this_group)
-#         return groups
-
-
 class TaskRunner(threading.Thread):
-    def __init__(self, host, tasks, event):
+    def __init__(self, host, tasks, event, output):
+        import copy
         threading.Thread.__init__(self)
         self._host = host
-        self._tasks = tasks
+        # we need our own copy of the tasks
+        self._tasks = [copy.deepcopy(task) for task in tasks]
         self._event = event
+        self._output = output
 
     def run(self):
         from poseidon.tasks import FuncTask
         for task in self._tasks:
             if isinstance(task, FuncTask):
                 task.set_host(self._host)
-            task.run()
+            self._output(*task.run())
         self._event.set()

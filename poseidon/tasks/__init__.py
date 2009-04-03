@@ -33,6 +33,6 @@ class FuncTask(BaseTask):
             while status != self.func.jobthing.JOB_ID_FINISHED:
                 (status, result) = client.job_status(job_id)
                 time.sleep(1)
-            return (True, result)
+            return (True, self._host, result[self._host])
         except Exception, ex:
-            return (False, repr(ex))
+            return (False, self._host, repr(ex))
