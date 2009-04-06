@@ -116,8 +116,15 @@ class TaskRunner(threading.Thread):
             except Exception, e:
                 result = TaskResult(task, output=repr(e))
 
-            self._output(result)
+            self._output_result(result)
             if not result.success:
                 host_success = False
         self._event.set()
         return host_success
+
+    def _output_result(self, result):
+        if isinstance(self._output, list):
+            for output in self._output:
+                output(result)
+        else:
+            self._output(result)
