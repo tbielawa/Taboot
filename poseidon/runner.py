@@ -34,13 +34,13 @@ class Runner(object):
            - `concurrency`: the number of hosts on which to operate on simultaneously.
            - `output`: an object that implements BaseOutput.
         """
-        self.hostglobs = hostglobs
-        self.tasks = tasks
-        self.concurrency = concurrency
-        self.output = output
-        self.task_q = []
-        self.hosts = self._expand_globs()
-        self.event = self.threading.Event()
+        self._hostglobs = hostglobs
+        self._tasks = tasks
+        self._concurrency = concurrency
+        self._output = output
+        self._task_q = []
+        self._hosts = self._expand_globs()
+        self._event = self.threading.Event()
 
     def run(self, check=True, ignore_errors=False, dry_run=False):
         """
@@ -55,21 +55,21 @@ class Runner(object):
         if check:
             self.check()
 
-        for host in self.hosts:
-            if len(self.task_q) == self.concurrency:
-                self.event.wait()
-                self.event.clear()
+        for host in self._hosts:
+            if len(self._task_q) == self._concurrency:
+                self._event.wait()
+                self._event.clear()
                 self._task_cleanup()
-            t = TaskRunner(host, self.tasks, self.event, self.output)
+            t = TaskRunner(host, self._tasks, self._event, self._output)
             t.start()
-            self.task_q.append(t)
+            self._task_q.append(t)
 
     def _task_cleanup(self):
         new_task_q = []
-        for task in self.task_q:
+        for task in self._task_q:
             if task.isAlive():
                 new_task_q.append(task)
-        self.task_q = new_task_q
+        self._task_q = new_task_q
 
     def check(self):
         """
@@ -83,12 +83,12 @@ class Runner(object):
         """
         Returns the hosts that expand out from globs.
         """
-        if not self.hostglobs:
+        if not self._hostglobs:
             return []
-        if isinstance(self.hostglobs, basestring):
-            glob = self.hostglobs
+        if isinstance(self._hostglobs, basestring):
+            glob = self._hostglobs
         else:
-            glob = ';'.join(self.hostglobs)
+            glob = ';'.join(self._hostglobs)
         c = self.fc.Client(glob)
         return c.list_minions()
 
@@ -106,6 +106,6 @@ class TaskRunner(threading.Thread):
         from poseidon.tasks import FuncTask
         for task in self._tasks:
             if isinstance(task, FuncTask):
-                task.set_host(self._host)
-            self._output(*task.run())
+                task.host = self._host
+            self._output(task.run())
         self._event.set()

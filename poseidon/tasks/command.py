@@ -1,10 +1,15 @@
-from poseidon.tasks import FuncTask
+from poseidon.tasks import FuncTask, TaskResult
 
 class Run(FuncTask):
-    def run(self):
-        result = self.func_run('command.run', self._args)
-        output = "command.Run(%s)\n" % self._args
-        if result[0]:
-            return (result[0], result[1], output + result[2][1])
+    def __init__(self, *args):
+        super(Run, self).__init__(*args)
+        self._command = 'command.run'
+
+    def _process_result(self, result):
+        t = TaskResult(self)
+        if result[0] == 0:
+            t.success = True
         else:
-            return (result[0], result[1], output + result[2])
+            t.success = False
+        t.output = result[1]
+        return t
