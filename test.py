@@ -2,11 +2,10 @@
 
 import poseidon.runner
 import poseidon.tasks.command
+import poseidon.tasks.mod_jk
 
-r = poseidon.runner.Runner(hostglobs=['minion', 'overlord'],
-                           tasks=[poseidon.tasks.command.Run('date'),
-                                  poseidon.tasks.command.Run('uptime'),
-                                  poseidon.tasks.command.Run('hostname')],
+r = poseidon.runner.Runner(hostglobs=['*'],
+                           tasks=[poseidon.tasks.command.Run('service httpd restart')],
                            concurrency=2)
 
 r.run()

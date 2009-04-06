@@ -24,7 +24,7 @@ class Runner(object):
     import func.overlord.client as fc
     import threading
 
-    def __init__(self, hostglobs, tasks, concurrency=1, output=poseidon.output.CLIOutput()):
+    def __init__(self, hostglobs, tasks, concurrency=1, output=poseidon.output.CLIOutput(), expand_globs=True):
         """
         Initialize the Runner.
 
@@ -33,13 +33,17 @@ class Runner(object):
            - `tasks`: a List of tasks to execute.
            - `concurrency`: the number of hosts on which to operate on simultaneously.
            - `output`: an object that implements BaseOutput.
+           - `expand_globs`: whether to expand the globs or just leave them as is.
         """
         self._hostglobs = hostglobs
         self._tasks = tasks
         self._concurrency = concurrency
         self._output = output
         self._task_q = []
-        self._hosts = self._expand_globs()
+        if expand_globs:
+            self._hosts = self._expand_globs()
+        else:
+            self._hosts = hostglobs
         self._event = self.threading.Event()
 
     def run(self, check=True, ignore_errors=False, dry_run=False):
@@ -104,6 +108,7 @@ class TaskRunner(threading.Thread):
 
     def run(self):
         from poseidon.tasks import TaskResult
+        host_success = True
         for task in self._tasks:
             task.host = self._host
             try:
@@ -113,5 +118,6 @@ class TaskRunner(threading.Thread):
 
             self._output(result)
             if not result.success:
-                break
+                host_success = False
         self._event.set()
+        return host_success
