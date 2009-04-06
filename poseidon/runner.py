@@ -103,8 +103,15 @@ class TaskRunner(threading.Thread):
         self._output = output
 
     def run(self):
-        from poseidon.tasks import FuncTask
+        from poseidon.tasks import TaskResult
         for task in self._tasks:
             task.host = self._host
-            self._output(task.run())
+            try:
+                result = task.run()
+            except Exception, e:
+                result = TaskResult(task, output=repr(e))
+
+            self._output(result)
+            if not result.success:
+                break
         self._event.set()
