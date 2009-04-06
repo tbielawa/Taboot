@@ -105,7 +105,6 @@ class TaskRunner(threading.Thread):
     def run(self):
         from poseidon.tasks import FuncTask
         for task in self._tasks:
-            if isinstance(task, FuncTask):
-                task.host = self._host
+            task.host = self._host
             self._output(task.run())
         self._event.set()

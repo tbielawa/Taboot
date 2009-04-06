@@ -10,14 +10,6 @@ class BaseTask(object):
     def __repr__(self):
         return "%s%s" % (self._name, self._args)
 
-class FuncTask(BaseTask):
-    """
-    A Func-based Task
-    """
-    import func.overlord.client
-    import func.jobthing
-    from poseidon.errors import FuncException
-
     def sethost(self, host):
         self._host = host
     def gethost(self):
@@ -26,6 +18,14 @@ class FuncTask(BaseTask):
         else:
             return None
     host = property(gethost, sethost)
+
+class FuncTask(BaseTask):
+    """
+    A Func-based Task
+    """
+    import func.overlord.client
+    import func.jobthing
+    from poseidon.errors import FuncException
 
     def func_run(self, func_command, *args):
         import time
