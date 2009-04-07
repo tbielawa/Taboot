@@ -1,6 +1,6 @@
 class BaseTask(object):
     """
-    Base Task
+    Base Task.  All Tasks should inherit from this.
     """
     def __init__(self, *args):
         self._name = str(type(self))
@@ -10,14 +10,15 @@ class BaseTask(object):
     def __repr__(self):
         return "%s%s" % (self._name, self._args)
 
-    def sethost(self, host):
+    def _sethost(self, host):
         self._host = host
-    def gethost(self):
+    def _gethost(self):
         if hasattr(self, '_host'):
             return self._host
         else:
             return None
-    host = property(gethost, sethost)
+
+    host = property(_gethost, _sethost)
 
 class FuncTask(BaseTask):
     """
@@ -28,6 +29,12 @@ class FuncTask(BaseTask):
     from poseidon.errors import FuncException
 
     def func_run(self, func_command, *args):
+        """
+        Execute a command via Func.
+
+        :Paramaters:
+           - `func_command` String representing func command to run (e.g. 'command.run')
+        """
         import time
         try:
             client = self.func.overlord.client.Client(self._host, async=True)
@@ -47,6 +54,9 @@ class FuncTask(BaseTask):
             return (False, repr(ex))
 
     def run(self):
+        """
+        Run the FuncTask
+        """
         if not hasattr(self, '_command'):
             raise Exception("You MUST set self._command when instantiating a subclass of FuncTask!")
 

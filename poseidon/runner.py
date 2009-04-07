@@ -7,9 +7,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-"""
-runner for poseidon that does all the heavy lifting.
-"""
+
 import threading
 import poseidon.output
 
@@ -46,19 +44,14 @@ class Runner(object):
             self._hosts = hostglobs
         self._event = self.threading.Event()
 
-    def run(self, check=True, ignore_errors=False, dry_run=False):
+    def run(self, ignore_errors=False, dry_run=False):
         """
         Run the job.
 
         :Parameters:
-           - `check`: whether to run self.check before.
            - `ignore_errors`: whether to ignore faults in tasks.
            - `dry_run`: if True, don't actually execute tasks, just print info
         """
-        from poseidon.tasks import FuncTask
-        if check:
-            self.check()
-
         for host in self._hosts:
             if len(self._task_q) == self._concurrency:
                 self._event.wait()
