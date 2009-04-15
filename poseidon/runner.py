@@ -112,6 +112,7 @@ class TaskRunner(threading.Thread):
             self._output_result(result)
             if not result.success:
                 host_success = False
+                break
         self._event.set()
         return host_success
 
