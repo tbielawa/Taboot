@@ -157,6 +157,7 @@ setup(name = "python-poseidon",
     url = __url__,
 
     packages = ['poseidon',
+                'poseidon.tasks',
                 'poseidon-func'],
 
     classifiers = [
