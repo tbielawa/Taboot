@@ -61,6 +61,12 @@ class Runner(object):
             t.start()
             self._task_q.append(t)
 
+        # don't bail on the last task(s)
+        while self._task_q:
+            self._event.wait()
+            self._event.clear()
+            self._task_cleanup()
+
     def _task_cleanup(self):
         new_task_q = []
         for task in self._task_q:
