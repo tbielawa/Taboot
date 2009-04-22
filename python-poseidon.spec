@@ -56,8 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc docs/*rst COPYING LICENSE AUTHORS
 # For noarch packages: sitelib
-%{python_sitelib}/%{_name}
-%{python_sitelib}/*.egg-info
+%{python_sitelib}/*
 
 %files -n poseidon-func
 %defattr(-,root,root,-)
