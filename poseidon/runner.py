@@ -42,37 +42,19 @@ class Runner(object):
             self._hosts = self._expand_globs()
         else:
             self._hosts = hostglobs
-        self._event = self.threading.Event()
+        self._semaphore = self.threading.Semaphore(self._concurrency)
 
     def run(self, ignore_errors=False, dry_run=False):
         """
         Run the job.
-
-        :Parameters:
-           - `ignore_errors`: whether to ignore faults in tasks.
-           - `dry_run`: if True, don't actually execute tasks, just print info
         """
         for host in self._hosts:
-            if len(self._task_q) == self._concurrency:
-                self._event.wait()
-                self._event.clear()
-                self._task_cleanup()
-            t = TaskRunner(host, self._tasks, self._event, self._output)
+            t = TaskRunner(host, self._tasks, self._semaphore, self._output)
             t.start()
             self._task_q.append(t)
 
-        # don't bail on the last task(s)
-        while self._task_q:
-            self._event.wait()
-            self._event.clear()
-            self._task_cleanup()
-
-    def _task_cleanup(self):
-        new_task_q = []
         for task in self._task_q:
-            if task.isAlive():
-                new_task_q.append(task)
-        self._task_q = new_task_q
+            task.join()
 
     def check(self):
         """
@@ -96,31 +78,34 @@ class Runner(object):
         return c.list_minions()
 
 class TaskRunner(threading.Thread):
-    def __init__(self, host, tasks, event, output):
+    def __init__(self, host, tasks, semaphore, output):
         import copy
         threading.Thread.__init__(self)
         self._host = host
         # we need our own copy of the tasks
         self._tasks = [copy.deepcopy(task) for task in tasks]
-        self._event = event
+        self._semaphore = semaphore
         self._output = output
 
     def run(self):
-        from poseidon.tasks import TaskResult
-        host_success = True
-        for task in self._tasks:
-            task.host = self._host
-            try:
-                result = task.run()
-            except Exception, e:
-                result = TaskResult(task, output=repr(e))
+        self._semaphore.acquire()
+        try:
+            from poseidon.tasks import TaskResult
+            host_success = True
+            for task in self._tasks:
+                task.host = self._host
+                try:
+                    result = task.run()
+                except Exception, e:
+                    result = TaskResult(task, output=repr(e))
 
-            self._output_result(result)
-            if not result.success:
-                host_success = False
-                break
-        self._event.set()
-        return host_success
+                self._output_result(result)
+                if not result.success:
+                    host_success = False
+                    break
+        finally:
+            self._semaphore.release()
+            return host_success
 
     def _output_result(self, result):
         if isinstance(self._output, list):
