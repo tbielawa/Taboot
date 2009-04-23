@@ -1,0 +1,10 @@
+# Items we should all ignore
+*.pyc
+*.pyo
+*.db
+*.swp
+*.patch
+MANIFEST
+docs/html
+dist
+build
