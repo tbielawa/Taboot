@@ -117,7 +117,8 @@ class RPMBuildCommand(SetupBuildCommand):
                 sys.exit(1)
             if not os.access('dist/rpms/', os.F_OK):
                 os.mkdir('dist/rpms/')
-            rpm_cmd = 'rpmbuild -ba --define "_rpmdir dist/rpms/" \
+            rpm_cmd = 'rpmbuild -ba --clean \
+                                    --define "_rpmdir dist/rpms/" \
                                     --define "_srcrpmdir dist/rpms/" \
                                     --define "_sourcedir %s" *spec' % (
                       os.path.join(os.getcwd(), 'dist'))
