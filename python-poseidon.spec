@@ -4,7 +4,7 @@
 Name:           python-poseidon
 %define _name   poseidon
 Version:        0.0.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -64,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 24 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-7
+- Fix up poller task and re-architect the way sub-tasks get invoked
+
 * Thu Apr 23 2009 Greg Blomquist <gblomqui@redhat.com> - 0.0.1-6
 - Add poller task
 
