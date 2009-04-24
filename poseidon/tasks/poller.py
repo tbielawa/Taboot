@@ -1,4 +1,4 @@
-from poseidon.tasks import command
+from poseidon.tasks import BaseTask
 import time
 
 class PollTask(BaseTask):
@@ -19,19 +19,21 @@ class PollTask(BaseTask):
     def __init__(self, task, sleep_interval=5, max_attempts=6, fail_task=None):
         super(PollTask, self).__init__()
         self._task = task
-        self._sleep_interval
+        self._task.host = self.host
+        self._sleep_interval = sleep_interval
         self._max_attempts = max_attempts
         self._fail_task = fail_task
+        self._fail_task.host = self.host
 
     def run(self):
-        for x in range(max_attempts): 
+        for x in range(self._max_attempts): 
             try:
                 result = self._task.run()
             except Exception, e:
                 result = TaskResult(self._task, output=repr(e))
             if result.success:
                 return result
-            time.sleep(sleep_interval)
+            time.sleep(self._sleep_interval)
 
         # exhausted max_attempts
         if self._fail_task != None:
