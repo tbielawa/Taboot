@@ -53,7 +53,7 @@ class FuncTask(BaseTask):
         except Exception, ex:
             return (False, repr(ex))
 
-    def run(self):
+    def run(self, runner):
         """
         Run the FuncTask
         """

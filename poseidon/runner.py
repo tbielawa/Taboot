@@ -78,6 +78,7 @@ class Runner(object):
         return c.list_minions()
 
 class TaskRunner(threading.Thread):
+    from poseidon.tasks import TaskResult
     def __init__(self, host, tasks, semaphore, output):
         import copy
         threading.Thread.__init__(self)
@@ -90,10 +91,9 @@ class TaskRunner(threading.Thread):
     def run(self):
         self._semaphore.acquire()
         try:
-            from poseidon.tasks import TaskResult
             host_success = True
             for task in self._tasks:
-                result = run_task(task)
+                result = self.run_task(task)
                 self._output_result(result)
                 if not result.success:
                     host_success = False
@@ -107,7 +107,7 @@ class TaskRunner(threading.Thread):
         try:
             result = task.run(self)
         except Exception, e:
-            result = TaskResult(task, output=repr(e))
+            result = self.TaskResult(task, output=repr(e))
         return result
 
     def _output_result(self, result):

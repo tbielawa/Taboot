@@ -19,7 +19,7 @@ class JKBaseTask(BaseTask):
         return workers
 
 class OutOfRotation(JKBaseTask):
-    def run(self):
+    def run(self, runner):
         result = TaskResult(self)
         output = ''
         for proxy in self._proxies:
@@ -38,7 +38,7 @@ class OutOfRotation(JKBaseTask):
         return result
 
 class InRotation(JKBaseTask):
-    def run(self):
+    def run(self, runner):
         result = TaskResult(self)
         proxies = self._args[0]
         output = ''
