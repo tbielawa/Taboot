@@ -93,12 +93,7 @@ class TaskRunner(threading.Thread):
             from poseidon.tasks import TaskResult
             host_success = True
             for task in self._tasks:
-                task.host = self._host
-                try:
-                    result = task.run()
-                except Exception, e:
-                    result = TaskResult(task, output=repr(e))
-
+                result = run_task(task)
                 self._output_result(result)
                 if not result.success:
                     host_success = False
@@ -106,6 +101,14 @@ class TaskRunner(threading.Thread):
         finally:
             self._semaphore.release()
             return host_success
+
+    def run_task(self, task):
+        task.host = self._host
+        try:
+            result = task.run(self)
+        except Exception, e:
+            result = TaskResult(task, output=repr(e))
+        return result
 
     def _output_result(self, result):
         if isinstance(self._output, list):

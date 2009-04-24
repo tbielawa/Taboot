@@ -19,26 +19,22 @@ class PollTask(BaseTask):
     def __init__(self, task, sleep_interval=5, max_attempts=6, fail_task=None):
         super(PollTask, self).__init__()
         self._task = task
-        self._task.host = self.host
         self._sleep_interval = sleep_interval
         self._max_attempts = max_attempts
         self._fail_task = fail_task
         self._fail_task.host = self.host
 
-    def run(self):
+    def run(self, runner):
         for x in range(self._max_attempts): 
-            try:
-                result = self._task.run()
-            except Exception, e:
-                result = TaskResult(self._task, output=repr(e))
+            result = runner.run_task(self._task)
             if result.success:
                 return result
             time.sleep(self._sleep_interval)
 
         # exhausted max_attempts
         if self._fail_task != None:
-            result = self._fail_task.run()
+            return runner.run_task(self._fail_task)
         else:
             # return a "failed" TaskResult, stop executing further tasks
             return TaskResult(self, success=False, 
-                    output="Max attempts of %s reached running %s" % (max_attempts, repr(self._task)))
+                    output="Max attempts of %s reached running %s" % (self._max_attempts, repr(self._task)))
