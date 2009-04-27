@@ -43,13 +43,14 @@ class Runner(object):
         else:
             self._hosts = hostglobs
         self._semaphore = self.threading.Semaphore(self._concurrency)
+        self._fail_event = self.threading.Event()
 
     def run(self, ignore_errors=False, dry_run=False):
         """
         Run the job.
         """
         for host in self._hosts:
-            t = TaskRunner(host, self._tasks, self._semaphore, self._output)
+            t = TaskRunner(host, self._tasks, self._semaphore, self._output, self._fail_event)
             t.start()
             self._task_q.append(t)
 
@@ -79,7 +80,7 @@ class Runner(object):
 
 class TaskRunner(threading.Thread):
     from poseidon.tasks import TaskResult
-    def __init__(self, host, tasks, semaphore, output):
+    def __init__(self, host, tasks, semaphore, output, fail_event):
         import copy
         threading.Thread.__init__(self)
         self._host = host
@@ -87,9 +88,16 @@ class TaskRunner(threading.Thread):
         self._tasks = [copy.deepcopy(task) for task in tasks]
         self._semaphore = semaphore
         self._output = output
+        self._fail_event = fail_event
 
     def run(self):
         self._semaphore.acquire()
+
+        if self._fail_event.isSet():
+            # some other host has bombed
+            self._semaphore.release()
+            return
+
         try:
             host_success = True
             for task in self._tasks:
@@ -99,7 +107,17 @@ class TaskRunner(threading.Thread):
                     host_success = False
                     break
         except:
-            raise
+            self._bail_failure()
+
+        if not host_success:
+            self._bail_failure()
+        else:
+            self._semaphore.release()
+            return host_success
+
+    def _bail_failure():
+        self._fail_event.set()
+        self._semaphore.release()
 
     def run_task(self, task):
         task.host = self._host
