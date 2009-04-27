@@ -9,10 +9,6 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import threading
-import poseidon.output
-
-class CheckFailed(Exception):
-    pass
 
 class Runner(object):
     """
@@ -21,13 +17,12 @@ class Runner(object):
 
     import func.overlord.client as fc
     import threading
+    import poseidon.output
 
     def __init__(self, hostglobs, tasks, concurrency=1, output=poseidon.output.CLIOutput(), expand_globs=True):
         """
-        Initialize the Runner.
-
         :Parameters:
-           - `hostglobs`: a List of Func-compatible host-globs to operate on.
+           - `hostglobs`: a List of Func-compatible host globs to operate on.
            - `tasks`: a List of tasks to execute.
            - `concurrency`: the number of hosts on which to operate on simultaneously.
            - `output`: an object that implements BaseOutput.
@@ -45,7 +40,7 @@ class Runner(object):
         self._semaphore = self.threading.Semaphore(self._concurrency)
         self._fail_event = self.threading.Event()
 
-    def run(self, ignore_errors=False, dry_run=False):
+    def run(self):
         """
         Run the job.
         """
@@ -56,14 +51,6 @@ class Runner(object):
 
         for task in self._task_q:
             task.join()
-
-    def check(self):
-        """
-        Run a sanity check on the job.
-
-        For now just go with it.
-        """
-        return True
 
     def _expand_globs(self):
         """
@@ -79,8 +66,20 @@ class Runner(object):
         return c.list_minions()
 
 class TaskRunner(threading.Thread):
-    from poseidon.tasks import TaskResult
+    """
+    TaskRunner is responsible for executing a set of tasks for a
+    single host in it's own thread.
+    """
+    from poseidon.tasks import TaskResult as _TaskResult
     def __init__(self, host, tasks, semaphore, output, fail_event):
+        """
+        :Parameters:
+          - `host`: The host to operate on.  For each task, task.host will be set to this before executing
+          - `tasks`: A list of tasks to perform
+          - `semaphore`: The :class:`Runner` semaphore to acquire before executing
+          - `output`: A list of :class:`BaseOutput` instances on which to direct output to
+          - `fail_event`: The :class:`Runner` failure event to check before executing.  If this event is set when the TaskRunner acquires the semaphore, then the TaskRunner is effectively a no-op.
+        """
         import copy
         threading.Thread.__init__(self)
         self._host = host
@@ -125,7 +124,7 @@ class TaskRunner(threading.Thread):
         try:
             result = task.run(self)
         except Exception, e:
-            result = self.TaskResult(task, output=repr(e))
+            result = self._TaskResult(task, output=repr(e))
         return result
 
     def _output_result(self, result):

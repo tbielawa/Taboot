@@ -1,14 +1,14 @@
 from poseidon.tasks import BaseTask, TaskResult
 
 class JKBaseTask(BaseTask):
-    from modjkapi import JKManagerBalancerObjectFactory
+    from modjkapi import JKManagerBalancerObjectFactory as _JKManagerBalancerObjectFactory
 
     def __init__(self, *args):
         super(JKBaseTask, self).__init__(*args)
         self._proxies = self._args[0]
 
     def _get_workers(self, jk_host):
-        datasource = self.JKManagerBalancerObjectFactory('http://%s/jkmanage?mime=xml' % jk_host)
+        datasource = self._JKManagerBalancerObjectFactory('http://%s/jkmanage?mime=xml' % jk_host)
         balancers = datasource.objects()
 
         workers = []

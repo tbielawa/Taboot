@@ -1,6 +1,8 @@
 class BaseTask(object):
     """
-    Base Task.  All Tasks should inherit from this.
+    Base Task.  All tasks should inherit from this.  It does the
+    pretty string representation of a task and allows setting of the
+    host attribute.
     """
     def __init__(self, *args):
         self._name = str(type(self))
@@ -22,11 +24,12 @@ class BaseTask(object):
 
 class FuncTask(BaseTask):
     """
-    A Func-based Task
+    A Func-based Task.  All tasks that utilize Func should inherit
+    from this.
     """
     import func.overlord.client
     import func.jobthing
-    from poseidon.errors import FuncException
+    from poseidon.errors import FuncException as _FuncException
 
     def func_run(self, func_command, *args):
         """
@@ -34,6 +37,7 @@ class FuncTask(BaseTask):
 
         :Paramaters:
            - `func_command` String representing func command to run (e.g. 'command.run')
+           - `*args` Argument(s) to be used when invoking the func command
         """
         import time
         try:
@@ -48,14 +52,17 @@ class FuncTask(BaseTask):
                 time.sleep(1)
             result = result[self._host]
             if result[0] == 'REMOTE_ERROR':
-                raise self.FuncException, "%s: %s" % (result[1], result[2])
+                raise self._FuncException, "%s: %s" % (result[1], result[2])
             return (True, result)
         except Exception, ex:
             return (False, repr(ex))
 
     def run(self, runner):
         """
-        Run the FuncTask
+        Run the FuncTask.
+
+        :Parameters:
+          - `runner` A :class:`poseidon.runner.TaskRunner` instance
         """
         if not hasattr(self, '_command'):
             raise Exception("You MUST set self._command when instantiating a subclass of FuncTask!")
@@ -69,6 +76,12 @@ class FuncTask(BaseTask):
             return TaskResult(self, success=False, output=result[1])
 
 class TaskResult(object):
+    """
+    An encapsulation of the results of a task.  This is passed to one
+    or more instances of output classes (derived from BaseOutput) in
+    order to display to the user.
+    """
+
     def __init__(self, task, success=False, output=None):
         if hasattr(task, 'host'):
             self._host = task.host
@@ -76,28 +89,28 @@ class TaskResult(object):
         self._success = success
         self._output = output
 
-    def gettask(self):
+    def _gettask(self):
         return self._task
 
-    def settask(self, t):
+    def _settask(self, t):
         self._task = repr(t)
 
-    def getsuccess(self):
+    def _getsuccess(self):
         return self._success
 
-    def setsuccess(self, success):
+    def _setsuccess(self, success):
         self._success = success
 
-    def getoutput(self):
+    def _getoutput(self):
         return self._output
 
-    def setoutput(self, output):
+    def _setoutput(self, output):
         self._output = output
 
-    def gethost(self):
+    def _gethost(self):
         return self._host
 
-    task = property(gettask, settask)
-    success = property(getsuccess, setsuccess)
-    output = property(getoutput, setoutput)
-    host = property(gethost)
+    task = property(_gettask, _settask)
+    success = property(_getsuccess, _setsuccess)
+    output = property(_getoutput, _setoutput)
+    host = property(_gethost)

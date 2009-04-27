@@ -8,7 +8,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 """
-The Poseidon library.
+The Poseidon task library.
+
+Poseidon was created as a framework to do code deployments which
+require a repetitive set of tasks to be run in a certain order against
+certain groups of hosts.
 """
 
 __docformat__ = 'restructuredtext'

@@ -45,7 +45,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'Poseidon'
-copyright = "2008-2009, %s" % __author__
+copyright = "2009, %s" % __author__
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -188,3 +188,5 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+autoclass_content = 'both'
