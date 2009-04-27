@@ -98,9 +98,8 @@ class TaskRunner(threading.Thread):
                 if not result.success:
                     host_success = False
                     break
-        finally:
-            self._semaphore.release()
-            return host_success
+        except:
+            raise
 
     def run_task(self, task):
         task.host = self._host
