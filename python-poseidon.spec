@@ -4,7 +4,7 @@
 Name:           python-poseidon
 %define _name   poseidon
 Version:        0.0.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -64,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Apr 27 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-8
+* Mon Apr 27 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-9
 - Bail on all hosts if one host bombs.
 
 * Fri Apr 24 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-7

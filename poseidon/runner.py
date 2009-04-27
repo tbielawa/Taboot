@@ -108,6 +108,7 @@ class TaskRunner(threading.Thread):
                     break
         except:
             self._bail_failure()
+            raise
 
         if not host_success:
             self._bail_failure()
