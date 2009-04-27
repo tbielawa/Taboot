@@ -2,7 +2,7 @@ from poseidon.tasks import command
 
 class Run(command.Run):
     def __init__(self, *args):
-        super(Run, self).__init__('puppetd --test')
+        super(Run, self).__init__('puppetd --test > /dev/null')
 
 class Enable(command.Run):
     def __init__(self, *args):
