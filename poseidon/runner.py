@@ -119,6 +119,9 @@ class TaskRunner(threading.Thread):
             return host_success
 
     def _bail_failure(self):
+        """
+        Die nicely :)
+        """
         self._fail_event.set()
         self._semaphore.release()
 
@@ -140,6 +143,13 @@ class TaskRunner(threading.Thread):
         return result
 
     def _output_start(self, host, task):
+        """
+        Notify that we are starting a task.
+
+        :Parameters:
+          - `host`: The host the task is performed on
+          - `task`: The task being performed
+        """
         if isinstance(self._output, list):
             for output in self._output:
                 output.task_start(host, task)
@@ -147,6 +157,12 @@ class TaskRunner(threading.Thread):
             self._output.task_start(host, task)
 
     def _output_result(self, result):
+        """
+        Notify that we have finished a task.
+
+        :Parameters:
+          - `result`: :class:`poseidon.tasks.TaskResult` object encapsulating result.
+        """
         if isinstance(self._output, list):
             for output in self._output:
                 output.task_result(result)
