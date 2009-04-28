@@ -14,7 +14,7 @@ Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
-BuildRequires:  python-devel
+BuildRequires:  python-devel, python-sphinx
 
 Requires:       func
 
@@ -39,6 +39,7 @@ Func minion modules for use in conjunction with %{name}.
 
 %build
 %{__python} setup.py build
+%{__python} setup.py doc
 
 
 %install
@@ -54,7 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc docs/*rst COPYING LICENSE AUTHORS
+%doc docs/html COPYING LICENSE AUTHORS
 # For noarch packages: sitelib
 %{python_sitelib}/*
 
