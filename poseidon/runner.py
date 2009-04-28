@@ -119,7 +119,7 @@ class TaskRunner(threading.Thread):
             self._semaphore.release()
             return host_success
 
-    def _bail_failure():
+    def _bail_failure(self):
         self._fail_event.set()
         self._semaphore.release()
 
