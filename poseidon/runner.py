@@ -105,7 +105,6 @@ class TaskRunner(threading.Thread):
             host_success = True
             for task in self._tasks:
                 result = self.run_task(task)
-                self._output_result(result)
                 if not result.success:
                     host_success = False
                     break
@@ -132,15 +131,24 @@ class TaskRunner(threading.Thread):
           - `task`: The task to run
         """
         task.host = self._host
+        self._output_start(self._host, task)
         try:
             result = task.run(self)
         except Exception, e:
             result = self._TaskResult(task, output=repr(e))
+        self._output_result(result)
         return result
+
+    def _output_start(self, host, task):
+        if isinstance(self._output, list):
+            for output in self._output:
+                output.task_start(host, task)
+        else:
+            self._output.task_start(host, task)
 
     def _output_result(self, result):
         if isinstance(self._output, list):
             for output in self._output:
-                output(result)
+                output.task_result(result)
         else:
-            self._output(result)
+            self._output.task_result(result)
