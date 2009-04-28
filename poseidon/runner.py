@@ -90,6 +90,10 @@ class TaskRunner(threading.Thread):
         self._fail_event = fail_event
 
     def run(self):
+        """
+        Run the task(s) for the given host.  If the fail_event passed
+        from the invoking :class:`Runner` is set, do nothing.
+        """
         self._semaphore.acquire()
 
         if self._fail_event.isSet():
@@ -120,6 +124,13 @@ class TaskRunner(threading.Thread):
         self._semaphore.release()
 
     def run_task(self, task):
+        """
+        Run a single task.  Sets task.host and then invokes the run
+        method for the task.
+
+        :Parameters:
+          - `task`: The task to run
+        """
         task.host = self._host
         try:
             result = task.run(self)

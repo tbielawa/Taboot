@@ -1,7 +1,14 @@
 class BaseOutput(object):
+    """
+    Base class for all output-related classes.
+    """
     pass
 
 class CLIOutput(BaseOutput):
+    """
+    Output a :class:`poseidon.tasks.TaskResult` to the command line
+    with pretty formatting and colors.
+    """
     def __call__(self, task_result):
         import Colors
 
@@ -17,7 +24,14 @@ class CLIOutput(BaseOutput):
         print output
 
 class LogOutput(BaseOutput):
+    """
+    Output a :class:`poseidon.tasks.TaskResult` to a logfile.
+    """
     def __init__(self, logfile='poseidon.log'):
+        """
+        :Parameters:
+          - `logfile` The file to write the log to
+        """
         self._logfile = logfile
         self._log_fd = open(logfile, 'w')
 

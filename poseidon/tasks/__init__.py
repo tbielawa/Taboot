@@ -24,14 +24,14 @@ class BaseTask(object):
 
 class FuncTask(BaseTask):
     """
-    A Func-based Task.  All tasks that utilize Func should inherit
+    A Func-based task.  All tasks that utilize Func should inherit
     from this.
     """
     import func.overlord.client
     import func.jobthing
     from poseidon.errors import FuncException as _FuncException
 
-    def func_run(self, func_command, *args):
+    def _func_run(self, func_command, *args):
         """
         Execute a command via Func.
 
@@ -67,7 +67,7 @@ class FuncTask(BaseTask):
         if not hasattr(self, '_command'):
             raise Exception("You MUST set self._command when instantiating a subclass of FuncTask!")
 
-        result = self.func_run(self._command, self._args)
+        result = self._func_run(self._command, self._args)
 
         if result[0]:
             # command executed successfully as far as "func success"

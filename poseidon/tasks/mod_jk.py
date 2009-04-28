@@ -3,9 +3,13 @@ from poseidon.tasks import BaseTask, TaskResult
 class JKBaseTask(BaseTask):
     from modjkapi import JKManagerBalancerObjectFactory as _JKManagerBalancerObjectFactory
 
-    def __init__(self, *args):
-        super(JKBaseTask, self).__init__(*args)
-        self._proxies = self._args[0]
+    def __init__(self, proxies):
+        """
+        :Parameters:
+          - `proxies` A list of mod_jk proxy servers to operate on
+        """
+        super(JKBaseTask, self).__init__(proxies)
+        self._proxies = proxies
 
     def _get_workers(self, jk_host):
         datasource = self._JKManagerBalancerObjectFactory('http://%s/jkmanage?mime=xml' % jk_host)
@@ -19,6 +23,9 @@ class JKBaseTask(BaseTask):
         return workers
 
 class OutOfRotation(JKBaseTask):
+    """
+    Take a host of rotation.
+    """
     def run(self, runner):
         result = TaskResult(self)
         output = ''
@@ -38,6 +45,9 @@ class OutOfRotation(JKBaseTask):
         return result
 
 class InRotation(JKBaseTask):
+    """
+    Put a host in rotation.
+    """
     def run(self, runner):
         result = TaskResult(self)
         proxies = self._args[0]
