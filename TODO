@@ -1,5 +1,3 @@
-- Don't overwrite logs; append to them
-
 - Add tasks to block on some event (keyboard input, etc.) so you can
   do things like prompt for user to hit enter after verifying
   something or performing some out-of-band task (like pushing puppet

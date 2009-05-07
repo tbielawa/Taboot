@@ -43,7 +43,7 @@ class LogOutput(BaseOutput):
           - `logfile` The file to write the log to
         """
         self._logfile = logfile
-        self._log_fd = open(logfile, 'w')
+        self._log_fd = open(logfile, 'a')
 
     def task_start(self, host, task):
         output = '%s:\n' % host
