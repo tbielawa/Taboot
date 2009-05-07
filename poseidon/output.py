@@ -3,7 +3,11 @@ class BaseOutput(object):
     Base class for all output-related classes.
     """
     import Colors as _Colors
+    import time as _time
     _colors = _Colors.Colors()
+
+    def _timestamp(self):
+        return self._time.strftime("%Y-%m-%d %H:%M:%S", self._time.localtime())
 
 class CLIOutput(BaseOutput):
     """
@@ -12,7 +16,8 @@ class CLIOutput(BaseOutput):
     """
     def task_start(self, host, task):
         output = '%s:\n' % self._colors.format_string(host,'blue')
-        output += 'Running Task[%s]...\n' % self._colors.format_string(task,'white')
+        output += '%s Starting Task[%s]\n' % (self._timestamp(),
+                                                self._colors.format_string(task,'white'))
         print output
 
     def task_result(self, result):
@@ -23,7 +28,8 @@ class CLIOutput(BaseOutput):
             output_color = 'red'
 
         output = "%s:\n" % c.format_string(result.host,'blue')
-        output += "Finished Task[%s]:\n" %   c.format_string(result.task, output_color)
+        output += "%s Finished Task[%s]:\n" %  (self._timestamp(),
+                                                c.format_string(result.task, output_color))
         output += "%s\n" % c.format_string(result.output.strip(), output_color)
         print output
 
@@ -41,7 +47,8 @@ class LogOutput(BaseOutput):
 
     def task_start(self, host, task):
         output = '%s:\n' % host
-        output += 'Running Task[%s]...\n\n' % task
+        output += '%s Starting Task[%s]\n\n' % (self._timestamp(),
+                                                task)
         self._log_fd.write(output)
 
     def task_result(self, result):
@@ -51,7 +58,8 @@ class LogOutput(BaseOutput):
             success_str = 'FAIL'
 
         output = "%s:\n" % result.host
-        output += "Finished Task[%s]: %s\n" % (result.task, success_str)
+        output += "%s Finished Task[%s]: %s\n" % (self._timestamp(),
+                                               result.task, success_str)
         output += "%s\n\n" % result.output.strip()
         self._log_fd.write(output)
 

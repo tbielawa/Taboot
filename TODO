@@ -1,7 +1,5 @@
 - Add task(s?) to do RPM manifests and generate diffs
 
-- Add timestamps to logging
-
 - Don't overwrite logs; append to them
 
 - Add tasks to block on some event (keyboard input, etc.) so you can
