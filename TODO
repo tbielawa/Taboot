@@ -1,6 +1,1 @@
-- Add tasks to block on some event (keyboard input, etc.) so you can
-  do things like prompt for user to hit enter after verifying
-  something or performing some out-of-band task (like pushing puppet
-  code in between two tasks)
-
 - Integrate with beav's nagios library

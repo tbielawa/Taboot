@@ -82,7 +82,7 @@ class TaskResult(object):
     order to display to the user.
     """
 
-    def __init__(self, task, success=False, output=None):
+    def __init__(self, task, success=False, output=''):
         if hasattr(task, 'host'):
             self._host = task.host
         self._task = repr(task)
