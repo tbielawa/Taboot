@@ -1,10 +1,12 @@
 from poseidon.tasks import BaseTask, TaskResult
 
+
 class WaitCLI(BaseTask):
     """
     Display a prompt message to the CLI and wait for user to press
     enter before returning from task.
     """
+
     def __init__(self, message="Press enter to continue\n"):
         """
         :Parameters:

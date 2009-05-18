@@ -4,6 +4,7 @@ class BaseTask(object):
     pretty string representation of a task and allows setting of the
     host attribute.
     """
+
     def __init__(self, *args):
         self._name = str(type(self))
         self._name = self._name[self._name.index("'")+1:self._name.rindex("'")]
@@ -14,6 +15,7 @@ class BaseTask(object):
 
     def _sethost(self, host):
         self._host = host
+
     def _gethost(self):
         if hasattr(self, '_host'):
             return self._host
@@ -22,11 +24,13 @@ class BaseTask(object):
 
     host = property(_gethost, _sethost)
 
+
 class FuncTask(BaseTask):
     """
     A Func-based task.  All tasks that utilize Func should inherit
     from this.
     """
+
     import func.overlord.client
     import func.jobthing
     from poseidon.errors import FuncException as _FuncException
@@ -36,9 +40,11 @@ class FuncTask(BaseTask):
         Execute a command via Func.
 
         :Paramaters:
-           - `func_command` String representing func command to run (e.g. 'command.run')
+           - `func_command` String representing func command to run
+              (e.g. 'command.run')
            - `*args` Argument(s) to be used when invoking the func command
         """
+
         import time
         try:
             client = self.func.overlord.client.Client(self._host, async=True)
@@ -64,8 +70,10 @@ class FuncTask(BaseTask):
         :Parameters:
           - `runner` A :class:`poseidon.runner.TaskRunner` instance
         """
+
         if not hasattr(self, '_command'):
-            raise Exception("You MUST set self._command when instantiating a subclass of FuncTask!")
+            raise Exception("You MUST set self._command when instantiating " +
+                            "a subclass of FuncTask!")
 
         result = self._func_run(self._command, self._args)
 
@@ -74,6 +82,7 @@ class FuncTask(BaseTask):
             return self._process_result(result[1])
         else:
             return TaskResult(self, success=False, output=result[1])
+
 
 class TaskResult(object):
     """

@@ -1,7 +1,12 @@
 from poseidon.tasks import BaseTask
 from poseidon.dispatch import CLIDispatcher
 
+
 class Ask_CLI(BaseTask):
+    """
+    Block on CLI Input
+    """
+
     def __init__(self, question, dispatcher=CLIDispatcher):
         self._question = question
         BaseTask.__init__(self, dispatcher)

@@ -10,6 +10,7 @@
 
 import threading
 
+
 class Runner(object):
     """
     The Runner, responsible for running a poseidon job.
@@ -19,14 +20,17 @@ class Runner(object):
     import threading
     import poseidon.output
 
-    def __init__(self, hostglobs, tasks, concurrency=1, output=poseidon.output.CLIOutput(), expand_globs=True):
+    def __init__(self, hostglobs, tasks, concurrency=1,
+                 output=poseidon.output.CLIOutput(), expand_globs=True):
         """
         :Parameters:
            - `hostglobs`: a List of Func-compatible host globs to operate on.
            - `tasks`: a List of tasks to execute.
-           - `concurrency`: the number of hosts on which to operate on simultaneously.
+           - `concurrency`: the number of hosts on which to operate on
+             simultaneously.
            - `output`: an object that implements BaseOutput.
-           - `expand_globs`: whether to expand the globs or just leave them as is.
+           - `expand_globs`: whether to expand the globs or just leave them as
+              is.
         """
         self._hostglobs = hostglobs
         self._tasks = tasks
@@ -45,7 +49,8 @@ class Runner(object):
         Run the job.
         """
         for host in self._hosts:
-            t = TaskRunner(host, self._tasks, self._semaphore, self._output, self._fail_event)
+            t = TaskRunner(host, self._tasks, self._semaphore, self._output,
+                           self._fail_event)
             t.start()
             self._task_q.append(t)
 
@@ -65,21 +70,30 @@ class Runner(object):
         c = self.fc.Client(glob)
         return c.list_minions()
 
+
 class TaskRunner(threading.Thread):
     """
     TaskRunner is responsible for executing a set of tasks for a
     single host in it's own thread.
     """
+
     from poseidon.tasks import TaskResult as _TaskResult
+
     def __init__(self, host, tasks, semaphore, output, fail_event):
         """
         :Parameters:
-          - `host`: The host to operate on.  For each task, task.host will be set to this before executing
+          - `host`: The host to operate on.  For each task, task.host will be
+             set to this before executing
           - `tasks`: A list of tasks to perform
-          - `semaphore`: The :class:`Runner` semaphore to acquire before executing
-          - `output`: A list of :class:`BaseOutput` instances on which to direct output to
-          - `fail_event`: The :class:`Runner` failure event to check before executing.  If this event is set when the TaskRunner acquires the semaphore, then the TaskRunner is effectively a no-op.
+          - `semaphore`: The :class:`Runner` semaphore to acquire before
+            executing
+          - `output`: A list of :class:`BaseOutput` instances on which to
+            direct output to
+          - `fail_event`: The :class:`Runner` failure event to check before
+            executing.  If this event is set when the TaskRunner acquires the
+            semaphore, then the TaskRunner is effectively a no-op.
         """
+
         import copy
         threading.Thread.__init__(self)
         self._host = host
@@ -94,6 +108,7 @@ class TaskRunner(threading.Thread):
         Run the task(s) for the given host.  If the fail_event passed
         from the invoking :class:`Runner` is set, do nothing.
         """
+
         self._semaphore.acquire()
 
         if self._fail_event.isSet():
@@ -122,6 +137,7 @@ class TaskRunner(threading.Thread):
         """
         Die nicely :)
         """
+
         self._fail_event.set()
         self._semaphore.release()
 
@@ -133,6 +149,7 @@ class TaskRunner(threading.Thread):
         :Parameters:
           - `task`: The task to run
         """
+
         task.host = self._host
         self._output_start(self._host, task)
         try:
@@ -150,6 +167,7 @@ class TaskRunner(threading.Thread):
           - `host`: The host the task is performed on
           - `task`: The task being performed
         """
+
         if isinstance(self._output, list):
             for output in self._output:
                 output.task_start(host, task)
@@ -161,8 +179,10 @@ class TaskRunner(threading.Thread):
         Notify that we have finished a task.
 
         :Parameters:
-          - `result`: :class:`poseidon.tasks.TaskResult` object encapsulating result.
+          - `result`: :class:`poseidon.tasks.TaskResult` object encapsulating
+            result.
         """
+
         if isinstance(self._output, list):
             for output in self._output:
                 output.task_result(result)

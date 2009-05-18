@@ -1,7 +1,9 @@
 from poseidon.tasks import BaseTask, TaskResult
 
+
 class JKBaseTask(BaseTask):
-    from modjkapi import JKManagerBalancerObjectFactory as _JKManagerBalancerObjectFactory
+    from modjkapi import JKManagerBalancerObjectFactory \
+        as _JKManagerBalancerObjectFactory
 
     def __init__(self, proxies):
         """
@@ -12,7 +14,8 @@ class JKBaseTask(BaseTask):
         self._proxies = proxies
 
     def _get_workers(self, jk_host):
-        datasource = self._JKManagerBalancerObjectFactory('http://%s/jkmanage?mime=xml' % jk_host)
+        datasource = self._JKManagerBalancerObjectFactory(
+                     'http://%s/jkmanage?mime=xml' % jk_host)
         balancers = datasource.objects()
 
         workers = []
@@ -22,10 +25,12 @@ class JKBaseTask(BaseTask):
                     workers.append(worker)
         return workers
 
+
 class OutOfRotation(JKBaseTask):
     """
     Take a host of rotation.
     """
+
     def run(self, runner):
         result = TaskResult(self)
         output = ''
@@ -44,10 +49,12 @@ class OutOfRotation(JKBaseTask):
         result.success = True
         return result
 
+
 class InRotation(JKBaseTask):
     """
     Put a host in rotation.
     """
+
     def run(self, runner):
         result = TaskResult(self)
         proxies = self._args[0]

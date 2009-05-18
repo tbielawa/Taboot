@@ -2,6 +2,7 @@ class BaseOutput(object):
     """
     Base class for all output-related classes.
     """
+
     import Colors as _Colors
     import time as _time
     _colors = _Colors.Colors()
@@ -9,15 +10,18 @@ class BaseOutput(object):
     def _timestamp(self):
         return self._time.strftime("%Y-%m-%d %H:%M:%S", self._time.localtime())
 
+
 class CLIOutput(BaseOutput):
     """
     Output a :class:`poseidon.tasks.TaskResult` to the command line
     with pretty formatting and colors.
     """
+
     def task_start(self, host, task):
-        output = '%s:\n' % self._colors.format_string(host,'blue')
+        output = '%s:\n' % self._colors.format_string(host, 'blue')
         output += '%s Starting Task[%s]\n' % (self._timestamp(),
-                                                self._colors.format_string(task,'white'))
+                                              self._colors.format_string(task,
+                                                                      'white'))
         print output
 
     def task_result(self, result):
@@ -27,16 +31,19 @@ class CLIOutput(BaseOutput):
         else:
             output_color = 'red'
 
-        output = "%s:\n" % c.format_string(result.host,'blue')
-        output += "%s Finished Task[%s]:\n" %  (self._timestamp(),
-                                                c.format_string(result.task, output_color))
+        output = "%s:\n" % c.format_string(result.host, 'blue')
+        output += "%s Finished Task[%s]:\n" % (self._timestamp(),
+                                               c.format_string(result.task,
+                                                               output_color))
         output += "%s\n" % c.format_string(result.output.strip(), output_color)
         print output
+
 
 class LogOutput(BaseOutput):
     """
     Output a :class:`poseidon.tasks.TaskResult` to a logfile.
     """
+
     def __init__(self, logfile='poseidon.log'):
         """
         :Parameters:
@@ -62,6 +69,7 @@ class LogOutput(BaseOutput):
                                                result.task, success_str)
         output += "%s\n\n" % result.output.strip()
         self._log_fd.write(output)
+
 
 # class EmailOutput(BaseOutput):
 #     import smtplib
