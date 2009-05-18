@@ -4,7 +4,7 @@
 Name:           python-poseidon
 %define _name   poseidon
 Version:        0.0.1
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 18 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-13
+- Rebuild for new goodness
+
 * Tue Apr 28 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-12
 - Better output
 
