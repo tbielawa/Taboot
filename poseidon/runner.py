@@ -16,7 +16,6 @@ class Runner(object):
     The Runner, responsible for running a poseidon job.
     """
 
-    import func.overlord.client as fc
     import threading
     import poseidon.output
 
@@ -61,13 +60,16 @@ class Runner(object):
         """
         Returns the hosts that expand out from globs.
         """
+
+        import func.overlord.client as fc
+
         if not self._hostglobs:
             return []
         if isinstance(self._hostglobs, basestring):
             glob = self._hostglobs
         else:
             glob = ';'.join(self._hostglobs)
-        c = self.fc.Client(glob)
+        c = fc.Client(glob)
         return c.list_minions()
 
 

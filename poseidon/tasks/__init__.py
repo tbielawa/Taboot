@@ -31,7 +31,7 @@ class FuncTask(BaseTask):
     from this.
     """
 
-    import func.overlord.client
+
     import func.jobthing
     from poseidon.errors import FuncException as _FuncException
 
@@ -46,8 +46,9 @@ class FuncTask(BaseTask):
         """
 
         import time
+        import func.overlord.client
         try:
-            client = self.func.overlord.client.Client(self._host, async=True)
+            client = func.overlord.client.Client(self._host, async=True)
             job_id = reduce(lambda x, y: getattr(x, y),
                             func_command.split('.'),
                             client)(*args)
