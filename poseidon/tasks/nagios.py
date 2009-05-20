@@ -6,8 +6,6 @@ class NagiosBase(BaseTask):
     Base task for Nagios-related operations.
     """
 
-    import poseidon.contrib.nagios as _nagios
-
     def __init__(self, nagios_url):
         """
         :Parameters:
@@ -15,9 +13,10 @@ class NagiosBase(BaseTask):
              like: 'http://foo.example.com/nagios/cgi-bin/cmd.cgi'
         """
 
+        import poseidon.contrib.nagios as nagios
         super(NagiosBase, self).__init__()
         self._nagios_url = nagios_url
-        self._nagios_handle = self._nagios.Nagios(self._nagios_url)
+        self._nagios_handle = nagios.Nagios(self._nagios_url)
 
 
 class EnableAlerts(NagiosBase):

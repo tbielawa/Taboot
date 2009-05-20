@@ -3,7 +3,8 @@ from poseidon.tasks import command, TaskResult
 
 class PreManifest(command.Run):
     """
-    Gather list of installed RPMs
+    Gather list of installed RPMs.  A later invocation of :class:`PostManifest`
+    is then used to output the RPMs changed during intermediate tasks.
     """
 
     def __init__(self, *args):

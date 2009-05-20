@@ -27,7 +27,11 @@ Mod JK tasks
 ^^^^^^^^^^^^
 .. automodule:: poseidon.tasks.mod_jk
    :members:
-   :inherited-members:
+
+Nagios tasks
+^^^^^^^^^^^^
+.. automodule:: poseidon.tasks.nagios
+   :members:
 
 Polling tasks
 ^^^^^^^^^^^^^
@@ -39,9 +43,19 @@ Puppet tasks
 .. automodule:: poseidon.tasks.puppet
    :members:
 
+RPM tasks
+^^^^^^^^^
+.. automodule:: poseidon.tasks.rpm
+   :members:
+
 Service tasks
 ^^^^^^^^^^^^^
 .. automodule:: poseidon.tasks.service
+   :members:
+
+User input tasks
+^^^^^^^^^^^^^^^^
+.. automodule:: poseidon.tasks.userinput
    :members:
 
 Yum tasks
