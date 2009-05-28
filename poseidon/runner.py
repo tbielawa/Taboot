@@ -20,7 +20,7 @@ class Runner(object):
     import poseidon.output
 
     def __init__(self, hostglobs, tasks, concurrency=1,
-                 output=poseidon.output.CLIOutput(), expand_globs=True):
+                 output=[poseidon.output.CLIOutput], expand_globs=True):
         """
         :Parameters:
            - `hostglobs`: a List of Func-compatible host globs to operate on.
@@ -89,8 +89,13 @@ class TaskRunner(threading.Thread):
           - `tasks`: A list of tasks to perform
           - `semaphore`: The :class:`Runner` semaphore to acquire before
             executing
-          - `output`: A list of :class:`BaseOutput` instances on which to
-            direct output to
+          - `output`: A list of outputters to use.  Each item must be in one
+            of the following forms:
+              - A single `type` object
+              - A 2-tuple of the form (`type`, `arg`) where `arg` is the only
+                argument used to instantiate `type`
+              - A 2-tuple of the form (`type`, `tuple`) where `tuple` is used
+                to construct `type` as in type(*tuple)
           - `fail_event`: The :class:`Runner` failure event to check before
             executing.  If this event is set when the TaskRunner acquires the
             semaphore, then the TaskRunner is effectively a no-op.
@@ -100,7 +105,7 @@ class TaskRunner(threading.Thread):
         threading.Thread.__init__(self)
         self._host = host
         # we need our own copy of the tasks
-        self._tasks = [copy.deepcopy(task) for task in tasks]
+        self._tasks = self.__instantiator(tasks, host=host)# [copy.deepcopy(task) for task in tasks]
         self._semaphore = semaphore
         self._output = output
         self._fail_event = fail_event
@@ -152,41 +157,49 @@ class TaskRunner(threading.Thread):
           - `task`: The task to run
         """
 
-        task.host = self._host
-        self._output_start(self._host, task)
+        outputters = self.__instantiator(self._output, host=self._host,
+                                         task=task)
+
         try:
             result = task.run(self)
         except Exception, e:
             result = self._TaskResult(task, output=repr(e))
-        self._output_result(result)
+
+        for o in outputters:
+            o.write(result)
+
         return result
 
-    def _output_start(self, host, task):
+    def __instantiator(self, type_list, **kwargs):
         """
-        Notify that we are starting a task.
+        Instantiate a list of types.  Each item in the list must be in
+        one of the following formats:
+          - A single `type` object
+          - A 2-tuple of the form (`type`, `arg`) where `arg` is the only
+            argument used to instantiate `type`
+          - A 2-tuple of the form (`type`, `tuple`) where `tuple` is used
+            to construct `type` as in type(*tuple)
+        In all cases, **kwargs is also passed in at instantiation. Most common
+        case for this is setting host.
 
-        :Parameters:
-          - `host`: The host the task is performed on
-          - `task`: The task being performed
+        Returns a list of instantiated objects.
         """
+        output = []
+        for t in type_list:
+            the_type, args = (None, None)
+            if isinstance(t, tuple):
+                the_type = t[0]
+            elif isinstance(t, type):
+                output.append(t(*(), **kwargs))
+                continue
 
-        if isinstance(self._output, list):
-            for output in self._output:
-                output.task_start(host, task)
-        else:
-            self._output.task_start(host, task)
+            try:
+                args = t[1]
+            except:
+                args = ()
 
-    def _output_result(self, result):
-        """
-        Notify that we have finished a task.
+            if not isinstance(args, tuple):
+                args = (args, )
+            output.append(the_type(*args, **kwargs))
 
-        :Parameters:
-          - `result`: :class:`poseidon.tasks.TaskResult` object encapsulating
-            result.
-        """
-
-        if isinstance(self._output, list):
-            for output in self._output:
-                output.task_result(result)
-        else:
-            self._output.task_result(result)
+        return output

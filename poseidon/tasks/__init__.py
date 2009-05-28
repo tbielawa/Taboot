@@ -5,10 +5,11 @@ class BaseTask(object):
     host attribute.
     """
 
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         self._name = str(type(self))
         self._name = self._name[self._name.index("'")+1:self._name.rindex("'")]
         self._args = args
+        self.host = kwargs['host']
 
     def __repr__(self):
         return "%s%s" % (self._name, self._args)

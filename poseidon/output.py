@@ -1,98 +1,257 @@
-class BaseOutput(object):
+class _FileLikeOutputObject(object):
     """
-    Base class for all output-related classes.
+    A file-like parent class.
     """
 
-    import Colors as _Colors
+    import exceptions
     import time as _time
-    _colors = _Colors.Colors()
 
-    def _timestamp(self):
-        return self._time.strftime("%Y-%m-%d %H:%M:%S", self._time.localtime())
+    def __init__(self, *args, **kwargs):
+        """
+        Creates an instance of a file-like object.
+
+        :Parameters:
+           - `args`: all non-keyword arguments.
+           - `kwargs`: all keyword arguments.
+        """
+        self._pos = 0L
+        self._closed = False
+        self._setup(*args, **kwargs)
+
+    def _setup(self, *args, **kwargs):
+        """
+        Implementation specific setup.
+
+        :Parameters:
+           - `args`: all non-keyword arguments.
+           - `kwargs`: all keyword arguments.
+        """
+        pass
+
+    def flush(self):
+        """
+        We are not buffering so we always just return None.
+        """
+        return None
+
+    def read(self, *args, **kwargs):
+        """
+        We are an output only file-like object. Raise exception.
+
+        :Parameters:
+           - `args`: all non-keyword arguments.
+           - `kwargs`: all keyword arguments.
+        """
+        raise self.exceptions.NotImplementedError('Object for output only.')
+
+    def tell(self):
+        """
+        Returns the position of the file-like object.
+        """
+        return self._pos
+
+    def truncate(self, size):
+        """
+        We are an output only file-like object. Raise exception.
+
+        :Parameters:
+           - `size`: size to truncate to.
+        """
+        raise self.exceptions.NotImplementedError(
+            'This does not support truncate.')
+
+    def writelines(self, sequence):
+        """
+        Writes a sequence of lines.
+
+        :Parameters:
+           - `sequence`: iterable sequence of data to write.
+        """
+        for item in sequence:
+            self.write(item)
+
+    def write(self, item):
+        """
+        Writer wrapper (not rapper, beav). Simply calls _write which is
+        implementation specific and updates the position.
+
+        :Parameters:
+           - `item`: the item to write.
+        """
+        self._write(item)
+        self._pos += 1
+
+    def _write(self, item):
+        """
+        Implementation of writing data.
+
+        :Parameters:
+           - `item`: the item to write.
+        """
+        raise self.exceptions.NotImplementedError(
+            '_write must be overriden.')
+
+    def close(self):
+        """
+        Close wrapper (again, not rapper, beav). Simply calls _close  which
+        is implementation specific and updates the closed property.
+        """
+        self._close()
+        self._closed = True
+
+    def _close(self):
+        """
+        Implementation of closing the file-like object.
+        By default nothing occurs.
+        """
+        pass
+
+    # Read aliases
+    readline = read
+    readlines = read
+    xreadlines = read
+    seek = read
+
+    # Read-only Properties
+    closed = property(lambda self: self._closed)
+    timestamp = property(lambda self: self._time.strftime(
+        "%Y-%m-%d %H:%M:%S", self._time.localtime()))
 
 
-class CLIOutput(BaseOutput):
+class CLIOutput(_FileLikeOutputObject):
     """
     Output a :class:`poseidon.tasks.TaskResult` to the command line
     with pretty formatting and colors.
     """
 
-    def task_start(self, host, task):
-        output = '%s:\n' % self._colors.format_string(host, 'blue')
-        output += '%s Starting Task[%s]\n' % (self._timestamp(),
-                                              self._colors.format_string(task,
-                                                                      'white'))
-        print output
+    def _setup(self, host, task):
+        """
+        Implementation specific setup for outputting to the CLI.
 
-    def task_result(self, result):
-        c = self._Colors.Colors()
+        :Parameters:
+           - `host`: name of the host
+           - `task`: name of the task
+        """
+        import Colors
+        import sys
+        self._c = Colors.Colors()
+        self._sys = sys
+        self._sys.stdout.write('%s:\n' % (
+            self._c.format_string(host, 'blue')))
+        self._sys.stdout.write('%s Starting Task[%s]\n' % (
+            self.timestamp, self._c.format_string(task, 'white')))
+
+    def _write(self, result):
+        """
+        Implementation of writing to the CLI.
+
+        :Parameters:
+           - `result`: result object to inspect and write
+        """
+        # Set output color
+        output_color = 'red'
         if result.success:
             output_color = 'green'
-        else:
-            output_color = 'red'
 
-        output = "%s:\n" % c.format_string(result.host, 'blue')
-        output += "%s Finished Task[%s]:\n" % (self._timestamp(),
-                                               c.format_string(result.task,
-                                                               output_color))
-        output += "%s\n" % c.format_string(result.output.strip(), output_color)
-        print output
+        self._sys.stdout.write("%s:\n" % (
+            self._c.format_string(result.host, 'blue')))
+        self._sys.stdout.write("%s Finished Task[%s]:\n" % (
+            self.timestamp, self._c.format_string(
+                result.task, output_color)))
+        self._sys.stdout.write("%s\n" % self._c.format_string(
+            result.output.strip(), output_color))
 
 
-class LogOutput(BaseOutput):
+class LogOutput(_FileLikeOutputObject):
     """
     Output a :class:`poseidon.tasks.TaskResult` to a logfile.
     """
 
-    def __init__(self, logfile='poseidon.log'):
+    def _setup(self, host, task, logfile='poseidon.log'):
         """
+        Implementation specific setup for outputting to a log.
+
         :Parameters:
-          - `logfile` The file to write the log to
+           - `logfile`: name of the logfile to write to.
         """
         self._logfile = logfile
         self._log_fd = open(logfile, 'a')
+        self._log_fd.write('%s:\n%s Starting Task[%s]\n\n' % (
+            host, self.timestamp, task))
 
-    def task_start(self, host, task):
-        output = '%s:\n' % host
-        output += '%s Starting Task[%s]\n\n' % (self._timestamp(),
-                                                task)
-        self._log_fd.write(output)
+    def _write(self, result):
+        """
+        Implementation of writing to a log.
 
-    def task_result(self, result):
+        :Parameters:
+           - `result`: result object to inspect and write
+        """
         if result.success:
             success_str = 'OK'
         else:
             success_str = 'FAIL'
 
-        output = "%s:\n" % result.host
-        output += "%s Finished Task[%s]: %s\n" % (self._timestamp(),
-                                               result.task, success_str)
-        output += "%s\n\n" % result.output.strip()
-        self._log_fd.write(output)
+        self._log_fd.write("%s:\n%s Finished Task[%s]: %s\n%s\n\n" % (
+            result.host, self.timestamp, result.task, success_str,
+            result.output.strip()))
 
 
-# class EmailOutput(BaseOutput):
-#     import smtplib
-#     from email.mime.text import MIMEText
+class EmailOutput(_FileLikeOutputObject):
+    """
+    Output a :class:`poseidon.tasks.TaskResult` to a logfile.
+    """
 
-#     def __init__(self, to_addr, from_addr='poseidon@redhat.com'):
-#         self._to_addr = to_addr
-#         self._from_addr = from_addr
+    def _setup(self, to_addr, from_addr='poseidon@redhat.com'):
+        """
+        Implementation specific setup for outputting to a log.
 
-#     def __call__(self, task_result):
-#         if task_result.success:
-#             success_str = 'OK'
-#         else:
-#             success_str = 'FAIL'
+        :Parameters:
+           - `to_addr`: who to send the email to.
+           - `from_addr`: who the email is from.
+        """
+        try:
+            import cStringIO as StringIO
+        except ImportError, ie:
+            import StringIO
+        self._to_addr = to_addr
+        self._from_addr = from_addr
+        self._buffer = StringIO.StringIO()
 
-#         output = "%s: %s" % (task_result.task, success_str)
+    def _write(self, result):
+        """
+        Implementation of writing out to an email.
 
-#         msg = self.MIMEText(output)
-#         msg['Subject'] = task_result.host
-#         msg['From'] = self._from_addr
-#         msg['To'] = self._to_addr
+        :Parameters:
+           - `result`: result object to inspect and write
+        """
+        if result.success:
+            success_str = 'OK'
+        else:
+            success_str = 'FAIL'
 
-#         s = self.smtplib.SMTP()
-#         s.connect()
-#         s.sendmail(self._from_addr, [self._to_addr], msg.as_string())
-#         s.close()
+        self._buffer.write("%s: %s" % (task_result.task, success_str))
+
+    def flush(self):
+        """
+        Flushing sends the email with the buffer.
+        """
+        import smtplib
+        from email.mime.text import MIMEText
+
+        self._buffer.flush()
+        msg = self.MIMEText(self._buffer.read())
+        msg['Subject'] = task_result.host
+        msg['From'] = self._from_addr
+        msg['To'] = self._to_addr
+
+        smtp = self.smtplib.SMTP()
+        smtp.connect()
+        smtp.sendmail(self._from_addr, [self._to_addr], msg.as_string())
+        smtp.close()
+
+    def __del__(self):
+        """
+        If the buffer is not empty before destroying, flush.
+        """
+        if self._buffer.pos < self._buffer.len:
+            self.flush()

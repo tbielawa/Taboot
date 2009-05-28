@@ -20,13 +20,14 @@ class Install(YumBase, command.Run):
     Install one or more packages.
     """
 
-    def __init__(self, packages):
+    def __init__(self, packages, **kwargs):
         """
         :Parameters:
           - `packages`: A list of packages to install
         """
         YumBase.__init__(self, packages)
-        command.Run.__init__(self, 'yum install -y %s' % self._packages_str)
+        command.Run.__init__(self, 'yum install -y %s' % self._packages_str,
+                             **kwargs)
 
 
 class Update(YumBase, command.Run):
@@ -34,14 +35,15 @@ class Update(YumBase, command.Run):
     Update one or more packages.
     """
 
-    def __init__(self, packages=[]):
+    def __init__(self, packages=[], **kwargs):
         """
         :Parameters:
           - `packages`: A list of packages to update.  If `packages` is empty,
              update all packages on the system.
         """
         YumBase.__init__(self, packages)
-        command.Run.__init__(self, 'yum update -y %s' % self._packages_str)
+        command.Run.__init__(self, 'yum update -y %s' % self._packages_str,
+                             **kwargs)
 
 
 class Remove(YumBase, command.Run):
@@ -49,10 +51,11 @@ class Remove(YumBase, command.Run):
     Remove one or more packages.
     """
 
-    def __init__(self, packages):
+    def __init__(self, packages, **kwargs):
         """
         :Parameters:
           - `packages`: A list of packages to remove.
         """
         YumBase.__init__(self, packages)
-        command.Run.__init__(self, 'yum remove -y %s' % self._packages_str)
+        command.Run.__init__(self, 'yum remove -y %s' % self._packages_str,
+                             **kwargs)
