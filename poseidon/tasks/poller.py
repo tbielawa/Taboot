@@ -19,7 +19,8 @@ class PollTask(BaseTask):
                       indicating failure is returned.
     """
 
-    def __init__(self, task, sleep_interval=5, max_attempts=6, fail_task=None, **kwargs):
+    def __init__(self, task, sleep_interval=5, max_attempts=6,
+                 fail_task=None, **kwargs):
         super(PollTask, self).__init__(**kwargs)
         self._task = task
         self._sleep_interval = sleep_interval
