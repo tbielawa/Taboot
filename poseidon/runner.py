@@ -101,11 +101,9 @@ class TaskRunner(threading.Thread):
             semaphore, then the TaskRunner is effectively a no-op.
         """
 
-        import copy
         threading.Thread.__init__(self)
         self._host = host
-        # we need our own copy of the tasks
-        self._tasks = self.__instantiator(tasks, host=host)# [copy.deepcopy(task) for task in tasks]
+        self._tasks = tasks
         self._semaphore = semaphore
         self._output = output
         self._fail_event = fail_event
@@ -157,8 +155,12 @@ class TaskRunner(threading.Thread):
           - `task`: The task to run
         """
 
-        outputters = self.__instantiator(self._output, host=self._host,
-                                         task=task)
+        task = self.__instantiator(task, host=self._host)
+
+        outputters = []
+        for o in self._output:
+            instance = self.__instantiator(o, host=self._host, task=task)
+            outputters.append(instance)
 
         try:
             result = task.run(self)
@@ -170,10 +172,9 @@ class TaskRunner(threading.Thread):
 
         return result
 
-    def __instantiator(self, type_list, **kwargs):
+    def __instantiator(self, type_blob, **kwargs):
         """
-        Instantiate a list of types.  Each item in the list must be in
-        one of the following formats:
+        Instantiate a type, which must be in one of the following formats:
           - A single `type` object
           - A 2-tuple of the form (`type`, `arg`) where `arg` is the only
             argument used to instantiate `type`
@@ -182,24 +183,21 @@ class TaskRunner(threading.Thread):
         In all cases, **kwargs is also passed in at instantiation. Most common
         case for this is setting host.
 
-        Returns a list of instantiated objects.
+        Returns the instantiated object.
         """
-        output = []
-        for t in type_list:
-            the_type, args = (None, None)
-            if isinstance(t, tuple):
-                the_type = t[0]
-            elif isinstance(t, type):
-                output.append(t(*(), **kwargs))
-                continue
 
-            try:
-                args = t[1]
-            except:
-                args = ()
+        the_type, args = (None, None)
+        if isinstance(type_blob, tuple):
+            the_type = type_blob[0]
+        elif isinstance(type_blob, type):
+            return type_blob(**kwargs)
 
-            if not isinstance(args, tuple):
-                args = (args, )
-            output.append(the_type(*args, **kwargs))
+        try:
+            args = type_blob[1]
+        except:
+            args = ()
 
-        return output
+        if not isinstance(args, tuple):
+            args = (args, )
+
+        return the_type(*args, **kwargs)
