@@ -24,12 +24,20 @@ class Runner(object):
         """
         :Parameters:
            - `hostglobs`: a List of Func-compatible host globs to operate on.
-           - `tasks`: a List of tasks to execute.
+           - `tasks`: a List of tasks to execute.  Each item in this list must
+             follow the following format:
+               - A single `type` object, which will be instantiated with no
+                 arguments
+               - A 2-tuple of the form (`type`, `arg`) where `arg` is the only
+                 argument used to instantiate `type`
+               - A 2-tuple of the form (`type`, `tuple`) where `tuple` is used
+                 to construct `type` via positional argument expansion
            - `concurrency`: the number of hosts on which to operate on
              simultaneously.
-           - `output`: an object that implements BaseOutput.
+           - `output`: a list following the same format as `tasks`, containing
+             types (and possibly arguments) used for output
            - `expand_globs`: whether to expand the globs or just leave them as
-              is.
+             is.
         """
         self._hostglobs = hostglobs
         self._tasks = tasks
@@ -84,18 +92,11 @@ class TaskRunner(threading.Thread):
     def __init__(self, host, tasks, semaphore, output, fail_event):
         """
         :Parameters:
-          - `host`: The host to operate on.  For each task, task.host will be
-             set to this before executing
-          - `tasks`: A list of tasks to perform
+          - `host`: The host to operate on.
+          - `tasks`: A list of tasks to perform (see class::`Runner`)
           - `semaphore`: The :class:`Runner` semaphore to acquire before
             executing
-          - `output`: A list of outputters to use.  Each item must be in one
-            of the following forms:
-              - A single `type` object
-              - A 2-tuple of the form (`type`, `arg`) where `arg` is the only
-                argument used to instantiate `type`
-              - A 2-tuple of the form (`type`, `tuple`) where `tuple` is used
-                to construct `type` as in type(*tuple)
+          - `output`: A list of outputters to use. (see class::`Runner`)
           - `fail_event`: The :class:`Runner` failure event to check before
             executing.  If this event is set when the TaskRunner acquires the
             semaphore, then the TaskRunner is effectively a no-op.
@@ -107,6 +108,13 @@ class TaskRunner(threading.Thread):
         self._semaphore = semaphore
         self._output = output
         self._fail_event = fail_event
+        self._state = {}
+
+    def __getitem__(self, key):
+        return self._state[key]
+
+    def __setitem__(self, key, value):
+        self._state[key] = value
 
     def run(self):
         """
@@ -179,7 +187,7 @@ class TaskRunner(threading.Thread):
           - A 2-tuple of the form (`type`, `arg`) where `arg` is the only
             argument used to instantiate `type`
           - A 2-tuple of the form (`type`, `tuple`) where `tuple` is used
-            to construct `type` as in type(*tuple)
+            to construct `type` via positional argument expansion
         In all cases, **kwargs is also passed in at instantiation. Most common
         case for this is setting host.
 

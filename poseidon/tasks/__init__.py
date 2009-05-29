@@ -94,6 +94,13 @@ class TaskResult(object):
     """
 
     def __init__(self, task, success=False, output=''):
+        """
+        :Parameters:
+          - `task`: The task object represented by this result
+          - `success`: Whether the task completed successfully or not
+          - `output`: Any text output produced by the task
+        """
+
         if hasattr(task, 'host'):
             self._host = task.host
         self._task = repr(task)

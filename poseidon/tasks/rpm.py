@@ -7,8 +7,8 @@ class PreManifest(command.Run):
     is then used to output the RPMs changed during intermediate tasks.
     """
 
-    def __init__(self, *args):
-        super(PreManifest, self).__init__('rpm -qa | sort')
+    def __init__(self, *args, **kwargs):
+        super(PreManifest, self).__init__('rpm -qa | sort', **kwargs)
 
     def run(self, runner):
         """
@@ -19,7 +19,7 @@ class PreManifest(command.Run):
         """
 
         result = super(PreManifest, self).run(runner)
-        self.manifest = result.output
+        runner['rpm.PreManifest'] = result.output
         result.output = ''
         return result
 
@@ -32,26 +32,19 @@ class PostManifest(command.Run):
 
     from difflib import Differ as _Differ
 
-    def __init__(self, *args):
-        super(PostManifest, self).__init__('rpm -qa | sort')
+    def __init__(self, *args, **kwargs):
+        super(PostManifest, self).__init__('rpm -qa | sort', **kwargs)
 
     def run(self, runner):
         """
-        This bears some pretty involved explanation...
-
-        The runner that gets passed in contains the list of all of the
-        tasks that are being run against the current host.
-
-        Somewhere in that list, we should find an instance of
-        PreManifest that has a result stored in it.  So we'll go grab
-        that output and then re-take the manifest and do a diff.
+        The runner that gets passed in contains state that can be
+        access via dict-like access.  PreManifest uses this to write
+        to the rpm.Premanifest field.  So we'll check to make sure the
+        pre-manifest is there by looking for that state.
         """
-        pre_manifest = None
-        for task in runner._tasks:
-            if isinstance(task, PreManifest):
-                pre_manifest = task
-                break
-        if not pre_manifest:
+        try:
+            pre_manifest = runner['rpm.PreManifest']
+        except:
             return TaskResult(self, success=False,
                    output="You must use PreManifest before PostManifest")
 
@@ -59,7 +52,7 @@ class PostManifest(command.Run):
         # new state...
         result = super(command.Run, self).run(runner)
 
-        old_list = pre_manifest.manifest.splitlines(1)
+        old_list = pre_manifest.splitlines(1)
         new_list = result.output.splitlines(1)
 
         differ = self._Differ()

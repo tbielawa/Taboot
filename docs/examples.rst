@@ -10,11 +10,11 @@ A script that simply queries the hostname and uptime of all hosts available to t
     #!/usr/bin/env python
 
     import poseidon.runner
-    import poseidon.tasks.command as command
+    from poseidon.tasks.command import Run
 
     r = poseidon.runner.Runner(hostglobs=['*'],
-                               tasks=[command.Run('hostname'),
-                                      command.Run('uptime')])
+                               tasks=[(Run, 'hostname'),
+                                      (Run, 'uptime')])
     r.run()
 
 
@@ -27,7 +27,7 @@ cluster.
 
 
     #!/usr/bin/env python
-    
+
     import poseidon.runner
     import poseidon.tasks.mod_jk as mod_jk
     import poseidon.tasks.yum as yum
@@ -36,35 +36,33 @@ cluster.
     import poseidon.tasks.poller as poller
     import poseidon.tasks.command as command
     import poseidon.output as output
-    
+
     r = poseidon.runner.Runner(hostglobs=['java0*.web.qa.*'],
-    
-                               tasks=[mod_jk.OutOfRotation(['proxyjava01.web.qa.ext.intdev.redhat.com']),
-    
-                                      puppet.Disable(),
-    
-                                      service.Stop('jbossas'),
-    
-                                      poller.PollTask(command.Run('test -z $(pgrep java)'),
-                                                      fail_task=command.Run('pkill -9 java')),
-    
-                                      command.Run('rm -f /var/log/jbossas/production/server.log'),
-    
-                                      yum.Update('jbossas'),
-    
-                                      puppet.Enable(),
-    
-                                      puppet.Run(),
-    
-                                      service.Start('jbossas'),
-    
-                                      mod_jk.InRotation(['proxyjava01.web.qa.ext.intdev.redhat.com'])],
-    
-                                output=[output.CLIOutput(), output.LogOutput('myfile.log')],
+
+                               tasks=[(mod_jk.OutOfRotation, (['proxyjava01.web.qa.ext.intdev.redhat.com'])),
+
+                                      (puppet.Disable),
+
+                                      (service.Stop, ('jbossas')),
+
+                                      (command.Run, ('rm -f /var/log/jbossas/production/server.log')),
+
+                                      (yum.Update, ('jbossas')),
+
+                                      (puppet.Enable),
+
+                                      (puppet.Run),
+
+                                      (service.Start, ('jbossas')),
+
+                                      (mod_jk.InRotation, (['proxyjava01.web.qa.ext.intdev.redhat.com']))],
+
+                                output=[(output.CLIOutput),
+                                        (output.LogOutput, ('myfile.log'))],
 
                                 concurrency=2
                                 )
-    
+
     r.run()
 
 There's a few interesting things to note here.
