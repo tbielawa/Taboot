@@ -6,7 +6,7 @@ class NagiosBase(BaseTask):
     Base task for Nagios-related operations.
     """
 
-    def __init__(self, nagios_url):
+    def __init__(self, nagios_url, **kwargs):
         """
         :Parameters:
           - `nagios_url`: Full URL to a Nagios command handler.  Something
@@ -14,7 +14,7 @@ class NagiosBase(BaseTask):
         """
 
         import poseidon.contrib.nagios as nagios
-        super(NagiosBase, self).__init__()
+        super(NagiosBase, self).__init__(**kwargs)
         self._nagios_url = nagios_url
         self._nagios_handle = nagios.Nagios(self._nagios_url)
 

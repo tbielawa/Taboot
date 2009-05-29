@@ -7,7 +7,7 @@ class WaitCLI(BaseTask):
     enter before returning from task.
     """
 
-    def __init__(self, message="Press enter to continue\n"):
+    def __init__(self, message="Press enter to continue\n", **kwargs):
         """
         :Parameters:
           - `message`: The message to prompt on the CLI
