@@ -1,4 +1,5 @@
 from poseidon.tasks import BaseTask
+from poseidon.tasks import TaskResult
 import time
 
 
@@ -18,13 +19,12 @@ class PollTask(BaseTask):
                       indicating failure is returned.
     """
 
-    def __init__(self, task, sleep_interval=5, max_attempts=6, fail_task=None):
-        super(PollTask, self).__init__()
+    def __init__(self, task, sleep_interval=5, max_attempts=6, fail_task=None, **kwargs):
+        super(PollTask, self).__init__(**kwargs)
         self._task = task
         self._sleep_interval = sleep_interval
         self._max_attempts = max_attempts
         self._fail_task = fail_task
-        self._fail_task.host = self.host
 
     def run(self, runner):
         for x in range(self._max_attempts):
