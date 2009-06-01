@@ -97,10 +97,10 @@ class TaskRunner(threading.Thread):
         """
         :Parameters:
           - `host`: The host to operate on.
-          - `tasks`: A list of tasks to perform (see class::`Runner`)
+          - `tasks`: A list of tasks to perform (see :class:`Runner`)
           - `semaphore`: The :class:`Runner` semaphore to acquire before
             executing
-          - `output`: A list of outputters to use. (see class::`Runner`)
+          - `output`: A list of outputters to use. (see :class:`Runner`)
           - `fail_event`: The :class:`Runner` failure event to check before
             executing.  If this event is set when the TaskRunner acquires the
             semaphore, then the TaskRunner is effectively a no-op.
