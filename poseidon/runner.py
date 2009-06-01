@@ -20,18 +20,22 @@ class Runner(object):
     import poseidon.output
 
     def __init__(self, hostglobs, tasks, concurrency=1,
-                 output=[poseidon.output.CLIOutput], expand_globs=True):
+                 output=[{'type': poseidon.output.CLIOutput}],
+                 expand_globs=True):
         """
         :Parameters:
            - `hostglobs`: a List of Func-compatible host globs to operate on.
            - `tasks`: a List of tasks to execute.  Each item in this list must
-             follow the following format:
-               - A single `type` object, which will be instantiated with no
-                 arguments
-               - A 2-tuple of the form (`type`, `arg`) where `arg` is the only
-                 argument used to instantiate `type`
-               - A 2-tuple of the form (`type`, `tuple`) where `tuple` is used
-                 to construct `type` via positional argument expansion
+             be a dict of the following format:
+               - Required key named `type`.  This must be a instantiable type.
+               - Optional key named `args`.  This is expanded as the positional
+                 arguments when instantiating `type`. If not present, the empty
+                 tuple `()` is assumed.  If `args` is not a tuple, it is assumed
+                 that the value of `args` should be the only item contained within
+                 a 1-tuple and is treated as such.
+               - Optional key named `kwargs`.  This is exapanded as the keyword
+                 arguments when instantiating `type`.  If kwargs is not defined, it
+                 is assumed to be the empty dict `{}`.
            - `concurrency`: the number of hosts on which to operate on
              simultaneously.
            - `output`: a list following the same format as `tasks`, containing
@@ -182,30 +186,28 @@ class TaskRunner(threading.Thread):
 
     def __instantiator(self, type_blob, **kwargs):
         """
-        Instantiate a type, which must be in one of the following formats:
-          - A single `type` object
-          - A 2-tuple of the form (`type`, `arg`) where `arg` is the only
+        Instantiate a type, which is defined by a dict in the following format:
+          - Required key named `type`.  This must be a instantiable type.
+          - Optional key named `args`.  This is expanded as the positional
+            arguments when instantiating `type`. If not present, the empty
+            tuple `()` is assumed.  If `args` is not a tuple, it is assumed
+            that the value of `args` should be the only item contained within
+            a 1-tuple and is treated as such.
             argument used to instantiate `type`
-          - A 2-tuple of the form (`type`, `tuple`) where `tuple` is used
-            to construct `type` via positional argument expansion
-        In all cases, **kwargs is also passed in at instantiation. Most common
-        case for this is setting host.
+          - Optional key named `kwargs`.  This is exapanded as the keyword
+            arguments when instantiating `type`.  If kwargs is not defined, it
+            is assumed to be the empty dict `{}`.
 
         Returns the instantiated object.
         """
 
-        the_type, args = (None, None)
-        if isinstance(type_blob, tuple):
-            the_type = type_blob[0]
-        elif isinstance(type_blob, type):
-            return type_blob(**kwargs)
-
-        try:
-            args = type_blob[1]
-        except:
-            args = ()
-
-        if not isinstance(args, tuple):
-            args = (args, )
-
-        return the_type(*args, **kwargs)
+        instance_type = type_blob['type']
+        instance_args = ()
+        instance_kwargs = kwargs
+        if type_blob.has_key('args'):
+            instance_args = type_blob['args']
+            if not isinstance(instance_args, tuple):
+                instance_args = (instance_args,)
+        if type_blob.has_key('kwargs'):
+            instance_kwargs.update(type_blob['kwargs'])
+        return instance_type(*instance_args, **instance_kwargs)
