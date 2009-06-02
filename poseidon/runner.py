@@ -30,12 +30,12 @@ class Runner(object):
                - Required key named `type`.  This must be a instantiable type.
                - Optional key named `args`.  This is expanded as the positional
                  arguments when instantiating `type`. If not present, the empty
-                 tuple `()` is assumed.  If `args` is not a tuple, it is assumed
-                 that the value of `args` should be the only item contained within
-                 a 1-tuple and is treated as such.
+                 tuple `()` is assumed.  If `args` is not a tuple, it is
+                 assumed that the value of `args` should be the only item
+                 contained within a 1-tuple and is treated as such.
                - Optional key named `kwargs`.  This is exapanded as the keyword
-                 arguments when instantiating `type`.  If kwargs is not defined, it
-                 is assumed to be the empty dict `{}`.
+                 arguments when instantiating `type`.  If kwargs is not
+                 defined, it is assumed to be the empty dict `{}`.
            - `concurrency`: the number of hosts on which to operate on
              simultaneously.
            - `output`: a list following the same format as `tasks`, containing
@@ -204,10 +204,10 @@ class TaskRunner(threading.Thread):
         instance_type = type_blob['type']
         instance_args = ()
         instance_kwargs = kwargs
-        if type_blob.has_key('args'):
+        if 'args' in type_blob:
             instance_args = type_blob['args']
             if not isinstance(instance_args, tuple):
-                instance_args = (instance_args,)
-        if type_blob.has_key('kwargs'):
+                instance_args = (instance_args, )
+        if 'kwargs' in type_blob:
             instance_kwargs.update(type_blob['kwargs'])
         return instance_type(*instance_args, **instance_kwargs)

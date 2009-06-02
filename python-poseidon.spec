@@ -3,8 +3,8 @@
 
 Name:           python-poseidon
 %define _name   poseidon
-Version:        0.0.1
-Release:        14%{?dist}
+Version:        0.0.2
+Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -55,6 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
+%{_bindir}/poseidon
 %doc docs/html COPYING LICENSE AUTHORS
 # For noarch packages: sitelib
 %{python_sitelib}/*
@@ -65,6 +66,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 02 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-1
+- I think we're far enough to be 0.0.2
+- Added poseidon script
+
 * Tue May 19 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-14
 - Fix so documentation builds properly
 
