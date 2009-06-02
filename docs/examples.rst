@@ -12,7 +12,7 @@ A script that simply queries the hostname and uptime of all hosts available to t
     import poseidon.runner
     from poseidon.tasks.command import Run
 
-    r = poseidon.runner.Runner(hostglobs=['*'],
+    r = poseidon.runner.Runner(hosts=['*'],
                                tasks=[(Run, 'hostname'),
                                       (Run, 'uptime')])
     r.run()
@@ -37,7 +37,7 @@ cluster.
     import poseidon.tasks.command as command
     import poseidon.output as output
 
-    r = poseidon.runner.Runner(hostglobs=['java0*.web.qa.*'],
+    r = poseidon.runner.Runner(hosts=['java0*.web.qa.*'],
 
                                tasks=[(mod_jk.OutOfRotation, (['proxyjava01.web.qa.ext.intdev.redhat.com'])),
 

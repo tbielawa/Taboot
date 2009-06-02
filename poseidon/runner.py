@@ -19,12 +19,12 @@ class Runner(object):
     import threading
     import poseidon.output
 
-    def __init__(self, hostglobs, tasks, concurrency=1,
+    def __init__(self, hosts, tasks, concurrency=1,
                  output=[{'type': poseidon.output.CLIOutput}],
                  expand_globs=True):
         """
         :Parameters:
-           - `hostglobs`: a List of Func-compatible host globs to operate on.
+           - `hosts`: a List of Func-compatible host globs to operate on.
            - `tasks`: a List of tasks to execute.  Each item in this list must
              be a dict of the following format:
                - Required key named `type`.  This must be a instantiable type.
@@ -43,7 +43,7 @@ class Runner(object):
            - `expand_globs`: whether to expand the globs or just leave them as
              is.
         """
-        self._hostglobs = hostglobs
+        self._hosts = hosts
         self._tasks = tasks
         self._concurrency = concurrency
         self._output = output
@@ -51,7 +51,7 @@ class Runner(object):
         if expand_globs:
             self._hosts = self._expand_globs()
         else:
-            self._hosts = hostglobs
+            self._hosts = hosts
         self._semaphore = self.threading.Semaphore(self._concurrency)
         self._fail_event = self.threading.Event()
 
@@ -75,12 +75,12 @@ class Runner(object):
 
         import func.overlord.client as fc
 
-        if not self._hostglobs:
+        if not self._hosts:
             return []
-        if isinstance(self._hostglobs, basestring):
-            glob = self._hostglobs
+        if isinstance(self._hosts, basestring):
+            glob = self._hosts
         else:
-            glob = ';'.join(self._hostglobs)
+            glob = ';'.join(self._hosts)
         c = fc.Client(glob)
         return c.list_minions()
 
