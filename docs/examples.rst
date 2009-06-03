@@ -1,8 +1,52 @@
 Examples
-=========
+========
+
+Building a Job with YAML
+------------------------
+
+Most Poseidon use cases can be accomplished by crafting a YAML file
+and running it with the `poseidon` executable.
+
+Here is a simple example YAML which will update an RPM and restart httpd::
+
+    - hosts:
+        - 'java0*.web.qa.*'
+        - 'someotherhost'
+      concurrency: 2
+      tasks:
+        - type: yum.Update
+          args: some-rpm-package-name
+        - type: service.Restart
+          args: httpd
+
+Save this to a file `myjob.yaml` and run as such::
+
+  $ poseidon myjob.yaml
+
+or alternatively if you omit the filename, read from stdin::
+
+  $ cat myjob.yaml | poseidon
+
+YAML format
+^^^^^^^^^^^
+
+The root of the YAML document should be a list.  For each item in this
+list, the poseidon executable will do a little bit of work to convert
+your types into actual Python objects and then pass the datastructure
+as the keyword arguments to instantiate a
+:class:`poseidon.runner.Runner` instance and finally run the instance.
+`args` when used for a task will be expanded for positional argument
+expansion when creating task options.  Similarly, `kwargs` is used as
+the keword arguments.
+
+See :ref:`poseidon.tasks` for details on the available tasks and
+what options are available to control their behavior.
+
+API Examples
+------------
 
 Simple
-------
+^^^^^^
 
 A script that simply queries the hostname and uptime of all hosts available to the func overlord.
 ::
@@ -13,13 +57,13 @@ A script that simply queries the hostname and uptime of all hosts available to t
     from poseidon.tasks.command import Run
 
     r = poseidon.runner.Runner(hosts=['*'],
-                               tasks=[(Run, 'hostname'),
-                                      (Run, 'uptime')])
+                               tasks=[{'type': Run, 'args': 'hostname'},
+                                      {'type': Run, 'args': 'uptime'}])
     r.run()
 
 
 Advanced
---------
+^^^^^^^^
 
 A more involved example that does a rolling upgrade of a JBoss
 cluster.
@@ -39,26 +83,34 @@ cluster.
 
     r = poseidon.runner.Runner(hosts=['java0*.web.qa.*'],
 
-                               tasks=[(mod_jk.OutOfRotation, (['proxyjava01.web.qa.ext.intdev.redhat.com'])),
+                               tasks=[{'type': mod_jk.OutOfRotation,
+                                       'args': ['proxyjava01.web.qa.ext.intdev.redhat.com']},
 
-                                      (puppet.Disable),
+                                      {'type': puppet.Disable},
 
-                                      (service.Stop, ('jbossas')),
+                                      {'type': service.Stop,
+                                       'args': 'jbossas'},
 
-                                      (command.Run, ('rm -f /var/log/jbossas/production/server.log')),
+                                      {'type': command.Run,
+                                       'args': 'rm -f /var/log/jbossas/production/server.log'},
 
-                                      (yum.Update, ('jbossas')),
+                                      {'type': yum.Update,
+                                       'args': 'jbossas'},
 
-                                      (puppet.Enable),
+                                      {'type': puppet.Enable},
 
-                                      (puppet.Run),
+                                      {'type': puppet.Run},
 
-                                      (service.Start, ('jbossas')),
+                                      {'type': service.Start,
+                                       'args': 'jbossas'},
 
-                                      (mod_jk.InRotation, (['proxyjava01.web.qa.ext.intdev.redhat.com']))],
+                                      {'type': mod_jk.InRotation,
+                                       'args': ['proxyjava01.web.qa.ext.intdev.redhat.com']}],
 
-                                output=[(output.CLIOutput),
-                                        (output.LogOutput, ('myfile.log'))],
+                                output=[{'type': output.CLIOutput},
+
+                                        {'type': output.LogOutput,
+                                         'args': 'myfile.log'}],
 
                                 concurrency=2
                                 )

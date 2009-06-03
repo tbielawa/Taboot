@@ -13,6 +13,8 @@ Poseidon runner
    :members:
    :undoc-members:
 
+.. _poseidon.tasks:
+
 Poseidon tasks
 --------------
 .. automodule:: poseidon.tasks
