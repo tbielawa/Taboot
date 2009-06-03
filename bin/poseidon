@@ -64,7 +64,10 @@ def main():
     """
     Main function.
     """
-    blob = sys.stdin.read()
+    if len(sys.argv) == 2:
+        blob = open(sys.argv[1]).read()
+    else:
+        blob = sys.stdin.read()
     try:
         ds = yaml.load(blob)
     except:
