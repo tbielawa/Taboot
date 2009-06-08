@@ -11,7 +11,10 @@ class JKBaseTask(BaseTask):
           - `proxies` A list of mod_jk proxy servers to operate on
         """
         super(JKBaseTask, self).__init__(proxies, **kwargs)
-        self._proxies = proxies
+        if isinstance(proxies, list):
+            self._proxies = proxies
+        else:
+            self._prosies = [proxies]
 
     def _get_workers(self, jk_host):
         datasource = self._JKManagerBalancerObjectFactory(
