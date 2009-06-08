@@ -4,7 +4,7 @@
 Name:           python-poseidon
 %define _name   poseidon
 Version:        0.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -16,7 +16,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python-devel, python-sphinx
 
-Requires:       func
+Requires:       func, PyYAML
 
 
 %description
@@ -66,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 08 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-3
+- Add Require for PyYAML
+
 * Tue Jun 02 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-1
 - I think we're far enough to be 0.0.2
 - Added poseidon script
