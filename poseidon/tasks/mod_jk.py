@@ -5,12 +5,12 @@ class JKBaseTask(BaseTask):
     from modjkapi import JKManagerBalancerObjectFactory \
         as _JKManagerBalancerObjectFactory
 
-    def __init__(self, proxies):
+    def __init__(self, proxies, **kwargs):
         """
         :Parameters:
           - `proxies` A list of mod_jk proxy servers to operate on
         """
-        super(JKBaseTask, self).__init__(proxies)
+        super(JKBaseTask, self).__init__(proxies, **kwargs)
         self._proxies = proxies
 
     def _get_workers(self, jk_host):
