@@ -175,7 +175,11 @@ class LogOutput(_FileLikeOutputObject):
            - `logfile`: name of the logfile to write to.
         """
         self._logfile = logfile
-        self._log_fd = open(logfile, 'a')
+        if self._logfile in ('-', 'stdout', '1'):
+            import sys
+            self._log_fd = sys.stdout
+        else:
+            self._log_fd = open(logfile, 'a')
         self._log_fd.write('%s:\n%s Starting Task[%s]\n\n' % (
             host, self.timestamp, task))
 
