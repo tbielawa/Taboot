@@ -60,7 +60,7 @@ class FuncTask(BaseTask):
                 time.sleep(1)
             result = result[self._host]
             if result[0] == 'REMOTE_ERROR':
-                raise self._FuncException, "%s: %s" % (result[1], result[2])
+                raise self._FuncException(result[1:])
             return (True, result)
         except Exception, ex:
             return (False, repr(ex))
@@ -84,6 +84,17 @@ class FuncTask(BaseTask):
             return self._process_result(result[1])
         else:
             return TaskResult(self, success=False, output=result[1])
+
+
+class FuncErrorTask(FuncTask):
+    """
+    Explicitly cause a func remote error by calling a bad command.
+    Used to verify func exception handling works as expected
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(FuncErrorTask, self).__init__(*args, **kwargs)
+        self._command = 'thiscommand.DoesntExist'
 
 
 class TaskResult(object):
