@@ -7,7 +7,7 @@ class Run(command.Run):
     """
 
     def __init__(self, *args, **kwargs):
-        super(Run, self).__init__('puppetd --test > /dev/null',
+        super(Run, self).__init__('puppetd --test --color=false',
                                   **kwargs)
 
 
