@@ -59,14 +59,19 @@ class Runner(object):
         """
         Run the job.
         """
+        import signal
+
         for host in self._hosts:
             t = TaskRunner(host, self._tasks, self._semaphore, self._output,
                            self._fail_event)
             t.start()
             self._task_q.append(t)
 
+        signal.signal(signal.SIGINT, self.__sighandler)
+
         for task in self._task_q:
-            task.join()
+            while task.is_alive():
+                task.join(0.1)
 
     def _expand_globs(self):
         """
@@ -83,6 +88,16 @@ class Runner(object):
             glob = ';'.join(self._hosts)
         c = fc.Client(glob)
         return c.list_minions()
+
+    def __sighandler(self, signal, frame):
+        """
+        If we get SIGINT on the CLI, we need to quit all the threads
+        in our process group
+        """
+        import os
+        import signal
+
+        os.killpg(os.getpgid(0), signal.SIGQUIT)
 
 
 class TaskRunner(threading.Thread):
