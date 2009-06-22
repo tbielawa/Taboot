@@ -4,7 +4,7 @@
 Name:           python-poseidon
 %define _name   poseidon
 Version:        0.0.2
-Release:        10%{?dist}
+Release:        9%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -66,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 22 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-9
+- Return back string representation of exceptions for mod_jk tasks
+
 * Fri Jun 12 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-6
 - Allow LogOutput module to use stdout
 
