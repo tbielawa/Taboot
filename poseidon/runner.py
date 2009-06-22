@@ -70,7 +70,7 @@ class Runner(object):
         signal.signal(signal.SIGINT, self.__sighandler)
 
         for task in self._task_q:
-            while task.is_alive():
+            while task.isAlive():
                 task.join(0.1)
 
     def _expand_globs(self):
