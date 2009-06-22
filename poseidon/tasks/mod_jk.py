@@ -41,7 +41,7 @@ class OutOfRotation(JKBaseTask):
             try:
                 workers = self._get_workers(proxy)
             except Exception, e:
-                result.output = repr(e)
+                result.output = e
                 return result
 
             for worker in workers:
@@ -66,7 +66,7 @@ class InRotation(JKBaseTask):
             try:
                 workers = self._get_workers(proxy)
             except Exception, e:
-                result.output = repr(e)
+                result.output = e
                 return result
 
             for worker in workers:
