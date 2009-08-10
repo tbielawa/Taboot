@@ -25,11 +25,6 @@ Command tasks
 .. automodule:: poseidon.tasks.command
    :members:
 
-Mod JK tasks
-^^^^^^^^^^^^
-.. automodule:: poseidon.tasks.mod_jk
-   :members:
-
 Nagios tasks
 ^^^^^^^^^^^^
 .. automodule:: poseidon.tasks.nagios

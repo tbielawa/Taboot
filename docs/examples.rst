@@ -135,7 +135,6 @@ cluster.
     #!/usr/bin/env python
 
     import poseidon.runner
-    import poseidon.tasks.mod_jk as mod_jk
     import poseidon.tasks.yum as yum
     import poseidon.tasks.service as service
     import poseidon.tasks.puppet as puppet
@@ -145,10 +144,7 @@ cluster.
 
     r = poseidon.runner.Runner(hosts=['java0*.web.qa.*'],
 
-                               tasks=[{'type': mod_jk.OutOfRotation,
-                                       'args': ['proxyjava01.web.qa.ext.intdev.redhat.com']},
-
-                                      {'type': puppet.Disable},
+                               tasks=[{'type': puppet.Disable},
 
                                       {'type': service.Stop,
                                        'args': 'jbossas'},
@@ -164,10 +160,7 @@ cluster.
                                       {'type': puppet.Run},
 
                                       {'type': service.Start,
-                                       'args': 'jbossas'},
-
-                                      {'type': mod_jk.InRotation,
-                                       'args': ['proxyjava01.web.qa.ext.intdev.redhat.com']}],
+                                       'args': 'jbossas'}],
 
                                 output=[{'type': output.CLIOutput},
 

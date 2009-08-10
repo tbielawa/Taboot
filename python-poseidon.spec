@@ -4,7 +4,7 @@
 Name:           python-poseidon
 %define _name   poseidon
 Version:        0.0.2
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -16,7 +16,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python-devel, python-sphinx
 
-Requires:       func, PyYAML, python-modjkapi
+Requires:       func, PyYAML
 
 
 %description
@@ -66,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 10 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-13
+- Remove Requires on python-modjkapi
+
 * Fri Aug 07 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-12
 - Add poseidon.contrib to packages in setup.py
 
