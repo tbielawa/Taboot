@@ -159,7 +159,6 @@ setup(name = "python-poseidon",
 
     packages = ['poseidon',
                 'poseidon.tasks',
-                'poseidon.contrib',
                 'poseidon-func'],
 
     scripts = ['bin/poseidon'],

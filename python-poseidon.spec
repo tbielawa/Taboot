@@ -4,7 +4,7 @@
 Name:           python-poseidon
 %define _name   poseidon
 Version:        0.0.2
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -66,6 +66,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 19 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-15
+- Rewrite nagios tasks to shell out to curl for easy negotiate auth
+- Remove all the contrib stuff
+
 * Mon Aug 10 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-13
 - Remove Requires on python-modjkapi
 
