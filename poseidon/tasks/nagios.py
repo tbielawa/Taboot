@@ -12,6 +12,7 @@ class NagiosBase(BaseTask):
     NAGIOS_ENABLE = '28'
     NAGIOS_ADD_COMMENT = '1'
     NAGIOS_DELETE_ALL_COMMENTS = '20'
+    NAGIOS_SCHEDULE_SERVICE_DOWNTIME = '56'
 
     def __init__(self, nagios_url, **kwargs):
         """
@@ -57,7 +58,7 @@ class NagiosBase(BaseTask):
         try:
             self._call_curl(opts)
         except:
-            print "Failed call to Nagios for " + host
+            print "Failed call to Nagios for " + self.host
             raise
 
 
@@ -82,4 +83,38 @@ class DisableAlerts(NagiosBase):
         self._call_nagios(NagiosBase.NAGIOS_ADD_COMMENT,
                           {'persistent': 'on',
                            'com_data': '"Notifications disabled by Poseidon"'})
+        return TaskResult(self, success=True)
+
+
+class ScheduleDowntime(NagiosBase):
+    """
+    Schedule nagios service downtime
+    """
+
+    def __init__(self, nagios_url, service, minutes=15, **kwargs):
+        """
+        :Parameters:
+          - `nagios_url`: Full URL to a Nagios command handler.  Something
+             like: 'https://foo.example.com/nagios/cgi-bin/cmd.cgi'
+          - `service`: The name of the service to be scheduled for downtime.
+             Example: HTTP
+          - `minutes`: The number of minutes to schedule downtime for
+        """
+        super(ScheduleDowntime, self).__init__(nagios_url, **kwargs)
+        self._minutes = minutes
+        self._service = service
+
+    def run(self, runner):
+        from datetime import datetime, timedelta
+        start_time = datetime.strftime(datetime.now(), "%m-%d-%Y %H:%M:%S")
+        end_time = datetime.strftime(datetime.now() +
+                                     timedelta(minutes=self._minutes),
+                                     "%m-%d-%Y %H:%M:%S")
+        self._call_nagios(NagiosBase.NAGIOS_SCHEDULE_SERVICE_DOWNTIME,
+                          {'service': self._service,
+                           'com_data': '"Downtime scheduled by Poseidon"',
+                           'start_time': '"%s"' % start_time,
+                           'end_time': '"%s"' % end_time,
+                           'fixed': 1
+                           })
         return TaskResult(self, success=True)

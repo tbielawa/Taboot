@@ -4,7 +4,7 @@
 Name:           python-poseidon
 %define _name   poseidon
 Version:        0.0.2
-Release:        15%{?dist}
+Release:        16%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
