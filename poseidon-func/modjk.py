@@ -17,10 +17,12 @@ class ModJK(func_module.FuncModule):
     def enable_worker(self, balancer, worker):
         w = self.jk.get_one(name=balancer).get_one(name=worker)
         w.enable(ssl=False)
+        return True
 
     def disable_worker(self, balancer, worker):
         w = self.jk.get_one(name=balancer).get_one(name=worker)
         w.disable(ssl=False)
+        return True
 
     def register_method_args(self):
         """
