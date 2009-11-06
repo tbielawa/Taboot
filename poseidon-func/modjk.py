@@ -10,4 +10,16 @@ class ModJK(func_module.FuncModule):
         self.jk = JKManagerBalancerObjectFactory('http://localhost/jkmanage?mime=xml')
 
     def list_balancers(self):
-        return self.jk.objects()
+        return [str(b) for b in self.jk.objects()]
+
+    def register_method_args(self):
+        """
+        The argument export method
+        """
+
+        return {
+                'list_balancers':{
+                    'description':'Get list of balancers'
+                    }
+                }
+
