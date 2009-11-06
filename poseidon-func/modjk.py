@@ -40,20 +40,20 @@ class ModJK(func_module.FuncModule):
         return {
                 'list_balancers': {
                     'description': 'Get list of balancers'
-                    }
+                    },
                 'list_workers': {
                     'args': {
                         'balancer': balancer
                         },
                     'description': 'Get list of workers for a balancer'
-                    }
+                    },
                 'enable_worker': {
                     'args': {
                         'balancer': balancer,
                         'worker': worker,
                         },
                     'description': 'Enable a worker in a balancer'
-                    }
+                    },
                 'disable_worker': {
                     'args': {
                         'balancer': balancer,
