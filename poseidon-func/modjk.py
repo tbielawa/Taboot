@@ -11,15 +11,15 @@ class ModJK(func_module.FuncModule):
         return [b.name for b in self.jk.objects()]
 
     def list_workers(self, balancer):
-        b = jk.get_one(name=balancer)
+        b = self.jk.get_one(name=balancer)
         return [(w.name, w.host) for w in b.objects()]
 
     def enable_worker(self, balancer, worker):
-        w = jk.get_one(name=balancer).get_one(name=worker)
+        w = self.jk.get_one(name=balancer).get_one(name=worker)
         w.enable()
 
     def disable_worker(self, balancer, worker):
-        w = jk.get_one(name=balancer).get_one(name=worker)
+        w = self.jk.get_one(name=balancer).get_one(name=worker)
         w.disable()
 
     def register_method_args(self):
