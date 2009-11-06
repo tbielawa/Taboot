@@ -24,6 +24,32 @@ class ModJK(func_module.FuncModule):
         w.disable(ssl=False)
         return True
 
+    def disable_host(self, host):
+        """
+        Disable `host` across ALL balancers
+        """
+        disabled_on = []
+        balancers = self.jk.objects()
+        for balancer in balancers:
+            for worker in balancer.objects():
+                if worker.host == host:
+                    worker.disable()
+                    disabled_on.append('%s-%s' % (balancer.name, worker.name))
+        return disabled_on
+
+    def enable_host(self, host):
+        """
+        Enable `host` across ALL balancers
+        """
+        enabled_on = []
+        balancers = self.jk.objects()
+        for balancer in balancers:
+            for worker in balancer.objects():
+                if worker.host == host:
+                    worker.enable()
+                    enabled_on.append('%s-%s' % (balancer.name, worker.name))
+        return enabled_on
+
     def register_method_args(self):
         """
         The argument export method
@@ -37,6 +63,11 @@ class ModJK(func_module.FuncModule):
             'type': 'string',
             'optional': False,
             'description': 'The name of the desired worker'
+            }
+        host = {
+            'type': 'string',
+            'optional': False,
+            'description': 'A hostname for a worker'
             }
 
         return {
@@ -62,6 +93,18 @@ class ModJK(func_module.FuncModule):
                         'worker': worker,
                         },
                     'description': 'Disable a worker in a balancer'
+                    },
+                'enable_host': {
+                    'args': {
+                        'host': host
+                        },
+                    'description': 'Enable all workers for host across all balancers'
+                    },
+                'disable_host': {
+                    'args': {
+                        'host': host
+                        },
+                    'description': 'Disable all workers for host across all balancers'
                     }
                 }
 
