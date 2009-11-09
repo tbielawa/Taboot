@@ -34,7 +34,7 @@ class ModJK(func_module.FuncModule):
             for worker in balancer.objects():
                 if worker.host == host:
                     worker.disable(ssl=False)
-                    disabled_on.append('%s-%s' % (balancer.name, worker.name))
+                    disabled_on.append((balancer.name, worker.name))
         return disabled_on
 
     def enable_host(self, host):
@@ -47,7 +47,7 @@ class ModJK(func_module.FuncModule):
             for worker in balancer.objects():
                 if worker.host == host:
                     worker.enable(ssl=False)
-                    enabled_on.append('%s-%s' % (balancer.name, worker.name))
+                    enabled_on.append((balancer.name, worker.name))
         return enabled_on
 
     def register_method_args(self):
