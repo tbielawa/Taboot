@@ -37,7 +37,7 @@ class OutOfRotation(BaseTask):
     """
 
     def __init__(self, proxies, **kwargs):
-        super(OutOfRotation, self).__init__(*args, **kwargs)
+        super(OutOfRotation, self).__init__(**kwargs)
         self._proxies = proxies
 
     def run(self, runner):
