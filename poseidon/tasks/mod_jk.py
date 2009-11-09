@@ -27,7 +27,7 @@ class ToggleHost(FuncTask):
                 t.output += "%s:  %s\n" % item
         else:
             t.success = False
-            t.output "Failed to find worker host"
+            t.output = "Failed to find worker host"
         return t
 
 class OutOfRotation(BaseTask):
