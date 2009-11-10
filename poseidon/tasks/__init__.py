@@ -77,7 +77,7 @@ class FuncTask(BaseTask):
             raise Exception("You MUST set self._command when instantiating " +
                             "a subclass of FuncTask!")
 
-        result = self._func_run(self._command, self._args)
+        result = self._func_run(self._command, *(self._args))
 
         if result[0]:
             # command executed successfully as far as "func success"

@@ -5,7 +5,7 @@ JK_DISABLE = 1
 
 class ToggleHost(FuncTask):
     def __init__(self, action, *args, **kwargs):
-        super(DisableHost, self).__init__(*args, **kwargs)
+        super(ToggleHost, self).__init__(*args, **kwargs)
         self._action = action
         if action == JK_ENABLE:
             self._command = 'poseidon.modjk.enable_host'
@@ -23,8 +23,8 @@ class ToggleHost(FuncTask):
             else:
                 verb = 'Disabled'
             t.output = "%s AJP on the following balancer/worker pairs:\n" % verb
-            for item in result:
-                t.output += "%s:  %s\n" % item
+            for balancer,worker in result:
+                t.output += "%s:  %s\n" % (balancer, worker)
         else:
             t.success = False
             t.output = "Failed to find worker host"
@@ -36,22 +36,18 @@ class OutOfRotation(BaseTask):
     the proxy with func.
     """
 
-    def __init__(self, proxies, **kwargs):
-        super(OutOfRotation, self).__init__(**kwargs)
-        self._proxies = proxies
+    def __init__(self, *args, **kwargs):
+        super(OutOfRotation, self).__init__(*args, **kwargs)
 
     def run(self, runner):
         output = ""
         success = True
-        for proxy in self._proxies:
-            toggler = ToggleHost(action=JK_DISABLE, host=proxy)
-            result = toggler.run()
+        for proxy in self._args:
+            toggler = ToggleHost(JK_DISABLE, self._host, host=proxy)
+            result = toggler.run(runner)
             output += "%s:\n" % proxy
             output += "%s\n" % result.output
             if result.success == False:
                 success = False
                 break
         return TaskResult(self, success=success, output=output)
-
-
-
