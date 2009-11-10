@@ -30,20 +30,15 @@ class ToggleHost(FuncTask):
             t.output = "Failed to find worker host"
         return t
 
-class OutOfRotation(BaseTask):
-    """
-    Remove an AJP node from rotation on a proxy via modjkapi access on
-    the proxy with func.
-    """
-
+class JKBaseTask(BaseTask):
     def __init__(self, *args, **kwargs):
-        super(OutOfRotation, self).__init__(*args, **kwargs)
+        super(JKBaseTask, self).__init__(*args, **kwargs)
 
     def run(self, runner):
         output = ""
         success = True
-        for proxy in self._args:
-            toggler = ToggleHost(JK_DISABLE, self._host, host=proxy)
+        for proxy in self._args[0]:
+            toggler = ToggleHost(self.jkaction, self._host, host=proxy)
             result = toggler.run(runner)
             output += "%s:\n" % proxy
             output += "%s\n" % result.output
@@ -51,3 +46,17 @@ class OutOfRotation(BaseTask):
                 success = False
                 break
         return TaskResult(self, success=success, output=output)
+
+class OutOfRotation(JKBaseTask):
+    """
+    Remove an AJP node from rotation on a proxy via modjkapi access on
+    the proxy with func.
+    """
+    jkaction = JK_DISABLE
+
+class InRotation(JKBaseTask):
+    """
+    Put an AJP node in rotation on a proxy via modjkapi access on
+    the proxy with func.
+    """
+    jkaction = JK_ENABLE
