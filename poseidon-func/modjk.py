@@ -24,6 +24,11 @@ class ModJK(func_module.FuncModule):
         w.disable(ssl=False)
         return True
 
+    def stop_worker(self, balancer, worker):
+        w = self.jk.get_one(name=balancer).get_one(name=worker)
+        w.stop(ssl=False)
+        return True
+
     def disable_host(self, host):
         """
         Disable `host` across ALL balancers
@@ -36,6 +41,19 @@ class ModJK(func_module.FuncModule):
                     worker.disable(ssl=False)
                     disabled_on.append((balancer.name, worker.name))
         return disabled_on
+
+    def stop_host(self, host):
+        """
+        Stop `host` across ALL balancers
+        """
+        stopped_on = []
+        balancers = self.jk.objects()
+        for balancer in balancers:
+            for worker in balancer.objects():
+                if worker.host == host:
+                    worker.stop(ssl=False)
+                    stopped_on.append((balancer.name, worker.name))
+        return stopped_on
 
     def enable_host(self, host):
         """
@@ -94,6 +112,13 @@ class ModJK(func_module.FuncModule):
                         },
                     'description': 'Disable a worker in a balancer'
                     },
+                'stop_worker': {
+                    'args': {
+                        'balancer': balancer,
+                        'worker': worker,
+                        },
+                    'description': 'Stop a worker in a balancer'
+                    },
                 'enable_host': {
                     'args': {
                         'host': host
@@ -105,6 +130,12 @@ class ModJK(func_module.FuncModule):
                         'host': host
                         },
                     'description': 'Disable all workers for host across all balancers'
+                    },
+                'stop_host': {
+                    'args': {
+                        'host': host
+                        },
+                    'description': 'Stop all workers for host across all balancers'
                     }
                 }
 
