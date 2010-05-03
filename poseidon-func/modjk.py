@@ -11,11 +11,11 @@ class ModJK(func_module.FuncModule):
             'http://localhost/jkmanage?mime=xml'))
 
     def list_balancers(self):
-        return [b.name for b in self.jk.objects()]
+        return [str(b.name) for b in self.jk.objects()]
 
     def list_workers(self, balancer):
         b = self.jk.get_one(name=balancer)
-        return [(w.name, w.host) for w in b.objects()]
+        return [(str(w.name), str(w.host)) for w in b.objects()]
 
     def enable_worker(self, balancer, worker):
         w = self.jk.get_one(name=balancer).get_one(name=worker)
