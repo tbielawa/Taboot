@@ -39,6 +39,7 @@ class JKBaseTask(BaseTask):
     def __init__(self, proxies, action, *args, **kwargs):
         super(JKBaseTask, self).__init__(*args, **kwargs)
         from sys import modules
+        self.proxies = proxies
         self.jkaction = getattr(modules[self.__module__], "JK_%s" % action.upper())
 
     def run(self, runner):
