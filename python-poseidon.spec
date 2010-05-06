@@ -3,8 +3,8 @@
 
 Name:           python-poseidon
 %define _name   poseidon
-Version:        0.0.2
-Release:        26%{?dist}
+Version:        0.1
+Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -66,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 06 2010 John Eckersberg <jeckersb@redhat.com> - 0.1-1
+- mod_jk bug fixes and improvements
+
 * Wed Aug 19 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-15
 - Rewrite nagios tasks to shell out to curl for easy negotiate auth
 - Remove all the contrib stuff
