@@ -12,6 +12,7 @@ class NagiosBase(BaseTask):
     NAGIOS_ENABLE = '28'
     NAGIOS_ADD_COMMENT = '1'
     NAGIOS_DELETE_ALL_COMMENTS = '20'
+    NAGIOS_SCHEDULE_HOST_DOWNTIME = '55'
     NAGIOS_SCHEDULE_SERVICE_DOWNTIME = '56'
 
     def __init__(self, nagios_url, **kwargs):
@@ -91,7 +92,7 @@ class ScheduleDowntime(NagiosBase):
     Schedule nagios service downtime
     """
 
-    def __init__(self, nagios_url, service, minutes=15, **kwargs):
+    def __init__(self, nagios_url, service='HOST', minutes=15, **kwargs):
         """
         :Parameters:
           - `nagios_url`: Full URL to a Nagios command handler.  Something
@@ -110,11 +111,17 @@ class ScheduleDowntime(NagiosBase):
         end_time = datetime.strftime(datetime.now() +
                                      timedelta(minutes=self._minutes),
                                      "%m-%d-%Y %H:%M:%S")
-        self._call_nagios(NagiosBase.NAGIOS_SCHEDULE_SERVICE_DOWNTIME,
-                          {'service': self._service,
-                           'com_data': '"Downtime scheduled by Poseidon"',
-                           'start_time': '"%s"' % start_time,
-                           'end_time': '"%s"' % end_time,
-                           'fixed': 1
-                           })
+
+        command_id = NagiosBase.NAGIOS_SCHEDULE_HOST_DOWNTIME
+        opts = {'com_data': '"Downtime scheduled by Poseidon"',
+                'start_time': '"%s"' % start_time,
+                'end_time': '"%s"' % end_time,
+                'fixed': 1
+               }
+
+        if self._service != 'HOST':
+            command_id = NagiosBase.NAGIOS_SCHEDULE_SERVICE_DOWNTIME
+            opts['service'] = self._service
+
+        self._call_nagios(command_id, opts)
         return TaskResult(self, success=True)
