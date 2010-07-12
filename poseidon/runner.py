@@ -152,7 +152,7 @@ class TaskRunner(threading.Thread):
             host_success = True
             for task in self._tasks:
                 result = self.run_task(task)
-                if not result.success:
+                if not result.success and not result.ignore_errors:
                     host_success = False
                     break
         except:
@@ -182,6 +182,11 @@ class TaskRunner(threading.Thread):
           - `task`: The task to run
         """
 
+        ignore_errors = False
+        if 'ignore_errors' in task:
+            if task['ignore_errors'] in ('True', 'true', 1):
+                ignore_errors = True
+
         task = self.__instantiator(task, host=self._host)
 
         outputters = []
@@ -197,6 +202,7 @@ class TaskRunner(threading.Thread):
         for o in outputters:
             o.write(result)
 
+        result.ignore_errors = ignore_errors
         return result
 
     def __instantiator(self, type_blob, **kwargs):

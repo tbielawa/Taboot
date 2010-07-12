@@ -104,7 +104,7 @@ class TaskResult(object):
     order to display to the user.
     """
 
-    def __init__(self, task, success=False, output=''):
+    def __init__(self, task, success=False, output='', ignore_errors=False):
         """
         :Parameters:
           - `task`: The task object represented by this result
@@ -117,6 +117,7 @@ class TaskResult(object):
         self._task = repr(task)
         self._success = success
         self._output = output
+        self._ignore_errors = ignore_errors
 
     def _gettask(self):
         return self._task
@@ -136,10 +137,17 @@ class TaskResult(object):
     def _setoutput(self, output):
         self._output = output
 
+    def _getignore_errors(self):
+        return self._ignore_errors
+
+    def _setignore_errors(self, ignore_errors):
+        self._ignore_errors = ignore_errors
+
     def _gethost(self):
         return self._host
 
     task = property(_gettask, _settask)
     success = property(_getsuccess, _setsuccess)
     output = property(_getoutput, _setoutput)
+    ignore_errors = property(_getignore_errors, _setignore_errors)
     host = property(_gethost)
