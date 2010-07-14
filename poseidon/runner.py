@@ -215,12 +215,12 @@ class TaskRunner(threading.Thread):
         following format:
 
           - If no paremeters are required for the type, then the blob
-            should be a single type object
+            should be a single string describing thd desired type
 
           - If parameters are required, then the type blob must be a
-            dictionary with only one key that is the desired type
-            object.  The value associated with this key should be
-            another dictionary which maps the parameter:value pairs
+            dictionary with only one key that is a string describing
+            the desired type.  The value associated with this key
+            should be dictionary which maps the parameter:value pairs
             required when instantiating the type.
 
         Returns the instantiated object.
