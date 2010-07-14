@@ -14,10 +14,11 @@ Here is a simple example YAML which will update an RPM and restart httpd::
         - 'someotherhost'
       concurrency: 2
       tasks:
-        - type: yum.Update
-          args: some-rpm-package-name
-        - type: service.Restart
-          args: httpd
+        - yum.Update:
+            packages:
+              - some-rpm-package-name
+        - service.Restart
+            service: httpd
 
 Save this to a file `myjob.yaml` and run as such::
 
@@ -31,13 +32,8 @@ YAML format
 ^^^^^^^^^^^
 
 The root of the YAML document should be a list.  For each item in this
-list, the poseidon executable will do a little bit of work to convert
-your types into actual Python objects and then pass the datastructure
-as the keyword arguments to instantiate a
+list, the poseidon CLI will instantiate a
 :class:`poseidon.runner.Runner` instance and finally run the instance.
-`args` when used for a task will be expanded for positional argument
-expansion when creating task options.  Similarly, `kwargs` is used as
-the keword arguments.
 
 See :ref:`poseidon.tasks` for details on the available tasks and
 what options are available to control their behavior.
@@ -54,19 +50,19 @@ These are some examples of how to use specific tasks.
     - hosts:
         - foo.example.com
       tasks:
-        - type: poller.PollTask
-          kwargs:
+        - poller.PollTask:
             task:
-              type: command.Run
-              args: /bin/false
+              command.Run:
+                command: /bin/false
             fail_task:
-              type: command.Run
-              args: /bin/true
+              command.Run:
+                command: /bin/true
             sleep_interval: 5
             max_attempts: 5
 
-The `task` argument to PollTask gets instantiated and run.  After it
-completes, it will continue to run until one of two things happen:
+The `task` argument to PollTask gets instantiated and run as a
+subtask.  After it completes, it will continue to run until one of two
+things happen:
 
   - `task` succeeds
   - `max_attempts` number of runs have occured
@@ -85,96 +81,19 @@ this::
     - hosts:
         - foo.example.com
       tasks:
-        - type: poller.PollTask
-          kwargs:
+        - poller.PollTask:
             task:
-              type: poller.PollTask
-              kwargs:
+              poller.PollTask:
                 task:
-                  type: command.Run
-                  args: /bin/false
+                  command.Run:
+                    command: /bin/false
                 fail_task:
-                  type: command.Run
-                  args: echo "also fail!" && /bin/false
+                  command.Run:
+                    command: echo "also fail!" && /bin/false
                 max_attempts: 1
             fail_task:
-              type: command.Run
-              args: /bin/true
+              command.Run:
+                command: /bin/true
             sleep_interval: 5
             max_attempts: 5
 
-
-API Examples
-------------
-
-Simple
-^^^^^^
-
-A script that simply queries the hostname and uptime of all hosts available to the func overlord.
-::
-
-    #!/usr/bin/env python
-
-    import poseidon.runner
-    from poseidon.tasks.command import Run
-
-    r = poseidon.runner.Runner(hosts=['*'],
-                               tasks=[{'type': Run, 'args': 'hostname'},
-                                      {'type': Run, 'args': 'uptime'}])
-    r.run()
-
-
-Advanced
-^^^^^^^^
-
-A more involved example that does a rolling upgrade of a JBoss
-cluster.
-::
-
-
-    #!/usr/bin/env python
-
-    import poseidon.runner
-    import poseidon.tasks.yum as yum
-    import poseidon.tasks.service as service
-    import poseidon.tasks.puppet as puppet
-    import poseidon.tasks.poller as poller
-    import poseidon.tasks.command as command
-    import poseidon.output as output
-
-    r = poseidon.runner.Runner(hosts=['java0*.web.qa.*'],
-
-                               tasks=[{'type': puppet.Disable},
-
-                                      {'type': service.Stop,
-                                       'args': 'jbossas'},
-
-                                      {'type': command.Run,
-                                       'args': 'rm -f /var/log/jbossas/production/server.log'},
-
-                                      {'type': yum.Update,
-                                       'args': 'jbossas'},
-
-                                      {'type': puppet.Enable},
-
-                                      {'type': puppet.Run},
-
-                                      {'type': service.Start,
-                                       'args': 'jbossas'}],
-
-                                output=[{'type': output.CLIOutput},
-
-                                        {'type': output.LogOutput,
-                                         'args': 'myfile.log'}],
-
-                                concurrency=2
-                                )
-
-    r.run()
-
-There's a few interesting things to note here.
-
-  * We set concurrency=2 so that two hosts will operate in parallel.
-
-  * We explicitly set the runner's output option so that we get output
-    to both the CLI and to the logfile myfile.log.
