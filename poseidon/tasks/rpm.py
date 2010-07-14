@@ -7,7 +7,7 @@ class PreManifest(command.Run):
     is then used to output the RPMs changed during intermediate tasks.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         super(PreManifest, self).__init__('rpm -qa | sort', **kwargs)
 
     def run(self, runner):
@@ -32,7 +32,7 @@ class PostManifest(command.Run):
 
     from difflib import Differ as _Differ
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         super(PostManifest, self).__init__('rpm -qa | sort', **kwargs)
 
     def run(self, runner):

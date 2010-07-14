@@ -11,7 +11,7 @@ class Ask_CLI(BaseTask):
         self._question = question
         BaseTask.__init__(self, dispatcher)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, **kwargs):
         print "Running %s:" % self
         result = self._dispatcher.prompt(self._question)
         if result:

@@ -6,7 +6,7 @@ class Run(command.Run):
     Run 'puppetd --test'
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         super(Run, self).__init__('puppetd --test --color=false',
                                   **kwargs)
 
@@ -16,7 +16,7 @@ class Enable(command.Run):
     Run 'puppetd --enable'
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         super(Enable, self).__init__('puppetd --enable', **kwargs)
 
 
@@ -26,5 +26,5 @@ class Disable(command.Run):
 
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         super(Disable, self).__init__('puppetd --disable', **kwargs)

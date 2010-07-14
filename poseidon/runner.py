@@ -20,7 +20,7 @@ class Runner(object):
     import poseidon.output
 
     def __init__(self, hosts, tasks, concurrency=1,
-                 output=[{'type': poseidon.output.CLIOutput}],
+                 output=['CLIOutput'],
                  expand_globs=True):
         """
         :Parameters:
@@ -72,6 +72,10 @@ class Runner(object):
         for task in self._task_q:
             while task.isAlive():
                 task.join(0.1)
+
+        if self._fail_event.isSet():
+            return False
+        return True
 
     def _expand_globs(self):
         """
@@ -187,11 +191,11 @@ class TaskRunner(threading.Thread):
             if task['ignore_errors'] in ('True', 'true', 1):
                 ignore_errors = True
 
-        task = self.__instantiator(task, host=self._host)
+        task = self.__instantiator(task, 'poseidon.tasks', host=self._host)
 
         outputters = []
         for o in self._output:
-            instance = self.__instantiator(o, host=self._host, task=task)
+            instance = self.__instantiator(o, 'poseidon.output', host=self._host, task=task)
             outputters.append(instance)
 
         try:
@@ -205,30 +209,50 @@ class TaskRunner(threading.Thread):
         result.ignore_errors = ignore_errors
         return result
 
-    def __instantiator(self, type_blob, **kwargs):
+    def __instantiator(self, type_blob, relative_to, **kwargs):
         """
-        Instantiate a type, which is defined by a dict in the following format:
-          - Required key named `type`.  This must be a instantiable type.
-          - Optional key named `args`.  This is expanded as the positional
-            arguments when instantiating `type`. If not present, the empty
-            tuple `()` is assumed.  If `args` is not a tuple, it is assumed
-            that the value of `args` should be the only item contained within
-            a 1-tuple and is treated as such.
-            argument used to instantiate `type`
-          - Optional key named `kwargs`.  This is exapanded as the keyword
-            arguments when instantiating `type`.  If kwargs is not defined, it
-            is assumed to be the empty dict `{}`.
+        Instantiate a type, which is defined by a type blob in the
+        following format:
+
+          - If no paremeters are required for the type, then the blob
+            should be a single type object
+
+          - If parameters are required, then the type blob must be a
+            dictionary with only one key that is the desired type
+            object.  The value associated with this key should be
+            another dictionary which maps the parameter:value pairs
+            required when instantiating the type.
 
         Returns the instantiated object.
         """
 
-        instance_type = type_blob['type']
-        instance_args = ()
-        instance_kwargs = kwargs
-        if 'args' in type_blob:
-            instance_args = type_blob['args']
-            if not isinstance(instance_args, tuple):
-                instance_args = (instance_args, )
-        if 'kwargs' in type_blob:
-            instance_kwargs.update(type_blob['kwargs'])
-        return instance_type(*instance_args, **instance_kwargs)
+        __import__(relative_to)
+
+        def str2type(s):
+            import sys
+            tokens = s.split('.')
+            if len(tokens) == 1:
+                return getattr(sys.modules[relative_to], tokens[0])
+            else:
+                pkg = "%s.%s" % (relative_to, tokens[0])
+                __import__(pkg)
+                return getattr(sys.modules[pkg], tokens[1])
+
+
+        if isinstance(type_blob, basestring):
+            instance_type = str2type(type_blob)
+        else:
+            if len(type_blob.keys()) != 1:
+                raise Exception("Number of keys isn't 1")
+            instance_type = str2type(type_blob.keys()[0])
+            kwargs.update(type_blob[type_blob.keys()[0]])
+
+        try:
+            return instance_type(**kwargs)
+        except TypeError, e:
+            import pprint
+            print "Unable to instantiate type %s with the following arguments:"\
+                % instance_type
+            pprint.pprint(kwargs)
+            print "Full backtrace below\n"
+            raise

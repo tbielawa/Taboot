@@ -7,8 +7,8 @@ class Run(FuncTask):
     are used to execute func.overlord.Client.command.run(args).
     """
 
-    def __init__(self, *args, **kwargs):
-        super(Run, self).__init__(*args, **kwargs)
+    def __init__(self, command, **kwargs):
+        super(Run, self).__init__(command, **kwargs)
         self._command = 'command.run'
 
     def _process_result(self, result):

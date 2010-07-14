@@ -5,8 +5,8 @@ JK_DISABLE = 1
 JK_STOP = 2
 
 class ToggleHost(FuncTask):
-    def __init__(self, action, *args, **kwargs):
-        super(ToggleHost, self).__init__(*args, **kwargs)
+    def __init__(self, action, host, **kwargs):
+        super(ToggleHost, self).__init__(host, **kwargs)
         self._action = action
         if action == JK_ENABLE:
             self._command = 'poseidon.modjk.enable_host'
@@ -36,8 +36,8 @@ class ToggleHost(FuncTask):
         return t
 
 class JKBaseTask(BaseTask):
-    def __init__(self, proxies, action, *args, **kwargs):
-        super(JKBaseTask, self).__init__(*args, **kwargs)
+    def __init__(self, proxies, action, **kwargs):
+        super(JKBaseTask, self).__init__(**kwargs)
         from sys import modules
         self.proxies = proxies
         self.jkaction = getattr(modules[self.__module__], "JK_%s" % action.upper())
@@ -60,14 +60,14 @@ class OutOfRotation(JKBaseTask):
     Remove an AJP node from rotation on a proxy via modjkapi access on
     the proxy with func.
     """
-    def __init__(self, proxies, action="stop", *args, **kwargs):
-        super(OutOfRotation, self).__init__(proxies, action, *args, **kwargs)
+    def __init__(self, proxies, action="stop", **kwargs):
+        super(OutOfRotation, self).__init__(proxies, action, **kwargs)
 
 class InRotation(JKBaseTask):
     """
     Put an AJP node in rotation on a proxy via modjkapi access on
     the proxy with func.
     """
-    def __init__(self, proxies, action="enable", *args, **kwargs):
-        super(InRotation, self).__init__(proxies, action, *args, **kwargs)
+    def __init__(self, proxies, action="enable", **kwargs):
+        super(InRotation, self).__init__(proxies, action, **kwargs)
 
