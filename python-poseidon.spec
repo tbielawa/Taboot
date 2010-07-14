@@ -3,8 +3,8 @@
 
 Name:           python-poseidon
 %define _name   poseidon
-Version:        0.1
-Release:        3%{?dist}
+Version:        0.2
+Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -66,6 +66,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 14 2010 John Eckersberg <jeckersb@redhat.com> - 0.2-1
+- updated to version 0.2 which modifies the expected YAML format
+  (not compatible with versions < 0.2 and vice versa)
+
 * Fri May 14 2010 John Eckersberg <jeckersb@redhat.com> - 0.1-2
 - update nagios to allow host-level downtime scheduling
 
