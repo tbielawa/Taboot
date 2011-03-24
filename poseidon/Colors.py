@@ -1,8 +1,8 @@
-# Copyright 2009, Red Hat, Inc
+# Copyright 2009-2011 Red Hat, Inc
 # Steve 'Ashcrow' Milner <smilner@redhat.com>
 #
 # This software may be freely redistributed under the terms of the GNU
-# general public license.
+# general public license version 3.
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software

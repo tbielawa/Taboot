@@ -1,9 +1,10 @@
 # Items we should all ignore
-*.pyc
-*.pyo
+*.py[co]
 *.db
 *.swp
 *.patch
+*~
+\#*
 MANIFEST
 docs/html
 dist

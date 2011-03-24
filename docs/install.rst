@@ -19,9 +19,13 @@ RPM
 
 Building An RPM
 ```````````````
-- Edit the spec file if needed
-- :command:`./setup.py sdist`
-- :command:`./setup.py rpm`
+Additional requirements:
+* python-sphinx (Building the documentation)
+* func (Resolving references in the documentation)
+
+* Edit the spec file if needed
+* :command:`./setup.py sdist`
+* :command:`./setup.py rpm`
 
 
 Installing An RPM
