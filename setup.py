@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2009, Red Hat, Inc
+# Copyright 2009-2011, Red Hat, Inc
 # John Eckersberg <jeckersb@redhat.com>
 #
 # This software may be freely redistributed under the terms of the GNU

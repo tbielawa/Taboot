@@ -19,9 +19,13 @@ RPM
 
 Building An RPM
 ```````````````
-Additional requirements:
-* python-sphinx (Building the documentation)
-* func (Resolving references in the documentation)
+Building the RPM yourself introduces additional requirements:
+
+- :mod:`python-sphinx` (Building the documentation)
+- :mod:`func` (Resolving some references in the documentation)
+
+
+Steps:
 
 * Edit the spec file if needed
 * :command:`./setup.py sdist`
