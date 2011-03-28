@@ -2,7 +2,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Poseidon's documentation!
+Welcome to Taboot's documentation!
 ====================================
 
 Contents:
@@ -16,14 +16,6 @@ Contents:
    YAMLScripts
    development
    code
-
-.. toctree::
-   :hidden:
-   :glob:
-
-   elements/*
-   tasks/*
-   tests
 
 
 Indices and tables
