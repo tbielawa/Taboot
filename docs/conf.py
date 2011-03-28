@@ -23,7 +23,7 @@ import os
 
 sys.path.insert(0, os.path.abspath('../'))
 
-from poseidon import __version__, __author__
+from taboot import __version__, __author__
 
 
 # General configuration
@@ -44,7 +44,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = 'Poseidon'
+project = 'Taboot'
 copyright = "2009, %s" % __author__
 
 # The default replacements for |version| and |release|, also used in various
@@ -152,7 +152,7 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Poseidondoc'
+htmlhelp_basename = 'Tabootdoc'
 
 
 # Options for LaTeX output
@@ -168,7 +168,7 @@ htmlhelp_basename = 'Poseidondoc'
 # (source start file, target name, title, author, document class
 # [howto/manual]).
 latex_documents = [
-  ('index', 'poseidon.tex', 'Poseidon Documentation',
+  ('index', 'taboot.tex', 'Taboot Documentation',
    __author__, 'manual'),
 ]
 

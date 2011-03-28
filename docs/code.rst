@@ -1,68 +1,68 @@
 Code
 ====
 
-Poseidon
+Taboot
 --------
-.. automodule:: poseidon
+.. automodule:: taboot
    :members:
    :undoc-members:
 
-Poseidon runner
+Taboot runner
 ---------------
-.. automodule:: poseidon.runner
+.. automodule:: taboot.runner
    :members:
    :undoc-members:
 
-.. _poseidon.tasks:
+.. _taboot.tasks:
 
-Poseidon tasks
+Taboot tasks
 --------------
-.. automodule:: poseidon.tasks
+.. automodule:: taboot.tasks
    :members:
 
 Command tasks
 ^^^^^^^^^^^^^
-.. automodule:: poseidon.tasks.command
+.. automodule:: taboot.tasks.command
    :members:
 
 Nagios tasks
 ^^^^^^^^^^^^
-.. automodule:: poseidon.tasks.nagios
+.. automodule:: taboot.tasks.nagios
    :members:
 
 Polling tasks
 ^^^^^^^^^^^^^
-.. automodule:: poseidon.tasks.poller
+.. automodule:: taboot.tasks.poller
    :members:
 
 Puppet tasks
 ^^^^^^^^^^^^
-.. automodule:: poseidon.tasks.puppet
+.. automodule:: taboot.tasks.puppet
    :members:
 
 RPM tasks
 ^^^^^^^^^
-.. automodule:: poseidon.tasks.rpm
+.. automodule:: taboot.tasks.rpm
    :members:
 
 Service tasks
 ^^^^^^^^^^^^^
-.. automodule:: poseidon.tasks.service
+.. automodule:: taboot.tasks.service
    :members:
 
 User input tasks
 ^^^^^^^^^^^^^^^^
-.. automodule:: poseidon.tasks.userinput
+.. automodule:: taboot.tasks.userinput
    :members:
 
 Yum tasks
 ^^^^^^^^^
-.. automodule:: poseidon.tasks.yum
+.. automodule:: taboot.tasks.yum
    :members:
 
-Poseidon output
+Taboot output
 ---------------
-.. automodule:: poseidon.output
+.. automodule:: taboot.output
    :members:
    :undoc-members:
 

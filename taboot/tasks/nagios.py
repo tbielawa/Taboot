@@ -7,7 +7,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from poseidon.tasks import BaseTask, TaskResult
+from taboot.tasks import BaseTask, TaskResult
 
 
 class NagiosBase(BaseTask):
@@ -92,7 +92,7 @@ class DisableAlerts(NagiosBase):
         self._call_nagios(NagiosBase.NAGIOS_DISABLE)
         self._call_nagios(NagiosBase.NAGIOS_ADD_COMMENT,
                           {'persistent': 'on',
-                           'com_data': '"Notifications disabled by Poseidon"'})
+                           'com_data': '"Notifications disabled by Taboot"'})
         return TaskResult(self, success=True)
 
 
@@ -122,7 +122,7 @@ class ScheduleDowntime(NagiosBase):
                                      "%m-%d-%Y %H:%M:%S")
 
         command_id = NagiosBase.NAGIOS_SCHEDULE_HOST_DOWNTIME
-        opts = {'com_data': '"Downtime scheduled by Poseidon"',
+        opts = {'com_data': '"Downtime scheduled by Taboot"',
                 'start_time': '"%s"' % start_time,
                 'end_time': '"%s"' % end_time,
                 'fixed': 1

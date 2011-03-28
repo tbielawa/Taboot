@@ -1,12 +1,12 @@
 Tests
 =====
 
-Poseidon Tests
+Taboot Tests
 --------------
 
 None yet...
 
-.. automodule:: poseidon.tests
+.. automodule:: taboot.tests
    :members:
    :undoc-members:
    :inherited-members:

@@ -3,7 +3,7 @@ Development
 
 Tools
 -----
-Poseidon uses what is becoming a pretty standard and a quite simple toolset.
+Taboot uses what is becoming a pretty standard and a quite simple toolset.
 
 
 Required Tools
@@ -23,7 +23,7 @@ Source
 ------
 You can clone the repo over http via :program:`git` through the following command:::
 
-   $ git clone git://git.corp.redhat.com/pub/git/RE/poseidon.git
+   $ git clone git://git.corp.redhat.com/pub/git/RE/taboot.git
 
 
 Style
@@ -69,7 +69,7 @@ Git
 
 Branching
 `````````
-The best way to develop on Poseidon is to branch feature sets. For instance, if you were to add xml deserialization you would want to branch locally and work on that branch.::
+The best way to develop on Taboot is to branch feature sets. For instance, if you were to add xml deserialization you would want to branch locally and work on that branch.::
 
    $  git branch
    * master

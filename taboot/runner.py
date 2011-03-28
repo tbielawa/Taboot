@@ -13,11 +13,11 @@ import threading
 
 class Runner(object):
     """
-    The Runner, responsible for running a poseidon job.
+    The Runner, responsible for running a taboot job.
     """
 
     import threading
-    import poseidon.output
+    import taboot.output
 
     def __init__(self, hosts, tasks, concurrency=1,
                  output=['CLIOutput'],
@@ -110,7 +110,7 @@ class TaskRunner(threading.Thread):
     single host in it's own thread.
     """
 
-    from poseidon.tasks import TaskResult as _TaskResult
+    from taboot.tasks import TaskResult as _TaskResult
 
     def __init__(self, host, tasks, semaphore, output, fail_event):
         """
@@ -191,11 +191,11 @@ class TaskRunner(threading.Thread):
             if task['ignore_errors'] in ('True', 'true', 1):
                 ignore_errors = True
 
-        task = self.__instantiator(task, 'poseidon.tasks', host=self._host)
+        task = self.__instantiator(task, 'taboot.tasks', host=self._host)
 
         outputters = []
         for o in self._output:
-            instance = self.__instantiator(o, 'poseidon.output', host=self._host, task=task)
+            instance = self.__instantiator(o, 'taboot.output', host=self._host, task=task)
             outputters.append(instance)
 
         try:

@@ -130,7 +130,7 @@ class _FileLikeOutputObject(object):
 
 class CLIOutput(_FileLikeOutputObject):
     """
-    Output a :class:`poseidon.tasks.TaskResult` to the command line
+    Output a :class:`taboot.tasks.TaskResult` to the command line
     with pretty formatting and colors.
     """
 
@@ -174,10 +174,10 @@ class CLIOutput(_FileLikeOutputObject):
 
 class LogOutput(_FileLikeOutputObject):
     """
-    Output a :class:`poseidon.tasks.TaskResult` to a logfile.
+    Output a :class:`taboot.tasks.TaskResult` to a logfile.
     """
 
-    def _setup(self, host, task, logfile='poseidon.log'):
+    def _setup(self, host, task, logfile='taboot.log'):
         """
         Implementation specific setup for outputting to a log.
 
@@ -212,10 +212,10 @@ class LogOutput(_FileLikeOutputObject):
 
 class EmailOutput(_FileLikeOutputObject):
     """
-    Output a :class:`poseidon.tasks.TaskResult` to a logfile.
+    Output a :class:`taboot.tasks.TaskResult` to a logfile.
     """
 
-    def _setup(self, to_addr, from_addr='poseidon@redhat.com'):
+    def _setup(self, to_addr, from_addr='taboot@redhat.com'):
         """
         Implementation specific setup for outputting to a log.
 

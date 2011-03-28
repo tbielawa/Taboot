@@ -1,4 +1,4 @@
-			       Poseidon
+			       Taboot
 			       ========
 	 Client library for performing deployments with func
 
@@ -6,7 +6,7 @@
 What's it for?
 ==============
 
-Poseidon uses simple YAML files to help you script common task
+Taboot uses simple YAML files to help you script common task
 patterns on groups of hosts.
 
 
@@ -47,7 +47,7 @@ Notice you can do shell-like globs when specifying the target hosts.
 
 You would use this in this manner:
 
-  $ poseidon java-update.yaml
+  $ taboot java-update.yaml
 
 
 See also

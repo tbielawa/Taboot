@@ -4,8 +4,8 @@ Examples
 Building a Job with YAML
 ------------------------
 
-Most Poseidon use cases can be accomplished by crafting a YAML file
-and running it with the `poseidon` executable.
+Most Taboot use cases can be accomplished by crafting a YAML file
+and running it with the `taboot` executable.
 
 Here is a simple example YAML which will update an RPM and restart httpd::
 
@@ -22,20 +22,20 @@ Here is a simple example YAML which will update an RPM and restart httpd::
 
 Save this to a file `myjob.yaml` and run as such::
 
-  $ poseidon myjob.yaml
+  $ taboot myjob.yaml
 
 or alternatively if you omit the filename, read from stdin::
 
-  $ cat myjob.yaml | poseidon
+  $ cat myjob.yaml | taboot
 
 YAML format
 ^^^^^^^^^^^
 
 The root of the YAML document should be a list.  For each item in this
-list, the poseidon CLI will instantiate a
-:class:`poseidon.runner.Runner` instance and finally run the instance.
+list, the taboot CLI will instantiate a
+:class:`taboot.runner.Runner` instance and finally run the instance.
 
-See :ref:`poseidon.tasks` for details on the available tasks and
+See :ref:`taboot.tasks` for details on the available tasks and
 what options are available to control their behavior.
 
 Task Examples
@@ -43,7 +43,7 @@ Task Examples
 
 These are some examples of how to use specific tasks.
 
-:class:`poseidon.tasks.poller.PollTask`
+:class:`taboot.tasks.poller.PollTask`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 

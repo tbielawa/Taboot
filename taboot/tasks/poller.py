@@ -7,8 +7,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from poseidon.tasks import BaseTask
-from poseidon.tasks import TaskResult
+from taboot.tasks import BaseTask
+from taboot.tasks import TaskResult
 import time
 
 

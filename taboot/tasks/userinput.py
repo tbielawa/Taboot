@@ -7,7 +7,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from poseidon.tasks import BaseTask, TaskResult
+from taboot.tasks import BaseTask, TaskResult
 
 
 class WaitCLI(BaseTask):

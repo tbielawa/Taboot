@@ -1,15 +1,15 @@
 # sitelib for noarch packages
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-Name:           python-poseidon
-%define _name   poseidon
+Name:           python-taboot
+%define _name   taboot
 Version:        0.2
 Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
 License:        GPLv3+
-URL:            https://engineering.redhat.com/trac/GIT-RE/wiki/poseidon
+URL:            https://engineering.redhat.com/trac/GIT-RE/wiki/taboot
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -23,13 +23,13 @@ Requires:       func, PyYAML
 Client library for performing deployments with func.  Provides useful
 helper utilities to perform common task patterns using func.
 
-%package -n poseidon-func
+%package -n taboot-func
 Summary:        Func minion modules for use in conjunction with %{name}
 Group:          Development/Libraries
 Requires:       func
 
 
-%description -n poseidon-func
+%description -n taboot-func
 Func minion modules for use in conjunction with %{name}.
 
 
@@ -46,7 +46,7 @@ Func minion modules for use in conjunction with %{name}.
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
-mv $RPM_BUILD_ROOT%{python_sitelib}/poseidon-func/* $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
+mv $RPM_BUILD_ROOT%{python_sitelib}/taboot-func/* $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
 
 
 %clean
@@ -55,12 +55,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/poseidon
+%{_bindir}/taboot
 %doc docs/html COPYING LICENSE AUTHORS
 # For noarch packages: sitelib
 %{python_sitelib}/*
 
-%files -n poseidon-func
+%files -n taboot-func
 %defattr(-,root,root,-)
 %{python_sitelib}/func/minion/modules/%{_name}
 
@@ -84,7 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 - Remove Requires on python-modjkapi
 
 * Fri Aug 07 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-12
-- Add poseidon.contrib to packages in setup.py
+- Add taboot.contrib to packages in setup.py
 
 * Mon Jun 22 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-9
 - Return back string representation of exceptions for mod_jk tasks
@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Tue Jun 02 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.2-1
 - I think we're far enough to be 0.0.2
-- Added poseidon script
+- Added taboot script
 
 * Tue May 19 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-14
 - Fix so documentation builds properly
@@ -133,7 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 - Comment out EmailOutput since EL5 does not have email.mime
 
 * Mon Mar 20 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-2
-- Split into python-poseidon and poseidon-func
+- Split into python-taboot and taboot-func
 
 * Tue Feb 24 2009 John Eckersberg <jeckersb@redhat.com> - 0.0.1-1
 - Initial spec
