@@ -41,6 +41,22 @@ Like lists, dictionaries can be represented in an abbreviated form::
     # An employee record
     {name: John Eckersberg, job: Developer, skill: Elite}
 
+Finally, you can combine these data structures::
+
+    # An employee record
+    name: John Eckersberg
+    job: Developer
+    skill: Elite
+    foods:
+        - Apple
+        - Orange
+        - Strawberry
+        - Mango
+    languages:
+        ruby: Elite
+	python: Elite
+	dotnet: Lame
+
 That's all you really need to know about YAML to get started writing
 `taboot` scripts.
 

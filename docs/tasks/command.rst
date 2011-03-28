@@ -1,30 +1,47 @@
 Command
 ^^^^^^^
 
-* Default: None
-* Argument Type: String
-* Null Argument Allowed: No
+* API: :class:`taboot.tasks.command`
+* Classes
+
+  * Run
+
+
+The ``command`` module is used to execute arbitrary commands on a remote
+host. The ``command`` module has one callable class, that is the
+``Run`` class.
+
+Run
+***
+
 * API: :class:`taboot.tasks.command.Run`
+* Keys
 
-The ``command`` task is used to execute arbitrary commands on a remote
-host. The syntax of the argument is just a string that is the command
-to execute.
+  * command
 
-Example::
+    * Type: String
+    * Default: None
+    * Required: Yes
+    * Description: The command to run
 
 
-    - hosts
+Example 1::
+
+    - hosts:
         - www*
-    - tasks
-        - type: command.Run
-	  args: rm -fR /
+      tasks:
+        - command.Run:
+	    command: yum -y install httpd
+
 
 Example 2::
 
-    - tasks
-        - type: command.Run
-	  args: yum -y install python-taboot
+    - hosts:
+        - www*
+      tasks:
+        - command.Run:
+	    command: yum -y install python-taboot
 
-        - type: command.Run
-	  args: service funcd restart
+        - command.Run:
+	    service funcd restart
 

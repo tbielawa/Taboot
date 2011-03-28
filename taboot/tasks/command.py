@@ -14,6 +14,9 @@ class Run(FuncTask):
     """
     Run arbitrary commands via Func.  The arguments passed to __init__
     are used to execute func.overlord.Client.command.run(args).
+
+    :Parameters:
+     - `command`: Command to run on the remote host
     """
 
     def __init__(self, command, **kwargs):
