@@ -16,7 +16,6 @@ Contents:
    YAMLScripts
    development
    code
-   tests
 
 .. toctree::
    :hidden:
@@ -24,6 +23,7 @@ Contents:
 
    elements/*
    tasks/*
+   tests
 
 
 Indices and tables

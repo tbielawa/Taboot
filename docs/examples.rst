@@ -28,6 +28,14 @@ or alternatively if you omit the filename, read from stdin::
 
   $ cat myjob.yaml | poseidon
 
+.. seealso::
+   
+   :doc:`YAMLScripts`
+       Complete documentation of the YAML syntax `poseidon` understands.
+
+   :ref:`tasks`
+       Documentation for each of the built-in tasks `poseidon` provides.
+
 YAML format
 ^^^^^^^^^^^
 

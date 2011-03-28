@@ -44,6 +44,11 @@ Like lists, dictionaries can be represented in an abbreviated form::
 That's all you really need to know about YAML to get started writing
 `poseidon` scripts.
 
+.. seealso::
+
+   `YAMLLint <http://yamllint.com/>`_
+       YAML Lint gets the lint out of your YAML
+
 
 Elements of a Poseidon script
 -----------------------------
@@ -87,16 +92,15 @@ example ``task``::
 	    from_addr: my_email@example.com
 	    
       tasks:
-        - service.Restart
+        - type: service.Restart
 	  args: httpd
+
 
 .. _tasks:
 
 Tasks
 -----
 
-All the tasks need to be documented here. I'd much rather write their
-documentation files in a tasks subdirectory and link to them from
-here. 
+All the built-in tasks are documented here. 
 
-.. include tasks 
+.. include:: tasks/command.rst
