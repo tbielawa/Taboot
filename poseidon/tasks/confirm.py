@@ -1,5 +1,5 @@
-from poseidon.tasks import BaseTask
-from poseidon.dispatch import CLIDispatcher
+from taboot.tasks import BaseTask
+from taboot.dispatch import CLIDispatcher
 
 
 class Ask_CLI(BaseTask):

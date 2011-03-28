@@ -1,4 +1,4 @@
-from poseidon.tasks import BaseTask, FuncTask, TaskResult
+from taboot.tasks import BaseTask, FuncTask, TaskResult
 
 JK_ENABLE = 0
 JK_DISABLE = 1
@@ -9,11 +9,11 @@ class ToggleHost(FuncTask):
         super(ToggleHost, self).__init__(*args, **kwargs)
         self._action = action
         if action == JK_ENABLE:
-            self._command = 'poseidon.modjk.enable_host'
+            self._command = 'taboot.modjk.enable_host'
         elif action == JK_DISABLE:
-            self._command = 'poseidon.modjk.disable_host'
+            self._command = 'taboot.modjk.disable_host'
         elif action == JK_STOP:
-            self._command = 'poseidon.modjk.stop_host'
+            self._command = 'taboot.modjk.stop_host'
         else:
             raise Exception("Undefined toggle action")
 

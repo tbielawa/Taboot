@@ -13,14 +13,14 @@ import threading
 
 class Runner(object):
     """
-    The Runner, responsible for running a poseidon job.
+    The Runner, responsible for running a taboot job.
     """
 
     import threading
-    import poseidon.output
+    import taboot.output
 
     def __init__(self, hosts, tasks, concurrency=1,
-                 output=[{'type': poseidon.output.CLIOutput}],
+                 output=[{'type': taboot.output.CLIOutput}],
                  expand_globs=True):
         """
         :Parameters:
@@ -106,7 +106,7 @@ class TaskRunner(threading.Thread):
     single host in it's own thread.
     """
 
-    from poseidon.tasks import TaskResult as _TaskResult
+    from taboot.tasks import TaskResult as _TaskResult
 
     def __init__(self, host, tasks, semaphore, output, fail_event):
         """

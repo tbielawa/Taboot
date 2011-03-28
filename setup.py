@@ -22,7 +22,7 @@ import sys
 from os import path
 from distutils.core import Command, setup
 
-from poseidon import __version__, __license__, __author__, __url__
+from taboot import __version__, __license__, __author__, __url__
 
 
 class SetupBuildCommand(Command):
@@ -158,7 +158,7 @@ class ViewDocCommand(SetupBuildCommand):
             print >> sys.stderr, "Could not open on your webbrowser."
 
 
-setup(name = "python-poseidon",
+setup(name = "python-taboot",
     version = __version__,
     description = "Client library for performing deployments with func",
     long_description = "Client library for performing deployments with func",
@@ -169,11 +169,11 @@ setup(name = "python-poseidon",
     license = __license__,
     url = __url__,
 
-    packages = ['poseidon',
-                'poseidon.tasks',
-                'poseidon-func'],
+    packages = ['taboot',
+                'taboot.tasks',
+                'taboot-func'],
 
-    scripts = ['bin/poseidon'],
+    scripts = ['bin/taboot'],
 
     classifiers = [
         'License :: OSI Approved :: GNU General Public License (GPL)',

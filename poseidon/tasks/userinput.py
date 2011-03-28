@@ -1,4 +1,4 @@
-from poseidon.tasks import BaseTask, TaskResult
+from taboot.tasks import BaseTask, TaskResult
 
 
 class WaitCLI(BaseTask):

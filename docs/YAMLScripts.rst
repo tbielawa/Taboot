@@ -2,15 +2,15 @@ YAML Scripts
 ============
 
 This page should provide a basic overview of YAML syntax and a
-complete overview of the allowed items in a proper `poseidon` YAML
+complete overview of the allowed items in a proper `taboot` YAML
 script.
 
 YAML Basics
 -----------
 
-For `poseidon`, every YAML script must be a list at it's root-most
+For `taboot`, every YAML script must be a list at it's root-most
 element. Each item in the list is a dictionary. These dictionaries
-represent all the options you can use to write a `poseidon` script.
+represent all the options you can use to write a `taboot` script.
 
 In YAML a list can be represented in two ways. In one way all members
 of a list are lines beginning at the same indentation level starting
@@ -42,7 +42,7 @@ Like lists, dictionaries can be represented in an abbreviated form::
     {name: John Eckersberg, job: Developer, skill: Elite}
 
 That's all you really need to know about YAML to get started writing
-`poseidon` scripts.
+`taboot` scripts.
 
 .. seealso::
 
@@ -50,7 +50,7 @@ That's all you really need to know about YAML to get started writing
        YAML Lint gets the lint out of your YAML
 
 
-Elements of a Poseidon script
+Elements of a Taboot script
 -----------------------------
 
 A script can specify the following keys:

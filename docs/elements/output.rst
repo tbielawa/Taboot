@@ -5,7 +5,7 @@ Output
 * Argument type: List
 * Default: :ref:`cli-output`
 
-`poseidon` has multiple output methods available to the user. Default
+`taboot` has multiple output methods available to the user. Default
 behavior is to only print to `stdout`. The next sections describe all
 of the available output methods in greater detail.
 
@@ -19,7 +19,7 @@ of the available output methods in greater detail.
 CLIOutput
 *********
 
-* API: :class:`poseidon.output.CLIOutput`
+* API: :class:`taboot.output.CLIOutput`
 
 This is the default output method. If you only want command line
 printing then it can be omitted::
@@ -33,11 +33,11 @@ printing then it can be omitted::
 LogOutput
 *********
 
-* API: :class:`poseidon.output.LogOutput`
+* API: :class:`taboot.output.LogOutput`
 
-`poseidon` can log a session to file with the ``LogOutput`` method if
+`taboot` can log a session to file with the ``LogOutput`` method if
 requested. This has a default configured to log to a file called
-`poseidon.log` which is configurable via the ``logfile`` keyword
+`taboot.log` which is configurable via the ``logfile`` keyword
 argument.
 
 Example using ``CLIOutput`` and ``LogOutput`` using a special log file::
@@ -53,9 +53,9 @@ Example using ``CLIOutput`` and ``LogOutput`` using a special log file::
 EmailOutput
 ***********
 
-* API: :class:`poseidon.output.EmailOutput`
+* API: :class:`taboot.output.EmailOutput`
 
-Finally, `poseidon` can go out of it's way and email you results when
+Finally, `taboot` can go out of it's way and email you results when
 a script has finished running::
 
     output:

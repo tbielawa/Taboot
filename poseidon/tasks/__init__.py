@@ -34,7 +34,7 @@ class FuncTask(BaseTask):
 
 
     import func.jobthing
-    from poseidon.errors import FuncException as _FuncException
+    from taboot.errors import FuncException as _FuncException
 
     def _func_run(self, func_command, *args):
         """
@@ -70,7 +70,7 @@ class FuncTask(BaseTask):
         Run the FuncTask.
 
         :Parameters:
-          - `runner` A :class:`poseidon.runner.TaskRunner` instance
+          - `runner` A :class:`taboot.runner.TaskRunner` instance
         """
 
         if not hasattr(self, '_command'):

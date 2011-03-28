@@ -1,4 +1,4 @@
-from poseidon.tasks import command, BaseTask
+from taboot.tasks import command, BaseTask
 
 
 class YumBase(BaseTask):

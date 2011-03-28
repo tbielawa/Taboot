@@ -4,8 +4,8 @@ Examples
 Building a Job with YAML
 ------------------------
 
-Most Poseidon use cases can be accomplished by crafting a YAML file
-and running it with the `poseidon` executable.
+Most Taboot use cases can be accomplished by crafting a YAML file
+and running it with the `taboot` executable.
 
 Here is a simple example YAML which will update an RPM and restart
 httpd::
@@ -22,33 +22,33 @@ httpd::
 
 Save this to a file `myjob.yaml` and run as such::
 
-  $ poseidon myjob.yaml
+  $ taboot myjob.yaml
 
 or alternatively if you omit the filename, read from stdin::
 
-  $ cat myjob.yaml | poseidon
+  $ cat myjob.yaml | taboot
 
 .. seealso::
    
    :doc:`YAMLScripts`
-       Complete documentation of the YAML syntax `poseidon` understands.
+       Complete documentation of the YAML syntax `taboot` understands.
 
    :ref:`tasks`
-       Documentation for each of the built-in tasks `poseidon` provides.
+       Documentation for each of the built-in tasks `taboot` provides.
 
 YAML format
 ^^^^^^^^^^^
 
 The root of the YAML document should be a list.  For each item in this
-list, the poseidon executable will do a little bit of work to convert
+list, the taboot executable will do a little bit of work to convert
 your types into actual Python objects and then pass the datastructure
 as the keyword arguments to instantiate a
-:class:`poseidon.runner.Runner` instance and finally run the instance.
+:class:`taboot.runner.Runner` instance and finally run the instance.
 `args` when used for a task will be expanded for positional argument
 expansion when creating task options.  Similarly, `kwargs` is used as
 the keword arguments.
 
-See :ref:`poseidon.tasks` for details on the available tasks and
+See :ref:`taboot.tasks` for details on the available tasks and
 what options are available to control their behavior.
 
 Task Examples
@@ -56,7 +56,7 @@ Task Examples
 
 These are some examples of how to use specific tasks.
 
-:class:`poseidon.tasks.poller.PollTask`
+:class:`taboot.tasks.poller.PollTask`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 
@@ -124,10 +124,10 @@ available to the func overlord.  ::
 
     #!/usr/bin/env python
 
-    import poseidon.runner
-    from poseidon.tasks.command import Run
+    import taboot.runner
+    from taboot.tasks.command import Run
 
-    r = poseidon.runner.Runner(hosts=['*'],
+    r = taboot.runner.Runner(hosts=['*'],
                                tasks=[{'type': Run, 'args': 'hostname'},
                                       {'type': Run, 'args': 'uptime'}])
     r.run()
@@ -143,15 +143,15 @@ cluster.
 
     #!/usr/bin/env python
 
-    import poseidon.runner
-    import poseidon.tasks.yum as yum
-    import poseidon.tasks.service as service
-    import poseidon.tasks.puppet as puppet
-    import poseidon.tasks.poller as poller
-    import poseidon.tasks.command as command
-    import poseidon.output as output
+    import taboot.runner
+    import taboot.tasks.yum as yum
+    import taboot.tasks.service as service
+    import taboot.tasks.puppet as puppet
+    import taboot.tasks.poller as poller
+    import taboot.tasks.command as command
+    import taboot.output as output
 
-    r = poseidon.runner.Runner(hosts=['java0*.web.qa.*'],
+    r = taboot.runner.Runner(hosts=['java0*.web.qa.*'],
 
                                tasks=[{'type': puppet.Disable},
 

@@ -23,7 +23,7 @@ import os
 
 sys.path.insert(0, os.path.abspath('../'))
 
-from poseidon import __version__, __author__
+from taboot import __version__, __author__
 
 
 # General configuration
@@ -172,7 +172,7 @@ htmlhelp_basename = 'Poseidodoc'
 # (source start file, target name, title, author, document class
 # [howto/manual]).
 latex_documents = [
-  ('index', 'poseidon.tex', 'Poseidon Documentation',
+  ('index', 'taboot.tex', 'Taboot Documentation',
    __author__, 'manual'),
 ]
 
