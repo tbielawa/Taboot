@@ -14,7 +14,7 @@ represent all the options you can use to write a `poseidon` script.
 
 In YAML a list can be represented in two ways. In one way all members
 of a list are lines beginning at the same indentation level starting
-with a '-' character::
+with a ``-`` character::
 
     # A list of tasty fruits
     - Apple
@@ -29,7 +29,7 @@ elements::
     # A list of tasty fruits
     [apple, orange, bananna, mango]
 
-A dictionary is represented in a simple `key:` and `value` form::
+A dictionary is represented in a simple ``key:`` and ``value`` form::
 
     # An employee record
     name: John Eckersberg
@@ -66,8 +66,8 @@ Hosts
 * Argument type: List
 * Default: None
 
-The `hosts` key is used to describe the target hosts for the script to
-act on. The `hosts` key takes a list of hosts as input. Optionally you
+The ``hosts`` key is used to describe the target hosts for the script to
+act on. The ``hosts`` key takes a list of hosts as input. Optionally you
 can specify hosts as shell-like globs::
 
     hosts:
@@ -93,7 +93,7 @@ Concurrency
 * Argument type: Integer
 * Default: 1
 
-`concurrency` lets you specify the number of hosts this script can
+``concurrency`` lets you specify the number of hosts this script can
 operate on at once. This is great if you need to perform rolling
 restarts or updates. In those cases you can omit this key, as the
 default value is 1::
@@ -106,11 +106,18 @@ Output
 
 * Required: No (has default)
 * Argument type: List
-* Default: CLIOutput
+* Default: :ref:`cli-output`
 
 `poseidon` has multiple output methods available to the user. Default
-it only prints to `stdout`. The next sections describe all of the
-available output methods in greater detail.
+behavior is to only print to `stdout`. The next sections describe all
+of the available output methods in greater detail.
+
+* :ref:`cli-output`
+* :ref:`log-output`
+* :ref:`email-output`
+
+
+.. _cli-output:
 
 CLIOutput
 *********
@@ -124,23 +131,27 @@ printing then it can be omitted::
        - CLIOutput
 
 
+.. _log-output:
+
 LogOutput
 *********
 
 * API: :class:`poseidon.output.LogOutput`
 
-`poseidon` can log a session to file with the `LogOutput` method if
+`poseidon` can log a session to file with the ``LogOutput`` method if
 requested. This has a default configured to log to a file called
-`poseidon.log` which is configurable via the `logfile` keyword
+`poseidon.log` which is configurable via the ``logfile`` keyword
 argument.
 
-Example using `CLIOutput` and `LogOutput` using a special log file::
+Example using ``CLIOutput`` and ``LogOutput`` using a special log file::
 
     output:
        - CLIOutput
        - LogOutput:
            logfile: example.log
 
+
+.. _email-output:
 
 EmailOutput
 ***********
@@ -163,17 +174,17 @@ Tasks
 * Argument type: List
 * Default: None
 
-The `tasks` key defines the tasks will be performed on each host in
-`hosts`. The syntax of each possible tasks varries. All of the tasks
-are documented in the following section.
+The ``tasks`` key defines the tasks will be performed on each host in
+``hosts``. The syntax of each possible tasks varries. All of the tasks
+are documented in the :ref:`tasks` section.
 
 
 Putting it all together
 -----------------------
 
 Before we continue, lets put together everything we've seen up to
-now. That will include `hosts`, `concurrency`, `output`, and an
-example `task`::
+now. That will include ``hosts``, ``concurrency``, ``output``, and an
+example ``task``::
 
     - hosts:
         - ruby*.web.qa.example.com
@@ -193,6 +204,8 @@ example `task`::
       tasks:
         - service.Restart
 	  args: httpd
+
+.. _tasks:
 
 Tasks
 -----
