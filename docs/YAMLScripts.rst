@@ -168,6 +168,32 @@ The `tasks` key defines the tasks will be performed on each host in
 are documented in the following section.
 
 
+Putting it all together
+-----------------------
+
+Before we continue, lets put together everything we've seen up to
+now. That will include `hosts`, `concurrency`, `output`, and an
+example `task`::
+
+    - hosts:
+        - ruby*.web.qa.example.com
+	- www01.web.qa.example.com
+	- www02.web.qa.example.com
+
+      concurrency: 3
+      
+      output:
+        - CLIOutput
+	- LogOutput:
+	    logfile: web-restarts.log
+	- EmailOutput:
+	    to_addr: my_boss@example.com
+	    from_addr: my_email@example.com
+	    
+      tasks:
+        - service.Restart
+	  args: httpd
+
 Tasks
 -----
 
