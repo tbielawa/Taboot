@@ -18,6 +18,14 @@ Contents:
    code
    tests
 
+.. toctree::
+   :hidden:
+   :glob:
+
+   elements/*
+   tasks/*
+
+
 Indices and tables
 ==================
 

@@ -58,125 +58,10 @@ A script can specify the following keys:
 Each of these keys and their respective arguments is described in the
 following sections.
 
-
-Hosts
-^^^^^
-
-* Required: Yes
-* Argument type: List
-* Default: None
-
-The ``hosts`` key is used to describe the target hosts for the script to
-act on. The ``hosts`` key takes a list of hosts as input. Optionally you
-can specify hosts as shell-like globs::
-
-    hosts:
-      - www01.web.ext.example.com
-      - www02.web.ext.example.com
-      - www03.web.ext.example.com
-
-To operate on all the www* named hosts in the web subdomain you could
-simplify the above list into this single shell-like glob::
-
-    hosts:
-      - www*.web.ext.example.com
-
-Or even shorter::
-
-    hosts: [www*.web.ext.example.com]
-
-
-Concurrency
-^^^^^^^^^^^
-
-* Required: No (has default)
-* Argument type: Integer
-* Default: 1
-
-``concurrency`` lets you specify the number of hosts this script can
-operate on at once. This is great if you need to perform rolling
-restarts or updates. In those cases you can omit this key, as the
-default value is 1::
-
-    concurrency: 5
-
-
-Output
-^^^^^^
-
-* Required: No (has default)
-* Argument type: List
-* Default: :ref:`cli-output`
-
-`poseidon` has multiple output methods available to the user. Default
-behavior is to only print to `stdout`. The next sections describe all
-of the available output methods in greater detail.
-
-* :ref:`cli-output`
-* :ref:`log-output`
-* :ref:`email-output`
-
-
-.. _cli-output:
-
-CLIOutput
-*********
-
-* API: :class:`poseidon.output.CLIOutput`
-
-This is the default output method. If you only want command line
-printing then it can be omitted::
-
-    output:
-       - CLIOutput
-
-
-.. _log-output:
-
-LogOutput
-*********
-
-* API: :class:`poseidon.output.LogOutput`
-
-`poseidon` can log a session to file with the ``LogOutput`` method if
-requested. This has a default configured to log to a file called
-`poseidon.log` which is configurable via the ``logfile`` keyword
-argument.
-
-Example using ``CLIOutput`` and ``LogOutput`` using a special log file::
-
-    output:
-       - CLIOutput
-       - LogOutput:
-           logfile: example.log
-
-
-.. _email-output:
-
-EmailOutput
-***********
-
-* API: :class:`poseidon.output.EmailOutput`
-
-Finally, `poseidon` can go out of it's way and email you results when
-a script has finished running::
-
-    output:
-       - EmailOutput:
-           to_addr: releases@example.com
-	   from_addr: engineer@example.com
-
-
-Tasks
-^^^^^
-
-* Required: Yes
-* Argument type: List
-* Default: None
-
-The ``tasks`` key defines the tasks will be performed on each host in
-``hosts``. The syntax of each possible tasks varries. All of the tasks
-are documented in the :ref:`tasks` section.
+.. include:: elements/hosts.rst
+.. include:: elements/concurrency.rst
+.. include:: elements/output.rst
+.. include:: elements/tasks.rst
 
 
 Putting it all together
@@ -213,3 +98,5 @@ Tasks
 All the tasks need to be documented here. I'd much rather write their
 documentation files in a tasks subdirectory and link to them from
 here. 
+
+.. include tasks 
