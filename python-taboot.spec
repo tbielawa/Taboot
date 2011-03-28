@@ -66,7 +66,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Jul 12 2001 Tim Bielawa <Tim Bielawa <tbielawa@redhat.com>> - 0.1-3
+* Mon Jul 12 2001 Tim Bielawa <tbielawa@redhat.com>> - 0.1-3
 - Add ignore_errors functionality
 
 * Fri May 14 2010 John Eckersberg <jeckersb@redhat.com> - 0.1-2
