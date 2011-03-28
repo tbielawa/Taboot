@@ -45,7 +45,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'Taboot'
-copyright = "2009, %s" % __author__
+copyright = "2009-2011 Red Hat, Inc"
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -67,6 +67,10 @@ today_fmt = '%B %d, %Y'
 # List of directories, relative to source directories, that shouldn't be
 # searched for source files.
 #exclude_dirs = []
+
+# A list of glob-style patterns that should be excluded when looking
+# for source files.
+exclude_patterns = ['elements', 'tasks', 'tests.rst']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -152,7 +156,7 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Tabootdoc'
+htmlhelp_basename = 'Poseidodoc'
 
 
 # Options for LaTeX output
