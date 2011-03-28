@@ -7,7 +7,8 @@ Building a Job with YAML
 Most Poseidon use cases can be accomplished by crafting a YAML file
 and running it with the `poseidon` executable.
 
-Here is a simple example YAML which will update an RPM and restart httpd::
+Here is a simple example YAML which will update an RPM and restart
+httpd::
 
     - hosts:
         - 'java0*.web.qa.*'
@@ -110,8 +111,8 @@ API Examples
 Simple
 ^^^^^^
 
-A script that simply queries the hostname and uptime of all hosts available to the func overlord.
-::
+A script that simply queries the hostname and uptime of all hosts
+available to the func overlord.  ::
 
     #!/usr/bin/env python
 

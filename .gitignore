@@ -4,6 +4,7 @@
 *.db
 *.swp
 *.patch
+*~
 MANIFEST
 docs/html
 dist

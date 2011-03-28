@@ -13,6 +13,7 @@ Contents:
    about
    install
    examples
+   YAMLScripts
    development
    code
    tests
