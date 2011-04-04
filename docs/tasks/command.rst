@@ -7,9 +7,10 @@ Command
   * Run
 
 
-The ``command`` module is used to execute arbitrary commands on a remote
-host. The ``command`` module has one callable class, that is the
-``Run`` class.
+The ``command`` module is used to execute arbitrary commands on a
+remote host. The ``command`` module has one callable class, that is
+the ``Run`` class.
+
 
 Run
 ***
@@ -24,9 +25,24 @@ Run
     * Required: Yes
     * Description: The command to run
 
+Syntax::
+
+    ---
+      tasks:
+        - command.Run:
+	    command: command-to-run
+
+
+Abbreviated form::
+
+    ---
+      tasks:
+        - command.Run: {command: command-to-run}
+
 
 Example 1::
 
+    ---
     - hosts:
         - www*
       tasks:
@@ -36,12 +52,9 @@ Example 1::
 
 Example 2::
 
+    ---
     - hosts:
         - www*
       tasks:
-        - command.Run:
-	    command: yum -y install python-taboot
-
-        - command.Run:
-	    service funcd restart
+        - command.Run: {command: yum -y install python-taboot}
 

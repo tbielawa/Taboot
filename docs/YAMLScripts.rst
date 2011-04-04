@@ -10,12 +10,15 @@ YAML Basics
 
 For `taboot`, every YAML script must be a list at it's root-most
 element. Each item in the list is a dictionary. These dictionaries
-represent all the options you can use to write a `taboot` script.
+represent all the options you can use to write a `taboot` script. In
+addition, all YAML files (regarless of their association with `taboot`
+or not) should start with ```---```.
 
 In YAML a list can be represented in two ways. In one way all members
 of a list are lines beginning at the same indentation level starting
 with a ``-`` character::
 
+    ---
     # A list of tasty fruits
     - Apple
     - Orange
@@ -26,11 +29,13 @@ In the second way a list is represented as comma separated elements
 surrounded by square brackets. Newlines are permitted between
 elements::
 
+    ---
     # A list of tasty fruits
     [apple, orange, bananna, mango]
 
 A dictionary is represented in a simple ``key:`` and ``value`` form::
 
+    ---
     # An employee record
     name: John Eckersberg
     job: Developer
@@ -38,11 +43,13 @@ A dictionary is represented in a simple ``key:`` and ``value`` form::
 
 Like lists, dictionaries can be represented in an abbreviated form::
 
+    ---
     # An employee record
     {name: John Eckersberg, job: Developer, skill: Elite}
 
 Finally, you can combine these data structures::
 
+    ---
     # An employee record
     name: John Eckersberg
     job: Developer
@@ -92,6 +99,7 @@ Before we continue, lets put together everything we've seen up to
 now. That will include ``hosts``, ``concurrency``, ``output``, and an
 example ``task``::
 
+    ---
     - hosts:
         - ruby*.web.qa.example.com
 	- www01.web.qa.example.com
@@ -108,8 +116,13 @@ example ``task``::
 	    from_addr: my_email@example.com
 	    
       tasks:
-        - service.Restart
-	    service: httpd
+        - service.Restart: {service: httpd}
+
+
+On three hosts at a time this `taboot` script would restart the
+`httpd` process, printing progress to the command line, logging it to
+'web-restarts.log', and finish by emailing the result of the whole
+task to my_boss@example.com.
 
 
 .. _tasks:

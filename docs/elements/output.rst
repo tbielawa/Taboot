@@ -22,10 +22,18 @@ CLIOutput
 * API: :class:`taboot.output.CLIOutput`
 
 This is the default output method. If you only want command line
-printing then it can be omitted::
+printing then it can be omitted.
 
+Syntax::
+
+  ---
     output:
        - CLIOutput
+
+Abbreviated form::
+
+  ---
+    output: [CLIOutput]
 
 
 .. _log-output:
@@ -40,12 +48,17 @@ requested. This has a default configured to log to a file called
 `taboot.log` which is configurable via the ``logfile`` keyword
 argument.
 
-Example using ``CLIOutput`` and ``LogOutput`` using a special log file::
+Syntax::
 
+  ---
     output:
-       - CLIOutput
-       - LogOutput:
-           logfile: example.log
+      - LogOutput:
+          logfile: taboot.log
+
+Abbreviated form::
+
+  ---
+    output: [LogOutput: {logfile: taboot.log}]
 
 
 .. _email-output:
@@ -58,7 +71,8 @@ EmailOutput
 Finally, `taboot` can go out of it's way and email you results when
 a script has finished running::
 
+  ---
     output:
-       - EmailOutput:
-           to_addr: releases@example.com
-	   from_addr: engineer@example.com
+      - EmailOutput:
+          to_addr: releases@example.com
+	  from_addr: engineer@example.com
