@@ -4,12 +4,12 @@
 Name:           python-taboot
 %define _name   taboot
 Version:        0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
 License:        GPLv3+
-URL:            https://engineering.redhat.com/trac/GIT-RE/wiki/taboot
+URL:            https://fedorahosted.org/Taboot/
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -66,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr  4 2011 Tim Bielawa <tbielawa@redhat.com> - 0.2-2
+- Rebranding to Taboot. We are now an opensource project.
+
 * Wed Jul 14 2010 John Eckersberg <jeckersb@redhat.com> - 0.2-1
 - updated to version 0.2 which modifies the expected YAML format
   (not compatible with versions < 0.2 and vice versa)
