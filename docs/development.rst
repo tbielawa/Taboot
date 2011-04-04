@@ -3,7 +3,9 @@ Development
 
 Tools
 -----
-Taboot uses what is becoming a pretty standard and a quite simple toolset.
+
+Taboot uses what is becoming a pretty standard and a quite simple
+toolset.
 
 
 Required Tools
@@ -23,12 +25,15 @@ Source
 ------
 You can clone the repo over http via :program:`git` through the following command:::
 
-   $ git clone git://git.corp.redhat.com/pub/git/RE/taboot.git
+   $ git clone git://git.fedorahosted.org/Taboot.git
 
 
 Style
 `````
-:pep:`0008` should be followed. This outlines the highlights that we require above and beyond. Your code must follow this (or note why it can't) before patches will be accepted.
+
+:pep:`0008` should be followed. This outlines the highlights that we
+require above and beyond. Your code must follow this (or note why it
+can't) before patches will be accepted.
 
    * Global variables should be in ALLCAPPS
    * attributes should be all lowercase
@@ -69,7 +74,10 @@ Git
 
 Branching
 `````````
-The best way to develop on Taboot is to branch feature sets. For instance, if you were to add xml deserialization you would want to branch locally and work on that branch.::
+
+The best way to develop on Taboot is to branch feature sets. For
+instance, if you were to add xml deserialization you would want to
+branch locally and work on that branch.::
 
    $  git branch
    * master
@@ -88,9 +96,9 @@ Now we pretend you are all finished and have done at least one commit to the xml
    $
 
 
-You now have patch sets which you can send in for perusal and acceptance. You can submit them via email. If you are interested in working directly on the project then submitting a few patches is the place to start. If, for some reason, you are unable to attach patches to the ticket system you can email the patches to 
-
-the user smilner at the domain red hat dot(.) com.
+You now have patch sets which you can send in for perusal and
+acceptance. Open a new ticket in our issue tracker or attach them to
+an existing ticket.
 
 
 Running Unit Tests
