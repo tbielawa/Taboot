@@ -18,7 +18,7 @@ Run
 * API: :class:`taboot.tasks.command.Run`
 * Keys
 
-  * command
+  * ``command``
 
     * Type: String
     * Default: None
@@ -29,32 +29,19 @@ Syntax::
 
     ---
       tasks:
+        # Normal form
         - command.Run:
 	    command: command-to-run
 
-
-Abbreviated form::
-
-    ---
-      tasks:
+	# Abbreviated form
         - command.Run: {command: command-to-run}
 
 
-Example 1::
+Example::
 
     ---
     - hosts:
         - www*
       tasks:
-        - command.Run:
-	    command: yum -y install httpd
-
-
-Example 2::
-
-    ---
-    - hosts:
-        - www*
-      tasks:
-        - command.Run: {command: yum -y install python-taboot}
+        - command.Run: {command: yum -y install httpd}
 

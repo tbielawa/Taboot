@@ -4,7 +4,7 @@
 Name:           python-taboot
 %define _name   taboot
 Version:        0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
@@ -66,6 +66,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr  4 2011 Tim Bielawa <tbielawa@redhat.com> - 0.2-3
+- Add LOTS of documentation on all the different modules.
+
+- Also, add a new module: sleep, for pausing x minutes or seconds.
+
 * Mon Apr  4 2011 Tim Bielawa <tbielawa@redhat.com> - 0.2-2
 - Rebranding to Taboot. We are now an opensource project.
 

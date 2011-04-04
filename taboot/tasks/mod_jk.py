@@ -1,4 +1,4 @@
-# Copyright 2011, Red Hat, Inc
+# Copyright 2009-2010, Red Hat, Inc
 #
 # This software may be freely redistributed under the terms of the GNU
 # general public license version 3.
@@ -68,6 +68,9 @@ class OutOfRotation(JKBaseTask):
     """
     Remove an AJP node from rotation on a proxy via modjkapi access on
     the proxy with func.
+
+    :Parameters:
+      - `proxies`: A list of URLs to AJP jkmanage interfaces
     """
     def __init__(self, proxies, action="stop", **kwargs):
         super(OutOfRotation, self).__init__(proxies, action, **kwargs)
@@ -76,6 +79,9 @@ class InRotation(JKBaseTask):
     """
     Put an AJP node in rotation on a proxy via modjkapi access on
     the proxy with func.
+
+    :Parameters:
+      - `proxies`: A list of URLs to AJP jkmanage interfaces
     """
     def __init__(self, proxies, action="enable", **kwargs):
         super(InRotation, self).__init__(proxies, action, **kwargs)

@@ -1,9 +1,14 @@
 YAML Scripts
 ============
 
-This page should provide a basic overview of YAML syntax and a
-complete overview of the allowed items in a proper `taboot` YAML
-script.
+This page provides a basic overview of correct YAML
+syntax. Additionally it covers non-task specific modules that are
+valid in `Taboot` scripts.
+
+.. seealso::
+
+   :ref:`tasks`
+       The complete documentation of all included task modules
 
 YAML Basics
 -----------
@@ -65,7 +70,7 @@ Finally, you can combine these data structures::
 	dotnet: Lame
 
 That's all you really need to know about YAML to get started writing
-`taboot` scripts.
+`Taboot` scripts.
 
 .. seealso::
 
@@ -74,14 +79,14 @@ That's all you really need to know about YAML to get started writing
 
 
 Elements of a Taboot script
------------------------------
+---------------------------
 
-A script can specify the following keys:
+A Taboot release script can specify the following keys:
 
-* hosts
-* concurrency
-* output
-* tasks
+* ``hosts``
+* ``concurrency``
+* ``output``
+* ``tasks``
 
 Each of these keys and their respective arguments is described in the
 following sections.
@@ -95,7 +100,7 @@ following sections.
 Putting it all together
 -----------------------
 
-Before we continue, lets put together everything we've seen up to
+Before we finish, lets put together everything we've seen up to
 now. That will include ``hosts``, ``concurrency``, ``output``, and an
 example ``task``::
 
@@ -119,17 +124,7 @@ example ``task``::
         - service.Restart: {service: httpd}
 
 
-On three hosts at a time this `taboot` script would restart the
+On three hosts at a time this `Taboot` script would restart the
 `httpd` process, printing progress to the command line, logging it to
 'web-restarts.log', and finish by emailing the result of the whole
 task to my_boss@example.com.
-
-
-.. _tasks:
-
-Tasks
------
-
-All the built-in tasks are documented here. 
-
-.. include:: tasks/command.rst

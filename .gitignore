@@ -5,6 +5,7 @@
 *.patch
 *~
 \#*
+.\#*
 MANIFEST
 docs/html
 dist

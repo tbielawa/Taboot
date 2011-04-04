@@ -1,4 +1,4 @@
-# Copyright 2011, Red Hat, Inc
+# Copyright 2009-2010, Red Hat, Inc
 #
 # This software may be freely redistributed under the terms of the GNU
 # general public license version 3.

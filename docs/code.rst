@@ -20,6 +20,11 @@ Taboot tasks
 .. automodule:: taboot.tasks
    :members:
 
+AJP Tasks
+^^^^^^^^^
+.. automodule:: taboot.tasks.mod_jk
+   :members:
+
 Command tasks
 ^^^^^^^^^^^^^
 .. automodule:: taboot.tasks.command
@@ -48,6 +53,11 @@ RPM tasks
 Service tasks
 ^^^^^^^^^^^^^
 .. automodule:: taboot.tasks.service
+   :members:
+
+Sleep Tasks
+^^^^^^^^^^^
+.. automodule:: taboot.tasks.sleep
    :members:
 
 User input tasks

@@ -14,6 +14,7 @@ Contents:
    install
    examples
    YAMLScripts
+   tasks
    development
    code
 

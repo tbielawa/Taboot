@@ -13,6 +13,9 @@ from taboot.tasks import command
 class Start(command.Run):
     """
     Start a service.
+
+    Arguments:
+      - ``service`` - The service to start.
     """
 
     def __init__(self, service, **kwargs):
@@ -22,6 +25,9 @@ class Start(command.Run):
 class Stop(command.Run):
     """
     Stop a service.
+
+    Arguments:
+      - ``service`` - The service to stop.
     """
 
     def __init__(self, service, **kwargs):
@@ -31,6 +37,9 @@ class Stop(command.Run):
 class Restart(command.Run):
     """
     Restart a service.
+
+    Arguments:
+      - ``service`` - The service to restart.
     """
 
     def __init__(self, service, **kwargs):

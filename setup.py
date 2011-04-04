@@ -138,6 +138,10 @@ class DistCleanCommand(SetupBuildCommand):
     def run(self):
         os.system('./setup.py clean')
         os.system('rm -fR ./docs/html/')
+        os.system('rm -fR ./dist/')
+        os.system('find . -name "*.pyc" -delete')
+        os.system('find . -name "*.pyo" -delete')
+        os.system('find . -name "*.~" -delete')
 
 
 class ViewDocCommand(SetupBuildCommand):

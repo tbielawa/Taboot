@@ -1,4 +1,4 @@
-# Copyright 2011, Red Hat, Inc
+# Copyright 2009-2011, Red Hat, Inc
 #
 # This software may be freely redistributed under the terms of the GNU
 # general public license version 3.
@@ -15,8 +15,8 @@ class NagiosBase(BaseTask):
     Base task for Nagios-related operations.
     """
 
-    #some constants that map to things Nagios expects to get in the POST.
-    #A full list is in the Nagios source, in include/common.h
+    # Some constants that map to things Nagios expects to get in the POST.
+    # A full list is in the Nagios source, in include/common.h
     NAGIOS_DISABLE = '29'
     NAGIOS_ENABLE = '28'
     NAGIOS_ADD_COMMENT = '1'
