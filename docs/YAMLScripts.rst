@@ -108,8 +108,8 @@ example ``task``::
 	    from_addr: my_email@example.com
 	    
       tasks:
-        - type: service.Restart
-	  args: httpd
+        - service.Restart
+	    service: httpd
 
 
 .. _tasks:
