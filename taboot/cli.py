@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2011, Red Hat, Inc
+# Copyright 2009-2011, Red Hat, Inc
 #
 # This software may be freely redistributed under the terms of the GNU
 # general public license version 3.
@@ -12,6 +12,9 @@
 import sys
 import yaml
 import taboot.runner
+from optparse import OptionParser
+from taboot import __version__
+
 
 class MalformedYAML(Exception):
     pass
@@ -73,19 +76,65 @@ def main():
     """
     Main function.
     """
-    if len(sys.argv) == 2:
-        blob = open(sys.argv[1]).read()
-    else:
-        blob = sys.stdin.read()
-    try:
-        ds = yaml.load(blob)
-    except:
-        raise MalformedYAML("Please check the validity of your YAML")
+    
+    checkonly = False
+    usage = """taboot [OPTIONS...] [FILE...]
 
-    for runner_source in ds:
-        runner = build_runner(runner_source)
-        if not runner.run():
-            break
+Run a Taboot release script.
+
+Options:
+  FILE            Release file in YAML format. Reads from stdin if FILE
+                  is '-' or not given. Multiple FILEs can be given.
+  -V, --version   Show program's version number and exit.
+  -h, --help      Show this help message and exit.
+  -n              Don't execute the release, just check script syntax.
+
+
+Taboot is a tool for written for scripting and automating the task of
+performing software releases in a large-scale infrastructure. Release
+scripts are written using YAML syntax.
+
+
+Taboot home page: <https://fedorahosted.org/Taboot/>
+Copyright 2009-2011, Red Hat, Inc
+Taboot is released under the terms of the GPLv3+ license"""
+
+    args = sys.argv[1:]
+
+    if "-h" in args or "--help" in args:
+        print usage
+        exit()
+
+    if "-V" in args or "--version" in args:
+        print "Taboot v%s" % __version__
+        exit()
+        
+    if "-n" in args:
+        checkonly = True
+        i = args.index("-n")
+        del args[i]
+
+    if len(args) >= 1:
+        input_files = args
+    else:
+        input_files = ['-']
+
+    for infile in input_files:
+        if infile == '-':
+            blob = sys.stdin.read()
+        else:
+            blob = open(infile).read()
+
+        try:
+            ds = yaml.load(blob)
+        except:
+            msg = "Please check the validity of your YAML in '%s'" % infile
+            raise MalformedYAML(msg)
+
+        for runner_source in ds:
+            runner = build_runner(runner_source)
+            if not checkonly and not runner.run():
+                break
 
 if __name__ == '__main__':
     main()
