@@ -19,4 +19,4 @@ __docformat__ = 'restructuredtext'
 __author__ = "John Eckersberg"
 __license__ = 'GPLv3+'
 __version__ = '0.2'
-__url__ = 'https://engineering.redhat.com/trac/GIT-RE/wiki/taboot'
+__url__ = 'https://fedorahosted.org/Taboot/'
