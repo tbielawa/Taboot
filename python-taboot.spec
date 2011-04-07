@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.5
+Version:        0.2.6
 Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 06 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.6-1
+- Cleaning out the RPM Lint. Adding a manpage (tbielawa@redhat.com)
+
 * Wed Apr 06 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.5-1
 - Update version in module (tbielawa@redhat.com)
 
