@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.3
+Version:        0.2.4
 Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
@@ -66,6 +66,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 06 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.4-1
+- Switching versioning back to the triplet form
+- Smarter command line processing:
+   - Handles command line options like --help
+   - Adds support processing multiple release files
+   - Adds support for just validating a scripts syntax via '-n'
+   - Adds version string printing via -V (--version)
+- Initialized to use tito
+
 * Mon Apr  4 2011 Tim Bielawa <tbielawa@redhat.com> - 0.2-3
 - Add LOTS of documentation on all the different modules.
 
