@@ -3,8 +3,8 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2
-Release:        3%{?dist}
+Version:        0.2.3
+Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
 Group:          Development/Languages
