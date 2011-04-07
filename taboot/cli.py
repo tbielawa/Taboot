@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright 2009-2011, Red Hat, Inc
 #
 # This software may be freely redistributed under the terms of the GNU

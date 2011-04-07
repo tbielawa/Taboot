@@ -14,9 +14,13 @@ Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
-BuildRequires:  python-devel, python-sphinx
+BuildRequires:  python-devel
+BuildRequires:  python-sphinx
+BuildRequires:  asciidoc
+BuildRequires:  libxslt
 
-Requires:       func, PyYAML
+Requires:       func
+Requires:	PyYAML
 
 
 %description
@@ -40,6 +44,9 @@ Func minion modules for use in conjunction with %{name}.
 %build
 %{__python} setup.py build
 %{__python} setup.py doc
+rm -f docs/html/.buildinfo
+a2x -D docs -d manpage -f manpage docs/taboot.8.asciidoc
+
 
 
 %install
@@ -47,6 +54,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
 mv $RPM_BUILD_ROOT%{python_sitelib}/taboot-func/* $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
+# manpages
+%{__mkdir_p} %{buildroot}%{_mandir}/man8
+%{__gzip} -c docs/taboot.8 > %{buildroot}/%{_mandir}/man8/taboot.8.gz
 
 
 %clean
@@ -57,6 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_bindir}/taboot
 %doc docs/html COPYING LICENSE AUTHORS
+%doc %{_mandir}/man8/taboot.8.gz
 # For noarch packages: sitelib
 %{python_sitelib}/*
 

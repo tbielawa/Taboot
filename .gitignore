@@ -8,5 +8,6 @@
 .\#*
 MANIFEST
 docs/html
+docs/.doctrees
 dist
 build

@@ -77,7 +77,7 @@ class SphinxCommand(SetupBuildCommand):
                 os.mkdir(path.join('docs', 'html'))
             buildername = 'html'
             outdir = path.abspath(path.join('docs', 'html'))
-            doctreedir = os.path.join(outdir, '.doctrees')
+            doctreedir = os.path.join('docs', '.doctrees')
 
             confdir = path.abspath('docs')
             srcdir = path.abspath('docs')
