@@ -1,0 +1,82 @@
+taboot(1)
+=========
+:doctype:manpage
+:man source:   Taboot
+:man version:  0.2.x
+:man manual:   System administration commands
+
+NAME
+----
+taboot - run a taboot release script
+
+
+
+SYNOPSIS
+--------
+taboot ['OPTIONS'] ['FILE'...]
+
+
+
+
+DESCRIPTION
+-----------
+
+Taboot is a tool for written for scripting and automating the task of
+performing software releases in a large-scale infrastructure. Release
+scripts are written using YAML syntax.
+
+
+
+
+OPTIONS
+-------
+
+*FILE*::
+
+Release file in YAML format. Instructions are read from stdin if
+'FILE' is '-' or not given. Multiple __FILE__s can be given.
+
+
+
+*-h*, *--help*::
+
+Show this help message and exit.
+
+
+
+*-V*, *--version*::
+
+Show program's version number and exit.
+
+
+
+*-n*::
+
+Don't execute the release, just check script syntax.
+
+
+
+
+AUTHOR
+------
+
+Taboot was originally written by John Eckersberg. Tim Bielawa is the
+current maintainer. See the AUTHORS file for a complete list of
+contributors.
+
+
+COPYRIGHT
+---------
+
+Copyright © 2009-2011, Red Hat, Inc
+
+Taboot is released under the terms of the GPLv3+ license
+
+
+
+SEE ALSO
+--------
+*func*(1)
+
+
+Taboot home page: <https://fedorahosted.org/Taboot/>

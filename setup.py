@@ -80,7 +80,7 @@ class SphinxCommand(SetupBuildCommand):
             doctreedir = os.path.join('docs', '.doctrees')
 
             confdir = path.abspath('docs')
-            srcdir = path.abspath('docs')
+            srcdir = path.abspath('docs/rst')
             freshenv = False
 
             # Create the builder
@@ -94,6 +94,7 @@ class SphinxCommand(SetupBuildCommand):
             print >> sys.stderr, "You don't seem to have the following which"
             print >> sys.stderr, "are required to make documentation:"
             print >> sys.stderr, "\tsphinx.application.Sphinx"
+            print >> sys.stderr, "This is usually available from the python-sphinx package"
         except Exception, ex:
             print >> sys.stderr, "FAIL! exiting ... (%s)" % ex
 
