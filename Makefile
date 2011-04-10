@@ -7,7 +7,7 @@ CURVERSION := $(shell python -c "import taboot; print taboot.__version__")
 FULLNAME = $(NAME)-$(VERSION)
 MANPAGES := docs/man/man1/taboot.1
 DOCPATH := /usr/share/doc/$(NAME)
-
+SITELIB = $(shell python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
 
 docs: manuals htmldocs
 
@@ -20,10 +20,18 @@ htmldocs:
 	./setup.py doc
 
 install: docs
-	install docs/rst/ $(DOCPATH)/
-	install docs/html/ $(DOCPATH)/
-	install docs/man/* $(MANPAGES)/
+	mkdir -p /usr/share/doc/$(NAME)
+	cp -r docs/rst $(DOCPATH)
+	cp -r docs/html $(DOCPATH)
+	gzip -c docs/man/man1/taboot.1 > /usr/share/man/man1/taboot.1.gz
 	./setup.py install
+
+uninstall:
+	rm -fR /usr/share/doc/$(NAME)
+	rm -f /usr/share/man/man1/taboot.1.gz
+	rm -fR $(SITELIB)/taboot-func/
+	rm -fR $(SITELIB)/taboot/
+	rm -f /usr/bin/taboot
 
 version:
 	@echo $(VERSION)
