@@ -19,12 +19,14 @@ manuals: $(MANPAGES)
 htmldocs:
 	./setup.py doc
 
-install: docs
+install:
+	./setup.py install
+
+installdocs: docs
 	mkdir -p /usr/share/doc/$(NAME)
 	cp -r docs/rst $(DOCPATH)
 	cp -r docs/html $(DOCPATH)
 	gzip -c docs/man/man1/taboot.1 > /usr/share/man/man1/taboot.1.gz
-	./setup.py install
 
 uninstall:
 	rm -fR /usr/share/doc/$(NAME)
