@@ -86,6 +86,7 @@ A Taboot release script can specify the following keys:
 * ``hosts``
 * ``concurrency``
 * ``output``
+* ``preflight``
 * ``tasks``
 
 Each of these keys and their respective arguments is described in the
