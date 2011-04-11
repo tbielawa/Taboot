@@ -20,6 +20,7 @@ class Runner(object):
     import taboot.output
 
     def __init__(self, hosts, tasks, concurrency=1,
+                 preflight=[],
                  output=['CLIOutput'],
                  expand_globs=True):
         """
@@ -44,6 +45,9 @@ class Runner(object):
              is.
         """
         self._hosts = hosts
+        self._preflight_tasks = preflight
+        self._preflight_semaphore = self.threading.Semaphore(len(preflight))
+        self._preflight_tasks_q = []
         self._tasks = tasks
         self._concurrency = concurrency
         self._output = output
@@ -55,11 +59,47 @@ class Runner(object):
         self._semaphore = self.threading.Semaphore(self._concurrency)
         self._fail_event = self.threading.Event()
 
+    def _run_preflight(self):
+        """
+        Run the jobs in a prefilght section.
+        """
+        import signal
+        rdy_msg = "\nPre-Flight complete, press enter to continue: "
+
+        for host in self._hosts:
+            t = TaskRunner(host, self._preflight_tasks, self._preflight_semaphore,
+                           self._output, self._fail_event)
+            t.start()
+            self._preflight_tasks_q.append(t)
+
+        signal.signal(signal.SIGINT, self.__sighandler)
+
+        for task in self._task_q:
+            while task.isAlive():
+                task.join(0.1)
+
+        while len(self.threading.enumerate()) > 1:
+            # Even though all the threads may have been joined we
+            # should still for them to terminate. If we don't wait for
+            # that we will likely see the 'continue?' prompt before
+            # the preflight output gets a chance to print.
+            pass
+
+        ready = raw_input(rdy_msg)
+
+        if self._fail_event.isSet():
+            return False
+        return True
+
     def run(self):
         """
         Run the job.
         """
         import signal
+
+        if len(self._preflight_tasks) > 0:
+            if not self._run_preflight():
+                return False
 
         for host in self._hosts:
             t = TaskRunner(host, self._tasks, self._semaphore, self._output,

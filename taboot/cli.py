@@ -69,6 +69,8 @@ def build_runner(ds):
     ds['tasks'] = resolve_types(ds['tasks'], 'taboot.tasks')
     if 'output' in ds:
         ds['output'] = resolve_types(ds['output'], 'taboot.output')
+    if 'preflight' in ds:
+        ds['preflight'] = resolve_types(ds['preflight'], 'taboot.tasks')
     return taboot.runner.Runner(**ds)
 
 def main():
