@@ -94,6 +94,7 @@ following sections.
 .. include:: elements/hosts.rst
 .. include:: elements/concurrency.rst
 .. include:: elements/output.rst
+.. include:: elements/preflight.rst
 .. include:: elements/tasks.rst
 
 
@@ -101,8 +102,8 @@ Putting it all together
 -----------------------
 
 Before we finish, lets put together everything we've seen up to
-now. That will include ``hosts``, ``concurrency``, ``output``, and an
-example ``task``::
+now. That will include ``hosts``, ``concurrency``, ``output``,
+``preflight``, and an example ``task``::
 
     ---
     - hosts:
@@ -120,6 +121,9 @@ example ``task``::
 	    to_addr: my_boss@example.com
 	    from_addr: my_email@example.com
 	    
+      preflight:
+        - puppet.Disable
+
       tasks:
         - service.Restart: {service: httpd}
 
