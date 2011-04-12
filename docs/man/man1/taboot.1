@@ -1,0 +1,76 @@
+'\" t
+.\"     Title: taboot
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 04/12/2011
+.\"    Manual: System administration commands
+.\"    Source: Taboot 0.2.x
+.\"  Language: English
+.\"
+.TH "TABOOT" "1" "04/12/2011" "Taboot 0\&.2\&.x" "System administration commands"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+taboot \- run a taboot release script
+.SH "SYNOPSIS"
+.sp
+taboot [\fIOPTIONS\fR] [\fIFILE\fR\&...]
+.SH "DESCRIPTION"
+.sp
+Taboot is a tool for written for scripting and automating the task of performing software releases in a large\-scale infrastructure\&. Release scripts are written using YAML syntax\&.
+.SH "OPTIONS"
+.PP
+\fBFILE\fR
+.RS 4
+Release file in YAML format\&. Instructions are read from stdin if
+\fIFILE\fR
+is
+\fI\-\fR
+or not given\&. Multiple
+\fIFILE\fRs can be given\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Show this help message and exit\&.
+.RE
+.PP
+\fB\-V\fR, \fB\-\-version\fR
+.RS 4
+Show program\(cqs version number and exit\&.
+.RE
+.PP
+\fB\-n\fR
+.RS 4
+Don\(cqt execute the release, just check script syntax\&.
+.RE
+.SH "AUTHOR"
+.sp
+Taboot was originally written by John Eckersberg\&. Tim Bielawa is the current maintainer\&. See the AUTHORS file for a complete list of contributors\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2009\-2011, Red Hat, Inc
+.sp
+Taboot is released under the terms of the GPLv3+ license
+.SH "SEE ALSO"
+.sp
+\fBfunc\fR(1)
+.sp
+Taboot home page: https://fedorahosted\&.org/Taboot/
