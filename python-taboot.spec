@@ -43,17 +43,15 @@ Func minion modules for use in conjunction with %{name}.
 
 
 %build
-make docs
 %{__python} setup.py build
-#%{__python} setup.py doc
-#rm -f docs/html/.buildinfo
-#a2x -D docs/man/man1 -d manpage -f manpage docs/man/man1/taboot.1.asciidoc
+%{__python} setup.py doc
+a2x -D docs/man/man1 -d manpage -f manpage docs/man/man1/taboot.1.asciidoc
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
+%{__mkdir_p} $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
 mv $RPM_BUILD_ROOT%{python_sitelib}/taboot-func/* $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
 %{__mkdir_p} %{buildroot}%{_mandir}/man1
 %{__gzip} -c docs/man/man1/taboot.1 > %{buildroot}/%{_mandir}/man1/taboot.1.gz
@@ -69,11 +67,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/rst docs/html LICENSE AUTHORS
 %doc %{_mandir}/man1/taboot.1.gz
 # For noarch packages: sitelib
-%{python_sitelib}/*
+%dir %{python_sitelib}/%{_name}
+%{python_sitelib}/%{_name}/*
+%{python_sitelib}/python_%{_name}-*.egg-info
 
 
 %files -n taboot-func
 %defattr(-,root,root,-)
+%dir %{python_sitelib}/func/minion/modules/%{_name}
 %{python_sitelib}/func/minion/modules/%{_name}
 
 
