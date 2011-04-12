@@ -16,38 +16,28 @@ I don't get it, show me an example.
 Here's an example YAML file, it's pretty self-explanatory.
 
 # Begin example
+---
 - hosts:
-    - java*.int.example.com
+    - www*.example.com
 
   tasks:
-    - type: nagios.ScheduleDowntime
-      kwargs:
+    - nagios.ScheduleDowntime:
         nagios_url: https://nagios.int.example.com/nagios/cgi-bin/cmd.cgi
-        minutes: 15
-        service: JBOSS
+        minutes: 5
+        service: httpd
 
-    - type: mod_jk.OutOfRotation
-      args:
-        - balancer01.int.example.com
+    - service.Stop: {service: httpd}
 
-    - type: command.Run
-      args: service jbossas stop || true
-
-    - type: puppet.Run
-
-    - type: service.Start
-      args: jbossas
-
-    - type: mod_jk.InRotation
-      args:
-        - balancer01.int.example.com
+    - yum.Update
+ 
+    - service.Start: {service: httpd}
 # End example
 
 Notice you can do shell-like globs when specifying the target hosts.
 
 You would use this in this manner:
 
-  $ taboot java-update.yaml
+  $ taboot httpd-update.yaml
 
 
 See also
