@@ -8,7 +8,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 from taboot.tasks import BaseTask, TaskResult
-
+import taboot.errors
 
 class NagiosBase(BaseTask):
     """
@@ -50,6 +50,17 @@ class NagiosBase(BaseTask):
         else:
             raise Exception("Curl failed with status %d" % exit_code)
 
+    def _krb_have_tkt(self):
+        """
+        Check that the user has a kerberos ticket in their cache.
+        """
+        import subprocess
+        tkt = subprocess.call(['klist', '-s'])
+        if tkt != 0:
+            raise Taboot.Errors.TabootMissingKrbTkt
+        else:
+            return None
+
     def _call_nagios(self, command, extra_opts={}):
         """
         build up the POST call for an enable or disable. Example of
@@ -66,7 +77,11 @@ class NagiosBase(BaseTask):
         opts['btnSubmit']='Commit'
         opts.update(extra_opts)
         try:
+            self._krb_have_tkt()
             self._call_curl(opts)
+        except Taboot.Errors.TabootMissingKrbTkt:
+            print "Scheduling Nagios events requires a valid Kerberos ticket"
+            raise
         except:
             print "Failed call to Nagios for " + self.host
             raise

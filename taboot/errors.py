@@ -8,7 +8,6 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-
 class FuncException(Exception):
     """
     Exception raised whenever a func request returns REMOTE_ERROR
@@ -24,3 +23,16 @@ class FuncException(Exception):
 
     def __str__(self):
         return repr(self)
+
+class TabootException(Exception):
+    """
+    Base Taboot Exception
+    """
+    pass
+
+class TabootMissingKrbTkt(TabootException):
+    """
+    Exception raised when an action that requires a kerberos ticket
+    can't find one ahead of time.
+    """
+    pass
