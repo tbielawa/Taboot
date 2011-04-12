@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.7
+Version:        0.2.8
 Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
@@ -79,6 +79,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 12 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.8-1
+- Version bumpitybump (tbielawa@redhat.com)
+- Specfile fixup (tbielawa@redhat.com)
+- Updating example in readme (tbielawa@redhat.com)
+- Attempting to get kerberos checking working (tbielawa@redhat.com)
+- Add documentation about preflight block (tbielawa@redhat.com)
+
 * Mon Apr 11 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.7-1
 - Made a bad release. Fixing it up
 - Add ability to run a set of preflight commands
