@@ -1,6 +1,7 @@
 include AUTHORS
 include LICENSE
 include MANIFEST.in
+include README
 include python-taboot.spec
 graft docs
 recursive-exclude docs .doctrees/*

@@ -72,7 +72,6 @@ clean:
 	find . -type f -name "*.pyo" -delete
 	find . -type f -name "*~" -delete
 	find ./docs/ -type f -name "*.xml" -delete
-	find ./docs/ -type f -name "*.1" -delete
 	find . -type f -name "#*" -delete
 	rm -fR docs/.doctrees docs/html dist build
 
