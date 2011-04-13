@@ -21,8 +21,8 @@ Requires:	PyYAML
 
 
 %description
-Client library for performing deployments with func.  Provides useful
-helper utilities to perform common task patterns using func.
+Tool for written for scripting and automating the task of performing
+software releases in a large-scale infrastructure using Func.
 
 
 %package -n taboot-func
