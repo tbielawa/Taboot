@@ -113,7 +113,7 @@ class RPMBuildCommand(SetupBuildCommand):
         # TODO: This should be changed from shelling out to actually
         # using the code. For now this works.
         try:
-            os.system('make clean')
+            os.system("make clean")
             if os.system('./setup.py sdist'):
                 raise Exception("Couldn't call ./setup.py sdist!")
                 sys.exit(1)
