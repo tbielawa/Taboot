@@ -104,11 +104,11 @@ Taboot is released under the terms of the GPLv3+ license"""
 
     if "-h" in args or "--help" in args:
         print usage
-        exit()
+        sys.exit()
 
     if "-V" in args or "--version" in args:
         print "Taboot v%s" % __version__
-        exit()
+        sys.exit()
         
     if "-n" in args:
         checkonly = True
