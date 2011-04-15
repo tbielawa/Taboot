@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.8
+Version:        0.2.9
 Release:        1%{?dist}
 Summary:        Client library for performing deployments with func
 
@@ -71,6 +71,18 @@ make clean
 
 
 %changelog
+* Fri Apr 15 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.9-1
+- Fix 'exit()' not being callable in python 2.4 (RHEL5) (tbielawa@redhat.com)
+- Adding a script for building multiple targets (tbielawa@redhat.com)
+- Changing description (tbielawa@redhat.com)
+- Need the version file in the manifest when building from setup.py
+  (tbielawa@redhat.com)
+- Making cleaning work (tbielawa@redhat.com)
+- Making build better on RHEL5 Don't build the docs at build time (Save in git
+  tree) Straighten up the spec file (tbielawa@redhat.com)
+- Including compiled manpage to lower buildrequires (tbielawa@redhat.com)
+- Typo fix (tbielawa@redhat.com)
+
 * Tue Apr 12 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.8-1
 - Version bumpitybump (tbielawa@redhat.com)
 - Specfile fixup (tbielawa@redhat.com)
