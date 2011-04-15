@@ -17,7 +17,7 @@ BuildArch:      noarch
 BuildRequires:  python-devel
 
 Requires:       func
-Requires:	PyYAML
+Requires:       PyYAML
 
 
 %description
