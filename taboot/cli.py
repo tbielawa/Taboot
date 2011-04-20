@@ -1,16 +1,17 @@
+# -*- coding: utf-8 -*-
 # Taboot - Client utility for performing deployments with Func.
 # Copyright © 2009-2011, Red Hat, Inc.
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -23,6 +24,7 @@ from taboot import __version__
 
 class MalformedYAML(Exception):
     pass
+
 
 def resolve_types(ds, relative_to):
     """
@@ -62,6 +64,7 @@ def resolve_types(ds, relative_to):
     else:
         return ds
 
+
 def build_runner(ds):
     """
     Build a :class:`taboot.runner.Runner` instance from the given
@@ -79,11 +82,12 @@ def build_runner(ds):
         ds['preflight'] = resolve_types(ds['preflight'], 'taboot.tasks')
     return taboot.runner.Runner(**ds)
 
+
 def main():
     """
     Main function.
     """
-    
+
     checkonly = False
     usage = """taboot [OPTIONS...] [FILE...]
 
@@ -115,7 +119,7 @@ Taboot is released under the terms of the GPLv3+ license"""
     if "-V" in args or "--version" in args:
         print "Taboot v%s" % __version__
         sys.exit()
-        
+
     if "-n" in args:
         checkonly = True
         i = args.index("-n")

@@ -1,16 +1,17 @@
+# -*- coding: utf-8 -*-
 # Taboot - Client utility for performing deployments with Func.
 # Copyright © 2009-2011, Red Hat, Inc.
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -32,23 +33,33 @@ class Runner(object):
         """
         :Parameters:
            - `hosts`: a List of Func-compatible host globs to operate on.
-           - `tasks`: a List of tasks to execute.  Each item in this list must
-             be a dict of the following format:
-               - Required key named `type`.  This must be a instantiable type.
-               - Optional key named `args`.  This is expanded as the positional
-                 arguments when instantiating `type`. If not present, the empty
-                 tuple `()` is assumed.  If `args` is not a tuple, it is
-                 assumed that the value of `args` should be the only item
-                 contained within a 1-tuple and is treated as such.
-               - Optional key named `kwargs`.  This is exapanded as the keyword
-                 arguments when instantiating `type`.  If kwargs is not
-                 defined, it is assumed to be the empty dict `{}`.
+
+           - `tasks`: a List of tasks to execute. Each item in this
+             list must be a dict of the following format:
+
+               - Required key named `type`. This must be a
+                 instantiable type.
+
+               - Optional key named `args`. This is expanded as the
+                 positional arguments when instantiating `type`. If
+                 not present, the empty tuple `()` is assumed. If
+                 `args` is not a tuple, it is assumed that the value
+                 of `args` should be the only item contained within a
+                 1-tuple and is treated as such.
+
+               - Optional key named `kwargs`. This is exapanded as the
+                 keyword arguments when instantiating `type`. If
+                 kwargs is not defined, it is assumed to be the empty
+                 dict `{}`.
+
            - `concurrency`: the number of hosts on which to operate on
              simultaneously.
-           - `output`: a list following the same format as `tasks`, containing
-             types (and possibly arguments) used for output
-           - `expand_globs`: whether to expand the globs or just leave them as
-             is.
+
+           - `output`: a list following the same format as `tasks`,
+             containing types (and possibly arguments) used for output
+
+           - `expand_globs`: whether to expand the globs or just leave
+             them as is.
         """
         self._hosts = hosts
         self._preflight_tasks = preflight
@@ -73,7 +84,8 @@ class Runner(object):
         rdy_msg = "\nPre-Flight complete, press enter to continue: "
 
         for host in self._hosts:
-            t = TaskRunner(host, self._preflight_tasks, self._preflight_semaphore,
+            t = TaskRunner(host, self._preflight_tasks,
+                           self._preflight_semaphore,
                            self._output, self._fail_event)
             t.start()
             self._preflight_tasks_q.append(t)
@@ -241,7 +253,9 @@ class TaskRunner(threading.Thread):
 
         outputters = []
         for o in self._output:
-            instance = self.__instantiator(o, 'taboot.output', host=self._host, task=task)
+            instance = self.__instantiator(o, 'taboot.output',
+                                           host=self._host,
+                                           task=task)
             outputters.append(instance)
 
         try:
@@ -284,7 +298,6 @@ class TaskRunner(threading.Thread):
                 __import__(pkg)
                 return getattr(sys.modules[pkg], tokens[1])
 
-
         if isinstance(type_blob, basestring):
             instance_type = str2type(type_blob)
         else:
@@ -297,7 +310,7 @@ class TaskRunner(threading.Thread):
             return instance_type(**kwargs)
         except TypeError, e:
             import pprint
-            print "Unable to instantiate type %s with the following arguments:"\
+            print "Unable to instantiate %s with the following arguments:"\
                 % instance_type
             pprint.pprint(kwargs)
             print "Full backtrace below\n"

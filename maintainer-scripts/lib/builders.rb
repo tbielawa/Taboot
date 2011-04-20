@@ -2,17 +2,17 @@
 # -*- mode: ruby -*-
 # Release Builder - Ruby Scripts for building a software release
 # Copyright © 2011, Red Hat, Inc.
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -36,7 +36,6 @@ class Builder
     @build_target = koji_build_target
     @srpm_path = File.expand_path("~/rpmbuild/SRPMS")
     @sourcedir = File.expand_path("~/rpmbuild/SOURCES")
-    @sdist = "#{@sourcedir}/#{@full_name}.tar.gz"
     @specfile = "#{@package_name}.spec"
     @srpm = nil
     @target_rpms = target_rpms
@@ -47,34 +46,7 @@ class Builder
     @@release_name = @package_name
     @@package_release_dir = "/releases/#{@@release_name}-#{@version}"
     @@doc_release_dir = "/docs/#{@@release_name}-#{@version}"
-  end
-
-  def package_name
-    @package_name
-  end
-
-  def release_name
-    @@release_name
-  end
-
-  def release_dir
-    @@release_dir
-  end
-
-  def doc_release_dir
-    @@doc_release_dir
-  end
-
-  def version
-    @version
-  end
-
-  def srpm_path
-    @srpm_path
-  end
-
-  def sourcedir
-    @sourcedir
+    @@sdist = "#{@sourcedir}/#{@full_name}.tar.gz"
   end
 
   def setup_sdist
@@ -197,7 +169,7 @@ class Builder
     # script for download scratch build results.
     download_command = "download-scratch.py #{@task_id}"
     result_glob = "*.rpm"
-    
+
     puts "Downloading results with command: #{download_command}"
     `#{download_command}`
 
@@ -224,6 +196,24 @@ class Builder
     builder_properties = "#{@package_name} (#{@version})\n"
     builder_properties << "Build target: #{@build_target}\n"
     builder_properties << "Target RPMs: #{@target_rpms.join(", ")}"
+  end
+
+  attr_accessor :package_name, :version, :srpm_path, :sourcedir
+
+  def release_name
+    @@release_name
+  end
+
+  def release_dir
+    @@release_dir
+  end
+
+  def doc_release_dir
+    @@doc_release_dir
+  end
+
+  def sdist
+    @@sdist
   end
 end
 

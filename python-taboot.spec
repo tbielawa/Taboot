@@ -10,7 +10,7 @@ Summary:        Client library for performing deployments with func
 Group:          Development/Languages
 License:        GPLv3+
 URL:            https://fedorahosted.org/Taboot/
-Source0:        %{name}-%{version}.tar.gz
+Source0:        http://people.redhat.com/tbielawa/taboot/releases/taboot-latest/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -53,7 +53,7 @@ Func minion modules for use in conjunction with %{name}.
 
 
 %clean
-make clean
+%{__make} clean
 %{__rm} -rf $RPM_BUILD_ROOT
 
 
