@@ -28,6 +28,7 @@ class BuildDirector
     @doc_dir = @release_dir + @builders.first.doc_release_dir
     @sdist = @builders.first.sdist
     @builders.first.setup_sdist
+    @package_release_dir = @builders.first.package_release_dir
   end
 
   def build_docs
@@ -81,6 +82,8 @@ class BuildDirector
       end
     end
     Process.waitall
+
+    FileUtils.cp @sdist, @release_dir + @package_release_dir
   end
 
   def start_build

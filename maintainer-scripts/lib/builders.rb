@@ -136,8 +136,8 @@ class Builder
     poll_command = "#{@rpm_build_command} taskinfo #{@task_id}"
 
     while @task_status == "open" or @task_status == "free"
-      sleep 4
       print  "Polling #{@task_id}... "
+      sleep 4
       IO.popen(poll_command) do |poll_status|
         poll_status.each do |line|
           koji_output = line.scan(/^(State: )(.*)/)
@@ -199,6 +199,10 @@ class Builder
   end
 
   attr_accessor :package_name, :version, :srpm_path, :sourcedir
+
+  def package_release_dir
+    @@package_release_dir
+  end
 
   def release_name
     @@release_name
