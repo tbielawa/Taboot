@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.9
+Version:        0.2.10
 Release:        1%{?dist}
 Summary:        Client utility for performing deployments with func
 
@@ -71,6 +71,13 @@ Func minion modules for use in conjunction with %{name}.
 
 
 %changelog
+* Thu Apr 21 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.10-1
+- Ceremonial .10 release. Mostly small changes.
+- Change Summary wording
+- pep0263 fixes pep8 Fixes
+- Finally getting around to making the copyright headers uniform again.
+- Maintainer scripts for automating release building
+
 * Fri Apr 15 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.9-1
 - Fix 'exit()' not being callable in python 2.4 (RHEL5) (tbielawa@redhat.com)
 - Adding a script for building multiple targets (tbielawa@redhat.com)
