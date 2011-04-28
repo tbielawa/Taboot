@@ -50,6 +50,7 @@ Func minion modules for use in conjunction with %{name}.
 %{__mv} $RPM_BUILD_ROOT%{python_sitelib}/taboot-func $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
 %{__mkdir_p} %{buildroot}%{_mandir}/man1
 %{__gzip} -c docs/man/man1/taboot.1 > %{buildroot}/%{_mandir}/man1/taboot.1.gz
+%{__gzip} -c docs/man/man5/taboot-tasks.5 > %{buildroot}/%{_mandir}/man5/taboot-tasks.5.gz
 
 
 %clean
@@ -63,6 +64,7 @@ Func minion modules for use in conjunction with %{name}.
 %{python_sitelib}/*%{_name}*
 %doc docs/rst LICENSE AUTHORS README
 %doc %{_mandir}/man1/taboot.*
+%doc %{_mandir}/man5/taboot-tasks.*
 
 
 %files -n taboot-func

@@ -21,7 +21,7 @@ taboot ['OPTIONS'] ['FILE'...]
 DESCRIPTION
 -----------
 
-Taboot is a tool for written for scripting and automating the task of
+Taboot is a tool written for scripting and automating the task of
 performing software releases in a large-scale infrastructure. Release
 scripts are written using YAML syntax.
 
@@ -70,13 +70,13 @@ COPYRIGHT
 
 Copyright © 2009-2011, Red Hat, Inc
 
-Taboot is released under the terms of the GPLv3+ license
+Taboot is released under the terms of the GPLv3+ license.
 
 
 
 SEE ALSO
 --------
-*func*(1)
+*taboot-tasks*(5), *func*(1)
 
 
 Taboot home page: <https://fedorahosted.org/Taboot/>

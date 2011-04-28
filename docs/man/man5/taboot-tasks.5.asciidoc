@@ -1,0 +1,208 @@
+taboot-tasks(5)
+===============
+:doctype:manpage
+:man source:   Taboot
+:man version:  0.2.x
+
+
+NAME
+----
+taboot-tasks - quick reference for the built in tasks
+
+
+
+
+DESCRIPTION
+-----------
+
+Taboot is a tool for written for scripting and automating the task of
+performing software releases in a large-scale infrastructure. Release
+scripts are written using YAML syntax.
+
+Taboot tasks are pre-written actions to perform on a given host. For
+example, scheduling downtime in Nagios, or updating all the RPMs on a
+system. The tasks documented here can be used in __preflight__ and
+__tasks__ blocks. The syntax of each possible tasks varries. Taboot
+comes with many built-in tasks.
+
+This quick-reference is example based and only uses abbreviated forms
+where possible.
+
+
+Command
+-------
+
+The *Command* task lets you run arbitrary commands on the remote host.
+
+[literal]
+---
+- hosts: [www0*.company.com]
+  tasks:
+    # Install httpd on all matching hosts
+    - command.Run: {command: yum -y install httpd}
+
+
+Service
+-------
+
+The *Service* task provides an interface to the system __service__
+command.
+
+[literal]
+---
+- hosts: [www0*.company.com]
+  tasks:
+    # Start httpd on all matching hosts
+    - service.Start: {service: httpd}
+    # Stop httpd on all matching hosts
+    - service.Stop: {service: httpd}
+    # Restart httpd on all matching hosts
+    - service.Restart: {service: httpd}
+
+
+Puppet
+------
+
+The *Puppet* task provides a uniform way to interact with the puppet
+service. This includes enabling/disabling the daemon and manually
+forcing a catalog run.
+
+[literal]
+---
+- hosts: [www0*.company.com]
+  tasks:
+    # Enable puppet
+    - puppet.Enable
+    # Disable puppet
+    - puppet.Disable
+    # Test run
+    - puppet.Run
+
+
+Nagios
+------
+
+The *Nagios* task lets you handle notifications and set downtime from
+your Taboot scripts.
+
+[literal]
+---
+- hosts: [www0*.company.com]
+  tasks:
+    # Disable alerts for all matching hosts
+    - nagios.DisableAlerts:
+        nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi
+    # Enable alerts for all matching hosts
+    - nagios.EnableAlerts:
+        nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi
+    # Schedule a 60 minute downtime for httpd on all matching hosts
+    - nagios.ScheduleDowntime:
+        nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi
+        service: httpd
+        minutes: 60
+
+
+Sleep
+-----
+
+The *Sleep* task is used to halt further task processing for a
+specified period of time.
+
+[literal]
+---
+- hosts: [www0*.company.com]
+  tasks:
+    # Pauses execution for 5 minutes
+    - sleep.Seconds: {seconds: 300}
+    # Also pauses execution for 5 minutes
+    - sleep.Minutes: {minutes: 5}
+
+
+Yum
+---
+
+The *Yum* task lets you install, remove, and update RPMs right in your
+Taboot scripts.
+
+[literal]
+---
+- hosts: [www0*.company.com]
+  tasks:
+    # Install three packages
+    - yum.Install: {packages: [httpd, php5, screen]}
+    # Remove the same three packages
+    - yum.Remove: {packages: [httpd, php5, screen]}
+    # Update the same three packages
+    - yum.Update: {packages: [httpd, php5, screen]}
+
+
+RPM
+---
+
+The *RPM* task provides two utility actions that, when used together,
+report any RPMs that changed between the PreManifest and PostManifest.
+
+[literal]
+---
+- hosts: [www0*.company.com]
+  tasks:
+    # Take a PreManifest of all installed packages
+    - rpm.PreManifest
+    # Use yum to update all the system RPMs.
+    - yum.Update
+    # Take a PostManifest and diff it against the PreManifest
+    # The diff is printed after PostManifest finishes running.
+    - rpm.PostManifest
+
+
+
+AJP
+---
+
+The *AJP* task provides a uniform way to put nodes into and out of
+rotation in a mod_jk AJP balancer. This module is a great replacement
+for manually adding and removing nodes in a jkmanage management panel.
+
+[literal]
+---
+- hosts: [tomcat*.int.company.com]
+  tasks:
+    # Take the matching node out of rotation
+    - mod_jk.OutOfRotation:
+        proxies:
+            - proxyjava01.web.prod.int.example.com
+            - proxyjava02.web.prod.int.example.com
+    # Do stuff....
+    # do more stuff...
+    # Put the node back into the pool
+    - mod_jk.InRotation:
+        proxies:
+            - proxyjava01.web.prod.int.example.com
+            - proxyjava02.web.prod.int.example.com
+
+
+AUTHOR
+------
+
+Taboot was originally written by John Eckersberg. Tim Bielawa is the
+current maintainer. See the AUTHORS file for a complete list of
+contributors.
+
+
+COPYRIGHT
+---------
+
+Copyright © 2009-2011, Red Hat, Inc
+
+Taboot is released under the terms of the GPLv3+ license.
+
+
+
+SEE ALSO
+--------
+*taboot*(1), *func*(1)
+
+
+Taboot home page: <https://fedorahosted.org/Taboot/>
+
+HTML Docs: <http://people.redhat.com/~tbielawa/taboot/docs/taboot-latest/tasks.html>
