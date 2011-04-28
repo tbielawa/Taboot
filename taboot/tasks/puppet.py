@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Taboot - Client utility for performing deployments with Func.
-# Copyright © 2009,2010, Red Hat, Inc.
+# Copyright © 2009-2011, Red Hat, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,20 +17,37 @@
 
 from taboot.tasks import command
 
+PUPPET_LOCKFILE = "/var/lib/puppet/state/puppetdlock"
+
 
 class Run(command.Run):
     """
-    Run 'puppetd --test'
+    Run 'puppetd --test || true'
+
+    See also: SafeRun
     """
 
     def __init__(self, **kwargs):
-        super(Run, self).__init__('puppetd --test --color=false',
+        super(Run, self).__init__('puppetd --test --color=false || true',
+                                  **kwargs)
+
+
+class SafeRun(command.Run):
+    """
+    Run 'puppetd --test'.
+
+    How is this different from Run? Simple, it will abort everything
+    if puppet returns with a non-zero exit status.
+    """
+
+    def __init__(self, **kwargs):
+        super(SafeRun, self).__init__('puppetd --test --color=false',
                                   **kwargs)
 
 
 class Enable(command.Run):
     """
-    Run 'puppetd --enable'
+    Run 'puppetd --enable'.
     """
 
     def __init__(self, **kwargs):
@@ -39,9 +56,19 @@ class Enable(command.Run):
 
 class Disable(command.Run):
     """
-    Run 'puppetd --disable'
-
+    Run 'puppetd --disable'.
     """
 
     def __init__(self, **kwargs):
         super(Disable, self).__init__('puppetd --disable', **kwargs)
+
+
+class DeleteLockfile(command.Run):
+    """
+    Remove the puppet lock file.
+
+    """
+
+    def __init__(self, **kwargs):
+        super(DeleteLockfile, self).__init__("rm -f %s" % PUPPET_LOCKFILE,
+                                             **kwargs)
