@@ -48,7 +48,7 @@ Func minion modules for use in conjunction with %{name}.
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 %{__mkdir_p} $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules
 %{__mv} $RPM_BUILD_ROOT%{python_sitelib}/taboot-func $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
-%{__mkdir_p} %{buildroot}%{_mandir}/man1
+%{__mkdir_p} %{buildroot}%{_mandir}/{man1,man5}
 %{__gzip} -c docs/man/man1/taboot.1 > %{buildroot}/%{_mandir}/man1/taboot.1.gz
 %{__gzip} -c docs/man/man5/taboot-tasks.5 > %{buildroot}/%{_mandir}/man5/taboot-tasks.5.gz
 

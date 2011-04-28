@@ -82,4 +82,4 @@ clean:
 
 
 .PHONEY: docs manual htmldoc clean version release sdist
-vpath %.asciidoc docs/man/man1
+vpath %.asciidoc docs/man/man1 docs/man/man5
