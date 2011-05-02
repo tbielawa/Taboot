@@ -17,7 +17,7 @@
 
 from taboot.tasks import BaseTask, TaskResult
 import taboot.errors
-
+import sys
 
 class NagiosBase(BaseTask):
     """
@@ -91,7 +91,7 @@ class NagiosBase(BaseTask):
             self._call_curl(opts)
         except Taboot.Errors.TabootMissingKrbTkt:
             print "Scheduling Nagios events requires a valid Kerberos ticket"
-            raise
+            sys.exit()
         except:
             print "Failed call to Nagios for " + self.host
             raise

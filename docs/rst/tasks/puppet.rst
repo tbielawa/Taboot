@@ -22,7 +22,9 @@ Run
   * `None`
 
 The ``Run`` class triggers a manual catalog run. This is equivalent to
-``puppetd --test``.
+``puppetd --test``. This will **not** abort the release if puppet
+returns with a non-zero exit code. You should check out the ``SafeRun``
+class if you're paranoid about that.
 
 
 Syntax::
@@ -39,6 +41,44 @@ Example::
         - www*
       tasks:
         - puppet.Run
+
+
+.. versionchanged:: 0.2.11
+   Absolutely will **not** abort the release if puppet returns
+   non-zero.
+
+
+SafeRun
+*******
+
+* API: :class:`taboot.tasks.puppet.SafeRun`
+* Keys
+
+  * `None`
+
+The ``SafeRun`` class triggers a manual catalog run. This is
+equivalent to ``puppetd --test``. This **will** abort the release if
+puppet returns with a non-zero exit code on systems running puppet
+2.6+. You should check out the ``Run`` class if you have reasons to
+ignore possible puppet errors.
+
+
+Syntax::
+
+    ---
+      tasks:
+        - puppet.Run
+.. versionchanged::
+
+Example::
+
+    ---
+    - hosts:
+        - www*
+      tasks:
+        - puppet.Run
+
+.. versionadded:: 0.2.11
 
 
 Enable
@@ -100,4 +140,34 @@ Example::
         - www*
       tasks:
         - puppet.Disable
+
+
+DeleteLockfile
+**************
+
+* API: :class:`taboot.tasks.puppet.DeleteLockfile`
+* Keys
+
+  * `None`
+
+
+The ``DeleteLockfile`` class forcibly deletes a lockfile. You
+shouldn't normally need this but from time to time you may find it
+necessary. Try and use the ``Enable`` class when at all possible.
+
+
+Syntax::
+
+    ---
+      tasks:
+        - puppet.DeleteLockfile
+
+
+Example::
+
+    ---
+    - hosts:
+        - www*
+      tasks:
+        - puppet.DeleteLockfile
 

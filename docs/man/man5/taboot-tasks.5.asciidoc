@@ -75,8 +75,12 @@ forcing a catalog run.
     - puppet.Enable
     # Disable puppet
     - puppet.Disable
+    # Delete that stubborn lockfile
+    - puppet.DeleteLockfile
     # Test run
     - puppet.Run
+    # Do a paranoid test run (quit Taboot on possible errors)
+    - puppet.SafeRun
 
 
 Nagios
