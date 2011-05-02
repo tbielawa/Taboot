@@ -1,7 +1,7 @@
 Puppet
 ^^^^^^
 
-* API: :class:`taboot.tasks.service`
+* API: :class:`taboot.tasks.puppet`
 * Classes
 
   * Start
@@ -68,7 +68,7 @@ Syntax::
     ---
       tasks:
         - puppet.Run
-.. versionchanged::
+
 
 Example::
 

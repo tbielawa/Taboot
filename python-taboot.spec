@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.10
+Version:        0.2.11
 Release:        1%{?dist}
 Summary:        Client utility for performing deployments with func
 
@@ -73,6 +73,14 @@ Func minion modules for use in conjunction with %{name}.
 
 
 %changelog
+* Mon May 02 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.11-1
+- Nagios sys.exit()s if you lack kerberos tickets
+- New tasks: puppet.{DeleteLockfile,SafeRun}
+- puppet.run ignores errors to deal with puppet 2.6 changes
+- Task for deleting puppet lock file.
+- New man page, taboot-tasks.5. Fix up some grammar, etc, in taboot.1.
+
+
 * Thu Apr 21 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.10-1
 - Ceremonial .10 release. Mostly small changes.
 - Change Summary wording

@@ -2,12 +2,12 @@
 .\"     Title: taboot-tasks
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 04/28/2011
+.\"      Date: 05/02/2011
 .\"    Manual: Taboot
 .\"    Source: Taboot 0.2.x
 .\"  Language: English
 .\"
-.TH "TABOOT\-TASKS" "5" "04/28/2011" "Taboot 0\&.2\&.x" "Taboot"
+.TH "TABOOT\-TASKS" "5" "05/02/2011" "Taboot 0\&.2\&.x" "Taboot"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -89,8 +89,12 @@ The \fBPuppet\fR task provides a uniform way to interact with the puppet service
     \- puppet\&.Enable
     # Disable puppet
     \- puppet\&.Disable
+    # Delete that stubborn lockfile
+    \- puppet\&.DeleteLockfile
     # Test run
     \- puppet\&.Run
+    # Do a paranoid test run (quit Taboot on possible errors)
+    \- puppet\&.SafeRun
 .fi
 .if n \{\
 .RE
