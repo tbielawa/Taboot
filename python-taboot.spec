@@ -5,7 +5,7 @@ Name:           python-taboot
 %define _name   taboot
 Version:        0.2.11
 Release:        1%{?dist}
-Summary:        Client utility for performing deployments with func
+Summary:        Client utility for scripted multi-system administration over Func
 
 Group:          Development/Languages
 License:        GPLv3+
@@ -21,8 +21,14 @@ Requires:       PyYAML
 
 
 %description
-Tool for written for scripting and automating the task of performing
-software releases in a large-scale infrastructure using Func.
+Tool for managing and executing tasks related to software releases and
+system administration via customizable YAML scripts. A library of
+prewritten tasks is built in so you can get started immediately.
+
+Taboot uses Func for inter-system communication, eliminating hacky ssh
+commands and the overhead associated with key management. Taboot can
+be extended by writing your Func modules and tasks in Python.
+
 
 
 %package -n taboot-func
