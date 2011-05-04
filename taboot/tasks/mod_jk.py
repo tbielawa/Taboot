@@ -23,8 +23,8 @@ JK_STOP = 2
 
 
 class ToggleHost(FuncTask):
-    def __init__(self, action, host, **kwargs):
-        super(ToggleHost, self).__init__(host, **kwargs)
+    def __init__(self, action, proxyhost, **kwargs):
+        super(ToggleHost, self).__init__(proxyhost, **kwargs)
         self._action = action
         if action == JK_ENABLE:
             self._command = 'taboot.modjk.enable_host'

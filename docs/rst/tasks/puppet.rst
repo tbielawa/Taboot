@@ -4,9 +4,11 @@ Puppet
 * API: :class:`taboot.tasks.puppet`
 * Classes
 
-  * Start
-  * Stop
-  * Restart
+  * Run
+  * SafeRun
+  * Enable
+  * Disable
+  * DeleteDockfile
 
 The ``puppet`` module provides a uniform way interact with the puppet
 service. This includes like enabling/disabling the daemon and manually
