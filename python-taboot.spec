@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.11
+Version:        0.2.12
 Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
@@ -79,6 +79,11 @@ Func minion modules for use in conjunction with %{name}.
 
 
 %changelog
+* Thu May 05 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.12-1
+- Version Bumpskies
+- Add some misc scripts and instructions for making releases
+- FIXED: modjk proxy not working. Updated puppet docs
+- Added a '-s' option to skip preflight sections
 * Mon May 02 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.11-1
 - Nagios sys.exit()s if you lack kerberos tickets
 - New tasks: puppet.{DeleteLockfile,SafeRun}
