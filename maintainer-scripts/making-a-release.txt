@@ -1,0 +1,58 @@
+Not the project maintainer? This file isn't all that relevant for you,
+it's just so I have a procedure to follow so I can make consistent
+releases. But feel free to read anyway.
+
+
+) Switch to devel branch
+
+) Hack
+
+) Test as much as possible
+
+) Run some test rpmbuilds
+
+) Update documentation if necessary. Run spellcheck.
+
+) Build documentation and check:
+    - Any unexpected build-time messages
+    - That it correctly renders
+
+When satisfied:
+
+) Update /VERSION and /taboot/__init__.py's __version__
+
+) Kick off a koji build: /maintainer-scripts/make-release.rb
+
+) Fix any build problems/check for correctness
+
+When complete:
+
+) Switch to master
+
+) Merge in devel
+
+) Tag it in git and push to fedorahosted:
+    - tito tag
+    - git push fedora --tags
+
+) Kick off a koji build: /maintainer-scripts/make-release.rb
+
+When complete:
+
+) Switch to $RELEASEDIR (something like /tmp/builder.somethingrandom)
+
+) Create the "latest" symlinks with the "taboot-latest-linker" script
+
+) Mount people.redhat.com/~tbielawa/ on ~/nethome
+
+) cp $RELEASEDIR/* ~/nethome/taboot/
+
+) Unmount nethome
+
+When complete:
+
+) Update websites "Latest News" with release date, version, and changelog
+
+) ???
+
+) Profit
