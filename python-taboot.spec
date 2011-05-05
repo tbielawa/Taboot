@@ -84,13 +84,13 @@ Func minion modules for use in conjunction with %{name}.
 - Add some misc scripts and instructions for making releases
 - FIXED: modjk proxy not working. Updated puppet docs
 - Added a '-s' option to skip preflight sections
+
 * Mon May 02 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.11-1
 - Nagios sys.exit()s if you lack kerberos tickets
 - New tasks: puppet.{DeleteLockfile,SafeRun}
 - puppet.run ignores errors to deal with puppet 2.6 changes
 - Task for deleting puppet lock file.
 - New man page, taboot-tasks.5. Fix up some grammar, etc, in taboot.1.
-
 
 * Thu Apr 21 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.10-1
 - Ceremonial .10 release. Mostly small changes.
