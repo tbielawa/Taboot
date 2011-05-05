@@ -56,6 +56,11 @@ Don't execute the release, just check script syntax.
 
 
 
+*-s*::
+
+Skip preflight sections if they exist.
+
+
 
 AUTHOR
 ------

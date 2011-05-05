@@ -89,6 +89,7 @@ def main():
     """
 
     checkonly = False
+    nopreflight = False
     usage = """taboot [OPTIONS...] [FILE...]
 
 Run a Taboot release script.
@@ -99,7 +100,7 @@ Options:
   -V, --version   Show program's version number and exit.
   -h, --help      Show this help message and exit.
   -n              Don't execute the release, just check script syntax.
-
+  -s              Skip preflight sections if they exist.
 
 Taboot is a tool for written for scripting and automating the task of
 performing software releases in a large-scale infrastructure. Release
@@ -125,6 +126,11 @@ Taboot is released under the terms of the GPLv3+ license"""
         i = args.index("-n")
         del args[i]
 
+    if "-s" in args:
+        nopreflight = True
+        i = args.index("-s")
+        del args[i]
+
     if len(args) >= 1:
         input_files = args
     else:
@@ -141,6 +147,11 @@ Taboot is released under the terms of the GPLv3+ license"""
         except:
             msg = "Please check the validity of your YAML in '%s'" % infile
             raise MalformedYAML(msg)
+
+        if nopreflight:
+            for b in ds:
+                if 'preflight' in b:
+                    del b['preflight']
 
         for runner_source in ds:
             runner = build_runner(runner_source)
