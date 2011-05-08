@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.12
+Version:        0.2.13
 Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
@@ -82,6 +82,9 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Sun May 08 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.13-1
+- Package maintenance + version bump
+- Fixed spacing in the specfile changelog
 * Thu May 05 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.12-1
 - Version Bumpskies
 - Add some misc scripts and instructions for making releases
