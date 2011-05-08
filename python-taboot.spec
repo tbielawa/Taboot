@@ -35,10 +35,14 @@ be extended by writing your Func modules and tasks in Python.
 Summary:        Func minion modules for use in conjunction with %{name}
 Group:          Development/Libraries
 Requires:       func
+Requires:	python-modjkapi
 
 
 %description -n taboot-func
 Func minion modules for use in conjunction with %{name}.
+
+Includes modjk - A func interface to the python-modjk API for managing
+mod_jk via it's xml web api.
 
 
 %prep
@@ -60,7 +64,6 @@ Func minion modules for use in conjunction with %{name}.
 
 
 %clean
-%{__make} clean
 %{__rm} -rf $RPM_BUILD_ROOT
 
 
