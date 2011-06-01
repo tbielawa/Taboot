@@ -17,6 +17,7 @@ Contents:
    tasks
    development
    code
+   man
 
 
 Indices and tables
