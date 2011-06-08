@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from taboot.tasks import BaseTask, TaskResult
+from taboot.tasks import BaseTask, TaskResult, FuncTask
 import taboot.errors
 import sys
 

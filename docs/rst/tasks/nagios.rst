@@ -8,19 +8,31 @@ Nagios
   * DisableNotifications
   * ScheduleDowntime
 
-The ``nagios`` module lets you handle notification and set downtime
+The ``nagios`` task lets you handle notification and set downtime
 from your Taboot scripts.
 
-.. note::
+.. versionchanged:: 0.2.14
+   The ``nagios`` task has switched from a CURL backend using Kerberos
+   authentication to a pure Func backend. Significant changes include:
 
-   The ``nagios_url`` for your site is going to be something like
-   `https://foo.example.com/nagios/cgi-bin/cmd.cgi`.
+   * Previously this task specified the ``nagios_url`` key as a URL,
+     it should now be given as the hostname of the Nagios server. This
+     To facilitate transitions we automatically correct URLs into
+     hostnames. In the future the name of this key may change.
 
-.. note::
+   * Previously the ``service`` key was defined as a scalar, like "HTTP"
+     or "JBOSS". This version accepts that key as a scalar OR as a
+     list and "does the right thing" in each case.
 
-   The nagios module is currently limited to Kerberos authentication
-   only. Additionally, operations will silently fail if the client
-   doesn't have a valid Kerberos ticket in their ticket cache.
+
+The host identified by the ``nagios_url`` key must be a registered
+Func minion and it must have the new Func Nagios module installed. You
+can download it from the Func git repo (in the func/minion/modules/
+directory) if it is missing from your installation.
+
+.. seealso::
+
+   `Func git repo <http://git.fedorahosted.org/git/?p=func.git>`_
 
 
 EnableAlerts
@@ -34,7 +46,7 @@ EnableAlerts
     * Type: String
     * Default: None
     * Required: Yes
-    * Description: Full URL to a Nagios command cgi
+    * Description: Hostname of the nagios server.
 
 Syntax::
 
@@ -42,10 +54,10 @@ Syntax::
       tasks:
         # Normal form
         - nagios.EnableAlerts:
-	    nagios_url: url-to-cmd.cgi
+            nagios_url: nagios-hostname
 
-	# Abbreviated form
-        - nagios.EnableAlerts: {nagios_url: url-to-cmd.cgi}
+        # Abbreviated form
+        - nagios.EnableAlerts: {nagios_url: nagios-hostname}
 
 
 Example::
@@ -54,7 +66,7 @@ Example::
     - hosts:
         - www*
       tasks:
-        - nagios.EnableAlerts: {nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi}
+        - nagios.EnableAlerts: {nagios_url: nagios.example.com}
 
 
 DisableAlerts
@@ -68,7 +80,7 @@ DisableAlerts
     * Type: String
     * Default: None
     * Required: Yes
-    * Description: Full URL to a Nagios command cgi
+    * Description: Hostname of the nagios server.
 
 Syntax::
 
@@ -76,10 +88,10 @@ Syntax::
       tasks:
         # Normal form
         - nagios.DisableAlerts:
-	    nagios_url: url-to-cmd.cgi
+            nagios_url: nagios-hostname
 
-	# Abbreviated form
-        - nagios.DisableAlerts: {nagios_url: url-to-cmd.cgi}
+        # Abbreviated form
+        - nagios.DisableAlerts: {nagios_url: nagios-hostname}
 
 
 Example::
@@ -88,7 +100,7 @@ Example::
     - hosts:
         - www*
       tasks:
-        - nagios.DisableAlerts: {nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi}
+        - nagios.DisableAlerts: {nagios_url: nagios.example.com}
 
 
 ScheduleDowntime
@@ -102,21 +114,25 @@ ScheduleDowntime
     * Type: String
     * Default: None
     * Required: Yes
-    * Description: Full URL to a Nagios command cgi
+    * Description: Hostname of the nagios server.
 
   * ``service``
 
     * Type: String
-    * Default: HOST
+    * Default: None
     * Required: No (has default)
-    * Description: The name of the service to be scheduled for downtime
+    * Description: The name of the service to be scheduled for downtime.
 
   * ``minutes``
 
     * Type: Integer
-    * Default: 15
+    * Default: 30
     * Required: No (has default)
-    * Description: The number of minutes to schedule downtime for
+    * Description: The number of minutes to schedule downtime for.
+
+
+.. versionchanged:: 0.2.14
+   Default for the ``minutes`` key changed from 15 to 30 minutes.
 
 
 Syntax::
@@ -125,21 +141,33 @@ Syntax::
       tasks:
         # Normal form
         - nagios.ScheduleDowntime:
-	    nagios_url: url-to-cmd.cgi
-	    service: service-to-schedule
-	    minutes: length-of-downtime
+            nagios_url: nagios-hostname
+            service: service-to-schedule
+            minutes: length-of-downtime
 
-	# Abbreviated form
-        - nagios.ScheduleDowntime: {nagios_url: url-to-cmd.cgi, service: service-to-schedule, minutes: length-of-downtime}
+        # Abbreviated form
+        - nagios.ScheduleDowntime: {nagios_url: nagios-hostname, service: service-to-schedule, minutes: length-of-downtime}
 
 
-Example::
+Example #1::
 
     ---
     - hosts:
         - www*
       tasks:
         - nagios.ScheduleDowntime:
-	    nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi
-	    service: httpd
-	    minutes: 60
+            nagios_url: nagios.example.com
+            service: httpd
+            minutes: 60
+
+Example #2::
+
+    ---
+    - hosts:
+        - www*
+      tasks:
+        - nagios.ScheduleDowntime:
+            nagios_url: nagios.example.com
+            service: [httpd, git, XMLRPC]
+            minutes: 60
+
