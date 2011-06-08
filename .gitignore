@@ -11,3 +11,4 @@ docs/html
 docs/.doctrees
 dist
 build
+*.xml

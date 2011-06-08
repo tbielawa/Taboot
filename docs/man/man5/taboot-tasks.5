@@ -2,12 +2,12 @@
 .\"     Title: taboot-tasks
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 05/02/2011
+.\"      Date: 06/08/2011
 .\"    Manual: Taboot
 .\"    Source: Taboot 0.2.x
 .\"  Language: English
 .\"
-.TH "TABOOT\-TASKS" "5" "05/02/2011" "Taboot 0\&.2\&.x" "Taboot"
+.TH "TABOOT\-TASKS" "5" "06/08/2011" "Taboot 0\&.2\&.x" "Taboot"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -112,14 +112,15 @@ The \fBNagios\fR task lets you handle notifications and set downtime from your T
   tasks:
     # Disable alerts for all matching hosts
     \- nagios\&.DisableAlerts:
-        nagios_url: https://foo\&.example\&.com/nagios/cgi\-bin/cmd\&.cgi
+        nagios_url: nagios\&.example\&.com
     # Enable alerts for all matching hosts
     \- nagios\&.EnableAlerts:
-        nagios_url: https://foo\&.example\&.com/nagios/cgi\-bin/cmd\&.cgi
-    # Schedule a 60 minute downtime for httpd on all matching hosts
+        nagios_url: nagios\&.example\&.com
+    # Schedule a 60 minute downtime for httpd, git and XMLRPC on
+    # all matching hosts
     \- nagios\&.ScheduleDowntime:
-        nagios_url: https://foo\&.example\&.com/nagios/cgi\-bin/cmd\&.cgi
-        service: httpd
+        nagios_url: nagios\&.example\&.com
+        service: [httpd, git, XMLRPC]
         minutes: 60
 .fi
 .if n \{\

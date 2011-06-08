@@ -99,7 +99,8 @@ your Taboot scripts.
     # Enable alerts for all matching hosts
     - nagios.EnableAlerts:
         nagios_url: nagios.example.com
-    # Schedule a 60 minute downtime for httpd on all matching hosts
+    # Schedule a 60 minute downtime for httpd, git and XMLRPC on
+    # all matching hosts
     - nagios.ScheduleDowntime:
         nagios_url: nagios.example.com
         service: [httpd, git, XMLRPC]
