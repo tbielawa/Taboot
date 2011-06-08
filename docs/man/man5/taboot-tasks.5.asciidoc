@@ -95,14 +95,14 @@ your Taboot scripts.
   tasks:
     # Disable alerts for all matching hosts
     - nagios.DisableAlerts:
-        nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi
+        nagios_url: nagios.example.com
     # Enable alerts for all matching hosts
     - nagios.EnableAlerts:
-        nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi
+        nagios_url: nagios.example.com
     # Schedule a 60 minute downtime for httpd on all matching hosts
     - nagios.ScheduleDowntime:
-        nagios_url: https://foo.example.com/nagios/cgi-bin/cmd.cgi
-        service: httpd
+        nagios_url: nagios.example.com
+        service: [httpd, git, XMLRPC]
         minutes: 60
 
 
