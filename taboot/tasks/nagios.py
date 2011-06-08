@@ -19,93 +19,47 @@ from taboot.tasks import BaseTask, TaskResult
 import taboot.errors
 import sys
 
-class NagiosBase(BaseTask):
+
+class NagiosBase(FuncTask):
     """
-    Base task for Nagios-related operations.
+    All subsequent Nagios tasks are subclasses of this.
+
+    Code note: Because a `FuncTask` expects to make connections to
+    `self.host` we need to switch `nagios_url` with `self.host` and
+    pass the original `self.host` as an argument.
+
+    .. versionchanged:: 0.2.14
+
+       The previous version specified the `nagios_url` parameter as a
+       URL. To facilitate transitions we automatically correct URLs
+       into hostnames.
+
+       Previously the `service` key was defined as a scalar, like
+       "HTTP" or "JBOSS". This version accepts that key as a scalar OR
+       as a list and "does the right thing" in each case.
     """
 
-    # Some constants that map to things Nagios expects to get in the POST.
-    # A full list is in the Nagios source, in include/common.h
-    NAGIOS_DISABLE = '29'
-    NAGIOS_ENABLE = '28'
-    NAGIOS_ADD_COMMENT = '1'
-    NAGIOS_DELETE_ALL_COMMENTS = '20'
-    NAGIOS_SCHEDULE_HOST_DOWNTIME = '55'
-    NAGIOS_SCHEDULE_SERVICE_DOWNTIME = '56'
-
-    def __init__(self, nagios_url, **kwargs):
+    def _fix_nagios_url(self, nagios_url):
         """
-        :Parameters:
-          - `nagios_url`: Full URL to a Nagios command handler.  Something
-             like: 'https://foo.example.com/nagios/cgi-bin/cmd.cgi'
-        """
+        For backwards compatability we accept a Nagios URL that
+        identifies an HTTP resource.
 
-        super(NagiosBase, self).__init__(**kwargs)
-        self._nagios_url = nagios_url
-
-    def _call_curl(self, post_data):
+        This method will take a string like http://foo.com/nagios/cmd.cgi
+        and return just the hostname component ("foo.com").
         """
-        Shell out to invoke curl.  Gives us easy negotiate auth.
-        """
-        import os
-        command = 'curl -s -o /dev/null --negotiate -u : -k %s' % \
-            (self._nagios_url)
-        for k in post_data:
-            command += ' -d %s=%s' % (k, post_data[k])
+        import re
+        return re.sub(r'(https?://)([^/]+)(.*)', r'\2', nagios_url)
 
-        # this comes back byte-packed and we want the high byte
-        exit_code = os.system(command) >> 8
-        if exit_code == 0:
-            return True
+    def _process_result(self, result):
+        t = TaskResult(self)
+
+        if result.startswith("Fail: "):
+            t.success = False
         else:
-            raise Exception("Curl failed with status %d" % exit_code)
-
-    def _krb_have_tkt(self):
-        """
-        Check that the user has a kerberos ticket in their cache.
-        """
-        import subprocess
-        tkt = subprocess.call(['klist', '-s'])
-        if tkt != 0:
-            raise Taboot.Errors.TabootMissingKrbTkt
-        else:
-            return None
-
-    def _call_nagios(self, command, extra_opts={}):
-        """
-        build up the POST call for an enable or disable. Example of
-        what nagios expects to get:
-
-        cmd_typ=29&cmd_mod=2&host=xmlserver1.app.stage.redhat.com&
-        btnSubmit=Commit
-        """
-
-        opts = {}
-        opts['host'] = self.host
-        opts['cmd_typ'] = command
-        opts['cmd_mod'] = '2'
-        opts['btnSubmit'] = 'Commit'
-        opts.update(extra_opts)
-        try:
-            self._krb_have_tkt()
-            self._call_curl(opts)
-        except Taboot.Errors.TabootMissingKrbTkt:
-            print "Scheduling Nagios events requires a valid Kerberos ticket"
-            sys.exit()
-        except:
-            print "Failed call to Nagios for " + self.host
-            raise
-
-
-class EnableAlerts(NagiosBase):
-    """
-    Enable alerts for a host on a nagios instance
-    """
-
-    def run(self, runner):
-        self._call_nagios(NagiosBase.NAGIOS_ENABLE)
-        self._call_nagios(NagiosBase.NAGIOS_DELETE_ALL_COMMENTS)
-        return TaskResult(self, success=True)
+            t.sucess = True
+        t.success = True
+        t.output = result
+        return t
 
 
 class DisableAlerts(NagiosBase):
@@ -113,49 +67,72 @@ class DisableAlerts(NagiosBase):
     Disable alerts for a host on a nagios instance
     """
 
-    def run(self, runner):
-        self._call_nagios(NagiosBase.NAGIOS_DISABLE)
-        self._call_nagios(NagiosBase.NAGIOS_ADD_COMMENT,
-                          {'persistent': 'on',
-                           'com_data': '"Notifications disabled by Taboot"'})
-        return TaskResult(self, success=True)
+    def __init__(self, nagios_url, **kwargs):
+        """
+        :Parameters:
+          - `nagios_url`: Hostname of the Nagios server.
+        """
+        target_host = kwargs['host']
+        kwargs['host'] = nagios_url
+        super(DisableAlerts, self).__init__(target_host, **kwargs)
+        self._command = 'nagios.disable_host_notifications'
+
+
+class EnableAlerts(NagiosBase):
+    """
+    Enable alerts for a host on a nagios instance
+    """
+
+    def __init__(self, nagios_url, **kwargs):
+        """
+        :Parameters:
+          - `nagios_url`: Hostname of the Nagios server.
+        """
+        target_host = kwargs['host']
+        kwargs['host'] = nagios_url
+        super(EnableAlerts, self).__init__(target_host, **kwargs)
+        self._command = 'nagios.enable_host_notifications'
 
 
 class ScheduleDowntime(NagiosBase):
     """
-    Schedule nagios service downtime
+    Schedule downtime for services on a host in Nagios
     """
 
-    def __init__(self, nagios_url, service='HOST', minutes=15, **kwargs):
+    def __init__(self, nagios_url, service=[], minutes=30, **kwargs):
         """
         :Parameters:
-          - `nagios_url`: Full URL to a Nagios command handler.  Something
-             like: 'https://foo.example.com/nagios/cgi-bin/cmd.cgi'
-          - `service`: The name of the service to be scheduled for downtime.
-             Example: HTTP
-          - `minutes`: The number of minutes to schedule downtime for
+          - `nagios_url`: Hostname of the Nagios server.
+          - `service`: Service or list of services to schedule down for.
+          - `minutes`: The number of minutes to schedule downtime
+            for. Default is 30.
         """
-        super(ScheduleDowntime, self).__init__(nagios_url, **kwargs)
-        self._minutes = minutes
-        self._service = service
+        import types
+        target_host = kwargs['host']
+        kwargs['host'] = self._fix_nagios_url(nagios_url)
 
-    def run(self, runner):
-        from datetime import datetime, timedelta
-        start_time = datetime.strftime(datetime.now(), "%m-%d-%Y %H:%M:%S")
-        end_time = datetime.strftime(datetime.now() +
-                                     timedelta(minutes=self._minutes),
-                                     "%m-%d-%Y %H:%M:%S")
+        if isinstance(service, types.StringTypes):
+            service = [service]
 
-        command_id = NagiosBase.NAGIOS_SCHEDULE_HOST_DOWNTIME
-        opts = {'com_data': '"Downtime scheduled by Taboot"',
-                'start_time': '"%s"' % start_time,
-                'end_time': '"%s"' % end_time,
-                'fixed': 1
-               }
+        if not isinstance(minutes, types.IntType):
+            if isinstance(minutes, types.FloatType):
+                minutes = int(minutes)
+            else:
+                raise TypeError("Invalid data given for minutes.",
+                                "Expecting int type.",
+                                "Got '%s'." % minutes)
 
-        if self._service != 'HOST':
-            command_id = NagiosBase.NAGIOS_SCHEDULE_SERVICE_DOWNTIME
-            opts['service'] = self._service
+        super(ScheduleDowntime, self).__init__(target_host, service,
+                                               minutes, **kwargs)
+        self._command = 'nagios.schedule_svc_downtime'
 
-        self._call_nagios(command_id, opts)
-        return TaskResult(self, success=True)
+    def _process_result(self, result):
+        t = TaskResult(self)
+        t.success = True
+        for r in result:
+            if r.startswith("Fail: "):
+                t.success = t.success & False
+            else:
+                t.sucess = t.success & True
+            t.output = result
+        return t

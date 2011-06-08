@@ -166,6 +166,8 @@ class CLIOutput(_FileLikeOutputObject):
         :Parameters:
            - `result`: result object to inspect and write
         """
+        import types
+
         # Set output color
         output_color = 'red'
         if result.success:
@@ -176,8 +178,14 @@ class CLIOutput(_FileLikeOutputObject):
         self._sys.stdout.write("%s Finished Task[%s]:\n" % (
             self.timestamp, self._c.format_string(
                 result.task, output_color)))
-        self._sys.stdout.write("%s\n" % self._c.format_string(
-            result.output.strip(), output_color))
+
+        if isinstance(result.output, types.ListType):
+            for r in result.output:
+                self._sys.stdout.write("%s\n" % self._c.format_string(
+                        r.strip(), output_color))
+        else:
+            self._sys.stdout.write("%s\n" % self._c.format_string(
+                    result.output.strip(), output_color))
 
 
 class LogOutput(_FileLikeOutputObject):
