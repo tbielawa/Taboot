@@ -99,7 +99,7 @@ class ScheduleDowntime(NagiosBase):
     Schedule downtime for services on a host in Nagios
     """
 
-    def __init__(self, nagios_url, service=[], minutes=30, **kwargs):
+    def __init__(self, nagios_url, service='HOST', minutes=30, **kwargs):
         """
         :Parameters:
           - `nagios_url`: Hostname of the Nagios server.
@@ -124,7 +124,11 @@ class ScheduleDowntime(NagiosBase):
 
         super(ScheduleDowntime, self).__init__(target_host, service,
                                                minutes, **kwargs)
-        self._command = 'nagios.schedule_svc_downtime'
+
+        if service == 'HOST':
+            self._command = "nagios.schedule_host_downtime"
+        else:
+            self._command = 'nagios.schedule_svc_downtime'
 
     def _process_result(self, result):
         t = TaskResult(self)

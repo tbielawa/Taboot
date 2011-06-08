@@ -170,4 +170,3 @@ Example #2::
             nagios_url: nagios.example.com
             service: [httpd, git, XMLRPC]
             minutes: 60
-
