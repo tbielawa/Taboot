@@ -64,4 +64,4 @@ class Minutes(SleepBase):
         time.sleep(self._seconds)
         return TaskResult(self, success=True,
                           output="Paused for %s minutes" %
-                          self._seconds)
+                          minutes)
