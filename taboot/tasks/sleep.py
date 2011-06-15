@@ -57,6 +57,7 @@ class Minutes(SleepBase):
 
     def __init__(self, minutes=1, **kwargs):
         super(Minutes, self).__init__(**kwargs)
+        self._minutes = minutes
         self._seconds = minutes * 60
 
     def run(self, runner):
@@ -64,4 +65,4 @@ class Minutes(SleepBase):
         time.sleep(self._seconds)
         return TaskResult(self, success=True,
                           output="Paused for %s minutes" %
-                          minutes)
+                          self._minutes)
