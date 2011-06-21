@@ -144,9 +144,24 @@ Taboot is released under the terms of the GPLv3+ license"""
 
         try:
             ds = yaml.load(blob)
-        except:
-            msg = "Please check the validity of your YAML in '%s'" % infile
-            raise MalformedYAML(msg)
+        except yaml.YAMLError, exc:
+            if hasattr(exc, 'problem_mark'):
+                mark = exc.problem_mark
+                probline = blob.split("\n")[mark.line]
+                arrow = " "*mark.column + "^"
+                msg = """
+Syntax Error while loading YAML script, %s.
+The problem is on line %s, column %s.
+
+%s
+%s""" % (infile, mark.line+1, mark.column+1, probline, arrow)
+                print msg
+                sys.exit(1)
+            else:
+                # No problem markers means we have to throw a generic
+                # "stuff messed up" type message
+                msg = "Could not parse YAML. Check over %s again." % infile
+                raise MalformedYAML(msg)
 
         if nopreflight:
             for b in ds:
