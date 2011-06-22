@@ -137,13 +137,19 @@ Taboot is released under the terms of the GPLv3+ license"""
         input_files = ['-']
 
     for infile in input_files:
-        if infile == '-':
-            blob = sys.stdin.read()
-        else:
-            blob = open(infile).read()
-
+        # Open the input file for reading.
         try:
-            ds = yaml.load(blob)
+            if infile == '-':
+                blob = sys.stdin.read()
+            else:
+                blob = open(infile).read()
+        except IOError, e:
+            print "Failed to read input file '%s'. Are you sure it exists?" % infile
+            sys.exit(1)
+
+        # Print a helpful message when loading the YAML fails
+        try:
+            ds = [doc for doc in yaml.load_all(blob) ]
         except yaml.YAMLError, exc:
             if hasattr(exc, 'problem_mark'):
                 mark = exc.problem_mark
@@ -159,19 +165,23 @@ The problem is on line %s, column %s.
                 sys.exit(1)
             else:
                 # No problem markers means we have to throw a generic
-                # "stuff messed up" type message
+                # "stuff messed up" type message. Sry bud.
                 msg = "Could not parse YAML. Check over %s again." % infile
                 raise MalformedYAML(msg)
 
+        # Remove the actual preflight elements if -s is given
         if nopreflight:
-            for b in ds:
-                if 'preflight' in b:
-                    del b['preflight']
+            for yamldoc in ds:
+                for b in yamldoc:
+                    if 'preflight' in b:
+                        del b['preflight']
 
-        for runner_source in ds:
-            runner = build_runner(runner_source)
-            if not checkonly and not runner.run():
-                break
+        # Run each YAML document returned from yaml.load_all
+        for yamldoc in ds:
+            for runner_source in yamldoc:
+                runner = build_runner(runner_source)
+                if not checkonly and not runner.run():
+                    break
 
 if __name__ == '__main__':
     main()
