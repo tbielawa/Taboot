@@ -96,6 +96,11 @@ class SphinxCommand(SetupBuildCommand):
 
             # And build!
             app.builder.build_all()
+
+            # We also have the HTML man pages to handle now as well
+            if os.system("make htmlman"):
+                print "There was an error while building the HTML man pages."
+                print "Run 'make htmlman' to recreate the problem."
             print "Your docs are now in %s" % outdir
         except ImportError, ie:
             print >> sys.stderr, "You don't seem to have the following which"

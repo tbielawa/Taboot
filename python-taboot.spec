@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.2.13
+Version:        0.3.0
 Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
@@ -35,7 +35,7 @@ be extended by writing your Func modules and tasks in Python.
 Summary:        Func minion modules for use in conjunction with %{name}
 Group:          Development/Libraries
 Requires:       func
-Requires:	python-modjkapi
+Requires:       python-modjkapi
 
 
 %description -n taboot-func
