@@ -82,6 +82,27 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Thu Jun 23 2011 Tim Bielawa <tbielawa@redhat.com> 0.3.0-1
+- Update version. 0.3.0. If Linux can do it -- so can we. (tbielawa@redhat.com)
+- Now included in EPEL and Fedora. Fixes #9 (tbielawa@redhat.com)
+- Correct a lot of spelling errors. Fixes #23 (Taboot maintainer has atrocious
+  spelling) (tbielawa@redhat.com)
+- Correctly handle YAML files with multiple YAML documents inside. Fixes #22
+  (tbielawa@redhat.com)
+- Better YAML loading debugging. Fixes #20 (tbielawa@redhat.com)
+- Handle bad CLI options gracefully. Fixes #15 (tbielawa@redhat.com)
+- Modify patch from jdetiber. Fixes #17 - sleep.Minutes not printing correct
+  status message (tbielawa@redhat.com)
+- Updated output for sleep.Minutes (jason.detiberus@redhat.com)
+- Update man page (tbielawa@redhat.com)
+- Update taboot-tasks manpage (tbielawa@redhat.com)
+- Make HOST the default for downtime scheduling again (tbielawa@redhat.com)
+- Updating Nagios task docs (tbielawa@redhat.com)
+- Rewrite the Nagios task to use the new Func Nagios module instead of CURL.
+  Fixes #6, #7, #11, #12 (tbielawa@redhat.com)
+- Adding HTML versions of the man pages to the HTML docs. Fixes #13
+  (tbielawa@redhat.com)
+
 * Sun May 08 2011 Tim Bielawa <tbielawa@redhat.com> 0.2.13-1
 - Package maintenance + version bump
 - Fixed spacing in the specfile changelog

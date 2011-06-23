@@ -2,7 +2,7 @@ taboot-tasks(5)
 ===============
 :doctype:manpage
 :man source:   Taboot
-:man version:  0.2.x
+:man version:  0.3.x
 
 
 NAME

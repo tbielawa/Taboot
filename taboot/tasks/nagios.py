@@ -73,7 +73,7 @@ class DisableAlerts(NagiosBase):
           - `nagios_url`: Hostname of the Nagios server.
         """
         target_host = kwargs['host']
-        kwargs['host'] = nagios_url
+        kwargs['host'] = self._fix_nagios_url(nagios_url)
         super(DisableAlerts, self).__init__(target_host, **kwargs)
         self._command = 'nagios.disable_host_notifications'
 
@@ -89,7 +89,7 @@ class EnableAlerts(NagiosBase):
           - `nagios_url`: Hostname of the Nagios server.
         """
         target_host = kwargs['host']
-        kwargs['host'] = nagios_url
+        kwargs['host'] = self._fix_nagios_url(nagios_url)
         super(EnableAlerts, self).__init__(target_host, **kwargs)
         self._command = 'nagios.enable_host_notifications'
 
