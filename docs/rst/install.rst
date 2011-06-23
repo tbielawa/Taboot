@@ -37,7 +37,7 @@ Building RPMs from git
 ----------------------
 
 Taboot uses `tito` for building RPM releases so you'll need to install
-it too to build RPMs that match whaat comes from the project.
+it too to build RPMs that match what comes from the project.
 
  #. tito
  #. python-devel

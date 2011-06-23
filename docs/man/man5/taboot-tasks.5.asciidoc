@@ -22,7 +22,7 @@ scripts are written using YAML syntax.
 Taboot tasks are pre-written actions to perform on a given host. For
 example, scheduling downtime in Nagios, or updating all the RPMs on a
 system. The tasks documented here can be used in __preflight__ and
-__tasks__ blocks. The syntax of each possible tasks varries. Taboot
+__tasks__ blocks. The syntax of each possible tasks varies. Taboot
 comes with many built-in tasks.
 
 This quick-reference is example based and only uses abbreviated forms

@@ -75,9 +75,9 @@ subtask.  After it completes, it will continue to run until one of two
 things happen:
 
   - ``task`` succeeds
-  - ``max_attempts`` number of runs have occured
+  - ``max_attempts`` number of runs have occurred
 
-If ``task`` succeeds, then the PollTask is considered to have succceeded.
+If ``task`` succeeds, then the PollTask is considered to have succeeded.
 
 If ``max_attempts`` is reached, then ``fail_task`` is executed one time.
 
