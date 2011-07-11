@@ -216,14 +216,21 @@ class LogOutput(_FileLikeOutputObject):
         :Parameters:
            - `result`: result object to inspect and write
         """
+        import types
+
         if result.success:
             success_str = 'OK'
         else:
             success_str = 'FAIL'
 
-        self._log_fd.write("%s:\n%s Finished Task[%s]: %s\n%s\n\n" % (
-            result.host, self.timestamp, result.task, success_str,
-            result.output.strip()))
+        self._log_fd.write("%s:\n%s Finished Task[%s]: %s\n" % (
+            result.host, self.timestamp, result.task, success_str))
+
+        if isinstance(result.output, types.ListType):
+            for r in result.output:
+                self._log_fd.write("%s\n\n" % r.strip())
+        else:
+            self._log_fd.write("%s\n\n" % result.output.strip())
 
 
 class EmailOutput(_FileLikeOutputObject):
