@@ -18,7 +18,7 @@
 import sys
 import yaml
 import taboot.runner
-from optparse import OptionParser
+import argparse
 from taboot import __version__
 
 
@@ -88,51 +88,30 @@ def main():
     Main function.
     """
 
-    checkonly = False
-    nopreflight = False
-    usage = """taboot [OPTIONS...] [FILE...]
-
-Run a Taboot release script.
-
-Options:
-  FILE            Release file in YAML format. Reads from stdin if FILE
-                  is '-' or not given. Multiple FILEs can be given.
-  -V, --version   Show program's version number and exit.
-  -h, --help      Show this help message and exit.
-  -n              Don't execute the release, just check script syntax.
-  -s              Skip preflight sections if they exist.
-
-Taboot is a tool for written for scripting and automating the task of
+    parser = argparse.ArgumentParser(
+                 formatter_class=argparse.RawDescriptionHelpFormatter,
+                 description="Run a Taboot release script.",
+                 epilog="""Taboot is a tool for written for scripting and automating the task of
 performing software releases in a large-scale infrastructure. Release
 scripts are written using YAML syntax.
 
 
+
 Taboot home page: <https://fedorahosted.org/Taboot/>
 Copyright 2009-2011, Red Hat, Inc
-Taboot is released under the terms of the GPLv3+ license"""
+Taboot is released under the terms of the GPLv3+ license""")
 
-    args = sys.argv[1:]
+    parser.add_argument('-V', '--version', action='version', version='Taboot v%s' % __version__)
+    parser.add_argument('-n', '--checkonly', action='store_true',
+                        default=False, help='Don\'t execute the release, just check script syntax.')
+    parser.add_argument('-s', '--skippreflight', action='store_true',
+                        default=False, help='Skip preflight sections if they exist.')
+    parser.add_argument('input_files', nargs='*', metavar='FILE',
+                        help='Release file in YAML format.  Reads from stdin if FILE is \'-\' or not given.')
+    args = parser.parse_args()
 
-    if "-h" in args or "--help" in args:
-        print usage
-        sys.exit()
-
-    if "-V" in args or "--version" in args:
-        print "Taboot v%s" % __version__
-        sys.exit()
-
-    if "-n" in args:
-        checkonly = True
-        i = args.index("-n")
-        del args[i]
-
-    if "-s" in args:
-        nopreflight = True
-        i = args.index("-s")
-        del args[i]
-
-    if len(args) >= 1:
-        input_files = args
+    if len(args.input_files) >= 1:
+        input_files = args.input_files
     else:
         input_files = ['-']
 
@@ -170,7 +149,7 @@ The problem is on line %s, column %s.
                 raise MalformedYAML(msg)
 
         # Remove the actual preflight elements if -s is given
-        if nopreflight:
+        if args.skippreflight:
             for yamldoc in ds:
                 for b in yamldoc:
                     if 'preflight' in b:
@@ -180,7 +159,7 @@ The problem is on line %s, column %s.
         for yamldoc in ds:
             for runner_source in yamldoc:
                 runner = build_runner(runner_source)
-                if not checkonly and not runner.run():
+                if not args.checkonly and not runner.run():
                     break
 
 if __name__ == '__main__':
