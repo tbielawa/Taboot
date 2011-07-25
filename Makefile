@@ -65,7 +65,7 @@ srpm: clean
 
 rpm:
 	@echo "Remember that you should only rpm if you've tagged this release first."
-	tito builld --rpm
+	tito build --rpm
 
 tag: clean
 	tito tag
