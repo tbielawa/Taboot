@@ -148,6 +148,11 @@ The problem is on line %s, column %s.
                 msg = "Could not parse YAML. Check over %s again." % infile
                 raise MalformedYAML(msg)
 
+        # If you're just validating the YAML we don't need to build
+        # the data structure.
+        if args.checkonly:
+            continue
+
         # Remove the actual preflight elements if -s is given
         if args.skippreflight:
             for yamldoc in ds:
@@ -159,7 +164,7 @@ The problem is on line %s, column %s.
         for yamldoc in ds:
             for runner_source in yamldoc:
                 runner = build_runner(runner_source)
-                if not args.checkonly and not runner.run():
+                if not runner.run():
                     break
 
 if __name__ == '__main__':
