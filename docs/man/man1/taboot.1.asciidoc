@@ -13,7 +13,7 @@ taboot - run a taboot release script
 
 SYNOPSIS
 --------
-taboot ['OPTIONS'] ['FILE'...]
+taboot [-h] [-V] [-n] [-s] [-L [LOGFILE]] [FILE [FILE ...]]
 
 
 
@@ -50,16 +50,19 @@ Show program's version number and exit.
 
 
 
-*-n*::
+*-n*, *--checkonly*::
 
 Don't execute the release, just check script syntax.
 
 
 
-*-s*::
+*-s*, *--skippreflight*::
 
 Skip preflight sections if they exist.
 
+*-L [LOGFILE]*, *--logfile [LOGFILE]*::
+
+Adds [LogOutput: \{logfile: LOGFILE}] to the script(s) being run. If LOGFILE is not specified then taboot-YYYY-MM-DD-HHMMSS.log will be used
 
 
 AUTHOR

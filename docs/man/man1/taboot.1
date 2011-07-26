@@ -2,12 +2,12 @@
 .\"     Title: taboot
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 06/27/2011
+.\"      Date: 07/26/2011
 .\"    Manual: System administration commands
 .\"    Source: Taboot 0.3.x
 .\"  Language: English
 .\"
-.TH "TABOOT" "1" "06/27/2011" "Taboot 0\&.3\&.x" "System administration commands"
+.TH "TABOOT" "1" "07/26/2011" "Taboot 0\&.3\&.x" "System administration commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 taboot \- run a taboot release script
 .SH "SYNOPSIS"
 .sp
-taboot [\fIOPTIONS\fR] [\fIFILE\fR\&...]
+taboot [\-h] [\-V] [\-n] [\-s] [\-L [LOGFILE]] [FILE [FILE \&...]]
 .SH "DESCRIPTION"
 .sp
 Taboot is a tool written for scripting and automating the task of performing software releases in a large\-scale infrastructure\&. Release scripts are written using YAML syntax\&.
@@ -57,14 +57,19 @@ Show this help message and exit\&.
 Show program\(cqs version number and exit\&.
 .RE
 .PP
-\fB\-n\fR
+\fB\-n\fR, \fB\-\-checkonly\fR
 .RS 4
 Don\(cqt execute the release, just check script syntax\&.
 .RE
 .PP
-\fB\-s\fR
+\fB\-s\fR, \fB\-\-skippreflight\fR
 .RS 4
 Skip preflight sections if they exist\&.
+.RE
+.PP
+\fB\-L [LOGFILE]\fR, \fB\-\-logfile [LOGFILE]\fR
+.RS 4
+Adds [LogOutput: {logfile: LOGFILE}] to the script(s) being run\&. If LOGFILE is not specified then taboot\-YYYY\-MM\-DD\-HHMMSS\&.log will be used
 .RE
 .SH "AUTHOR"
 .sp

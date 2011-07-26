@@ -19,12 +19,12 @@ import sys
 import yaml
 import taboot.runner
 import argparse
+import re
+import datetime
 from taboot import __version__
-
 
 class MalformedYAML(Exception):
     pass
-
 
 def resolve_types(ds, relative_to):
     """
@@ -88,6 +88,9 @@ def main():
     Main function.
     """
 
+    dt = datetime.datetime.today()
+    defaultlogfile="taboot-%s.log" % (dt.strftime("%Y-%m-%d-%H%M%S"))
+
     parser = argparse.ArgumentParser(
                  formatter_class=argparse.RawDescriptionHelpFormatter,
                  description="Run a Taboot release script.",
@@ -106,9 +109,30 @@ Taboot is released under the terms of the GPLv3+ license""")
                         default=False, help='Don\'t execute the release, just check script syntax.')
     parser.add_argument('-s', '--skippreflight', action='store_true',
                         default=False, help='Skip preflight sections if they exist.')
+    parser.add_argument('-L', '--logfile', const=defaultlogfile, nargs='?',
+                        help='Adds [LogOutput: {logfile: LOGFILE}] to the script(s) being run.  If LOGFILE is not specified then taboot-YYYY-MM-DD-HHMMSS.log will be used')
     parser.add_argument('input_files', nargs='*', metavar='FILE',
                         help='Release file in YAML format.  Reads from stdin if FILE is \'-\' or not given.')
     args = parser.parse_args()
+
+    if args.logfile:
+        # Since we are snarfing the next positional argument after -L, we may accidentally snarf up an input yaml file
+        # Hence the test to see if our value is a .yaml file, and if it is, we will set the logfile to the default
+        # and store the yaml file name to add to input_files
+        pattern = re.compile(".*yaml$", re.IGNORECASE)
+        if pattern.search(args.logfile):
+            # We accidentally snarfed up a yaml script, add it back to input_files and use the default format
+            if args.input_files:
+                args.input_files.insert(0,args.logfile)
+            else:
+                args.input_files=[args.logfile]
+            logfile=defaultlogfile
+        else:
+            logfile = args.logfile
+
+        # Need to print message informing user that we are adding logging and to where 
+        print "Adding logging to file: %s" % logfile
+        addLogging=True
 
     if len(args.input_files) >= 1:
         input_files = args.input_files
@@ -147,6 +171,15 @@ The problem is on line %s, column %s.
                 # "stuff messed up" type message. Sry bud.
                 msg = "Could not parse YAML. Check over %s again." % infile
                 raise MalformedYAML(msg)
+
+        # Add Logging if -L is given
+        if addLogging:
+            for yamldoc in ds:
+                for b in yamldoc:
+                    if 'output' in b:
+                        b['output'].append({'LogOutput': {'logfile': logfile}})
+                    else:
+                        b['output']=[{'LogOutput': {'logfile': logfile}}]
 
         # If you're just validating the YAML we don't need to build
         # the data structure.
