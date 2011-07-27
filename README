@@ -20,12 +20,13 @@ Here's an example YAML file, it's pretty self-explanatory.
 - hosts:
     - www*.example.com
 
-  tasks:
+  preflight:
     - nagios.ScheduleDowntime:
-        nagios_url: https://nagios.int.example.com/nagios/cgi-bin/cmd.cgi
+        nagios_url: nagios.int.example.com
         minutes: 5
         service: httpd
 
+  tasks:
     - service.Stop: {service: httpd}
 
     - yum.Update

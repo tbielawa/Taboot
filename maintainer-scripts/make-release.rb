@@ -70,6 +70,7 @@ builders = Array.new
 builders.push TabootBuilder.new("el5", "dist-5E-epel")
 builders.push TabootBuilder.new("el6", "dist-6E-epel")
 builders.push TabootBuilder.new("fc14", "dist-f14")
+builders.push TabootBuilder.new("fc15", "dist-f15")
 
 director = BuildDirector.new(builders)
 

@@ -53,6 +53,8 @@ When complete:
 
 ) Update websites "Latest News" with release date, version, and changelog
 
+) Send message to taboot general mailing list
+
 ) ???
 
 ) Profit
