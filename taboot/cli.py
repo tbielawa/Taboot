@@ -92,6 +92,8 @@ def main():
 
     dt = datetime.datetime.today()
     defaultlogfile = "taboot-%s.log" % (dt.strftime("%Y-%m-%d-%H%M%S"))
+    addLogging = False
+    overrideConcurrency = False
 
     parser = argparse.ArgumentParser(
                  formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -113,6 +115,8 @@ Taboot is released under the terms of the GPLv3+ license""")
                         default=False, help='Skip preflight sections if they exist.')
     parser.add_argument('-L', '--logfile', const=defaultlogfile, nargs='?',
                         help='Adds [LogOutput: {logfile: LOGFILE}] to the script(s) being run.  If LOGFILE is not specified then taboot-YYYY-MM-DD-HHMMSS.log will be used')
+    parser.add_argument('-C', '--concurrency', nargs=1, type=int,
+                        help='Sets the cuncurrency for the input script(s)')
     parser.add_argument('input_files', nargs='*', metavar='FILE',
                         help='Release file in YAML format.  Reads from stdin if FILE is \'-\' or not given.')
     args = parser.parse_args()
@@ -135,6 +139,14 @@ Taboot is released under the terms of the GPLv3+ license""")
         # Need to print message informing user that we are adding logging and to where
         print "Adding logging to file: %s" % logfile
         addLogging = True
+
+    if args.concurrency:
+        print "Setting concurrency to %i." % args.concurrency[0]
+        overrideConcurrency = True
+        concurrency = args.concurrency[0]
+        if concurrency < 0:
+          print "Concurrency has to be a positive value"
+          sys.exit(1)
 
     if len(args.input_files) >= 1:
         input_files = args.input_files
@@ -174,14 +186,22 @@ The problem is on line %s, column %s.
                 msg = "Could not parse YAML. Check over %s again." % infile
                 raise MalformedYAML(msg)
 
-        # Add Logging if -L is given
+        # Add/Modify Logging if -L is given
         if addLogging:
             for yamldoc in ds:
                 for b in yamldoc:
                     if 'output' in b:
                         b['output'].append({'LogOutput': {'logfile': logfile}})
                     else:
-                        b['output'] = [{'LogOutput': {'logfile': logfile}}]
+                        b['output'] = [{'LogOutput': {'logfile': logfile}}, 'CLIOutput']
+
+        # Add/Modify Concurrency if -C is given
+        if overrideConcurrency:
+            for yamldoc in ds:
+                for b in yamldoc:
+                    if 'concurrency' in b:
+                        del b['concurrency']
+                    b['concurrency'] = concurrency
 
         # If you're just validating the YAML we don't need to build
         # the data structure.

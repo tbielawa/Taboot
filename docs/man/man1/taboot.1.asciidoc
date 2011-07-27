@@ -13,7 +13,8 @@ taboot - run a taboot release script
 
 SYNOPSIS
 --------
-taboot [-h] [-V] [-n] [-s] [-L [LOGFILE]] [FILE [FILE ...]]
+taboot [-h] [-V] [-n] [-s] [-L [LOGFILE]] [-C CONCURRENCY]
+              [FILE [FILE ...]]
 
 
 
@@ -60,9 +61,19 @@ Don't execute the release, just check script syntax.
 
 Skip preflight sections if they exist.
 
+
+
 *-L [LOGFILE]*, *--logfile [LOGFILE]*::
 
 Adds [LogOutput: \{logfile: LOGFILE}] to the script(s) being run. If LOGFILE is not specified then taboot-YYYY-MM-DD-HHMMSS.log will be used
+
+
+
+*-C CONCURRENCY*, *--concurrency CONCURRENCY*::
+
+Sets the cuncurrency for the input script(s)
+
+
 
 
 AUTHOR
