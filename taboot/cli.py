@@ -23,8 +23,10 @@ import re
 import datetime
 from taboot import __version__
 
+
 class MalformedYAML(Exception):
     pass
+
 
 def resolve_types(ds, relative_to):
     """
@@ -89,7 +91,7 @@ def main():
     """
 
     dt = datetime.datetime.today()
-    defaultlogfile="taboot-%s.log" % (dt.strftime("%Y-%m-%d-%H%M%S"))
+    defaultlogfile = "taboot-%s.log" % (dt.strftime("%Y-%m-%d-%H%M%S"))
 
     parser = argparse.ArgumentParser(
                  formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -123,16 +125,16 @@ Taboot is released under the terms of the GPLv3+ license""")
         if pattern.search(args.logfile):
             # We accidentally snarfed up a yaml script, add it back to input_files and use the default format
             if args.input_files:
-                args.input_files.insert(0,args.logfile)
+                args.input_files.insert(0, args.logfile)
             else:
-                args.input_files=[args.logfile]
-            logfile=defaultlogfile
+                args.input_files = [args.logfile]
+            logfile = defaultlogfile
         else:
             logfile = args.logfile
 
-        # Need to print message informing user that we are adding logging and to where 
+        # Need to print message informing user that we are adding logging and to where
         print "Adding logging to file: %s" % logfile
-        addLogging=True
+        addLogging = True
 
     if len(args.input_files) >= 1:
         input_files = args.input_files
@@ -152,18 +154,18 @@ Taboot is released under the terms of the GPLv3+ license""")
 
         # Print a helpful message when loading the YAML fails
         try:
-            ds = [doc for doc in yaml.load_all(blob) ]
+            ds = [doc for doc in yaml.load_all(blob)]
         except yaml.YAMLError, exc:
             if hasattr(exc, 'problem_mark'):
                 mark = exc.problem_mark
                 probline = blob.split("\n")[mark.line]
-                arrow = " "*mark.column + "^"
+                arrow = " " * mark.column + "^"
                 msg = """
 Syntax Error while loading YAML script, %s.
 The problem is on line %s, column %s.
 
 %s
-%s""" % (infile, mark.line+1, mark.column+1, probline, arrow)
+%s""" % (infile, mark.line + 1, mark.column + 1, probline, arrow)
                 print msg
                 sys.exit(1)
             else:
@@ -179,7 +181,7 @@ The problem is on line %s, column %s.
                     if 'output' in b:
                         b['output'].append({'LogOutput': {'logfile': logfile}})
                     else:
-                        b['output']=[{'LogOutput': {'logfile': logfile}}]
+                        b['output'] = [{'LogOutput': {'logfile': logfile}}]
 
         # If you're just validating the YAML we don't need to build
         # the data structure.
