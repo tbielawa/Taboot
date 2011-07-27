@@ -98,7 +98,8 @@ def main():
     parser = argparse.ArgumentParser(
                  formatter_class=argparse.RawDescriptionHelpFormatter,
                  description="Run a Taboot release script.",
-                 epilog="""Taboot is a tool for written for scripting and automating the task of
+                 epilog="""Taboot is a tool for written for scripting \
+and automating the task of
 performing software releases in a large-scale infrastructure. Release
 scripts are written using YAML syntax.
 
@@ -108,26 +109,36 @@ Taboot home page: <https://fedorahosted.org/Taboot/>
 Copyright 2009-2011, Red Hat, Inc
 Taboot is released under the terms of the GPLv3+ license""")
 
-    parser.add_argument('-V', '--version', action='version', version='Taboot v%s' % __version__)
+    parser.add_argument('-V', '--version', action='version',
+                        version='Taboot v%s' % __version__)
     parser.add_argument('-n', '--checkonly', action='store_true',
-                        default=False, help='Don\'t execute the release, just check script syntax.')
+                        default=False,
+                        help='Don\'t execute the release, just check \
+                              script syntax.')
     parser.add_argument('-s', '--skippreflight', action='store_true',
-                        default=False, help='Skip preflight sections if they exist.')
+                        default=False,
+                        help='Skip preflight sections if they exist.')
     parser.add_argument('-L', '--logfile', const=defaultlogfile, nargs='?',
-                        help='Adds [LogOutput: {logfile: LOGFILE}] to the script(s) being run.  If LOGFILE is not specified then taboot-YYYY-MM-DD-HHMMSS.log will be used')
+                        help='Adds [LogOutput: {logfile: LOGFILE}] to the \
+                              script(s) being run.  If LOGFILE is not \
+                              specified then taboot-YYYY-MM-DD-HHMMSS.log \
+                              will be used')
     parser.add_argument('-C', '--concurrency', nargs=1, type=int,
                         help='Sets the cuncurrency for the input script(s)')
     parser.add_argument('input_files', nargs='*', metavar='FILE',
-                        help='Release file in YAML format.  Reads from stdin if FILE is \'-\' or not given.')
+                        help='Release file in YAML format.  Reads from stdin \
+                              if FILE is \'-\' or not given.')
     args = parser.parse_args()
 
     if args.logfile:
-        # Since we are snarfing the next positional argument after -L, we may accidentally snarf up an input yaml file
-        # Hence the test to see if our value is a .yaml file, and if it is, we will set the logfile to the default
-        # and store the yaml file name to add to input_files
+        # Since we are snarfing the next positional argument after -L, we may
+        # accidentally snarf up an input yaml file.  Hence the test to see if
+        # our value is a .yaml file, and if it is, we will set the logfile to
+        # the default and store the yaml file name to add to input_files
         pattern = re.compile(".*yaml$", re.IGNORECASE)
         if pattern.search(args.logfile):
-            # We accidentally snarfed up a yaml script, add it back to input_files and use the default format
+            # We accidentally snarfed up a yaml script, add it back to
+            # input_files and use the default format
             if args.input_files:
                 args.input_files.insert(0, args.logfile)
             else:
@@ -136,7 +147,8 @@ Taboot is released under the terms of the GPLv3+ license""")
         else:
             logfile = args.logfile
 
-        # Need to print message informing user that we are adding logging and to where
+        # Need to print message informing user that we are adding logging and
+        # to where
         print "Adding logging to file: %s" % logfile
         addLogging = True
 
@@ -145,8 +157,8 @@ Taboot is released under the terms of the GPLv3+ license""")
         overrideConcurrency = True
         concurrency = args.concurrency[0]
         if concurrency < 0:
-          print "Concurrency has to be a positive value"
-          sys.exit(1)
+            print "Concurrency has to be a positive value"
+            sys.exit(1)
 
     if len(args.input_files) >= 1:
         input_files = args.input_files
@@ -161,7 +173,8 @@ Taboot is released under the terms of the GPLv3+ license""")
             else:
                 blob = open(infile).read()
         except IOError, e:
-            print "Failed to read input file '%s'. Are you sure it exists?" % infile
+            print "Failed to read input file '%s'. Are you sure it exists?" \
+                  % infile
             sys.exit(1)
 
         # Print a helpful message when loading the YAML fails
@@ -193,7 +206,8 @@ The problem is on line %s, column %s.
                     if 'output' in b:
                         b['output'].append({'LogOutput': {'logfile': logfile}})
                     else:
-                        b['output'] = [{'LogOutput': {'logfile': logfile}}, 'CLIOutput']
+                        b['output'] = [{'LogOutput': {'logfile': logfile}},
+                                       'CLIOutput']
 
         # Add/Modify Concurrency if -C is given
         if overrideConcurrency:
