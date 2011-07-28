@@ -60,11 +60,6 @@ Sleep Tasks
 .. automodule:: taboot.tasks.sleep
    :members:
 
-User input tasks
-^^^^^^^^^^^^^^^^
-.. automodule:: taboot.tasks.userinput
-   :members:
-
 Yum tasks
 ^^^^^^^^^
 .. automodule:: taboot.tasks.yum
