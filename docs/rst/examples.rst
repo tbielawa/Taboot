@@ -15,11 +15,8 @@ httpd::
         - 'someotherhost'
       concurrency: 2
       tasks:
-        - yum.Update:
-            packages:
-              - some-rpm-package-name
-        - service.Restart
-            service: httpd
+        - yum.Update: {packages: [sun-java, httpd]}
+        - service.Restart: {service: httpd}
 
 Save this to a file `myjob.yaml` and run as such::
 
