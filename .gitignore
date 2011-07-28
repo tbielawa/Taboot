@@ -12,3 +12,4 @@ docs/.doctrees
 dist
 build
 *.xml
+Graph/input

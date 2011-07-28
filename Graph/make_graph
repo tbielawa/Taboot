@@ -1,0 +1,28 @@
+#!/bin/bash
+
+thisdir=`basename $(pwd)`
+results=`mktemp`
+dotfile="objectgraph.dot"
+
+generate_input() {
+    if [ "${thisdir}" = "Graph" ]; then
+        pushd ..
+        egrep -r "^class" taboot/* | sed "s/:class//" | tr "(" " " | tr -d "),:" | sed "s/\.py//" | sed -r "s|taboot/(tasks/)?||" | sed "s/__init__/tasks/" > ${results}
+        popd
+        cp ${results} ./input
+    fi
+}
+
+generate_dotfile() {
+    ./dotgen.py
+}
+
+generate_graph() {
+    dot -Tpng -o TabootInheritanceGraph.png < ${dotfile}
+}
+
+
+
+generate_input
+generate_dotfile
+generate_graph
