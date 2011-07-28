@@ -135,17 +135,24 @@ class GraphMachine:
         String representation of this graph in dot language
         """
         from datetime import datetime
+        from random import randrange
+
         dt = datetime.today()
         last_generated = "// Last updated on: %s" % \
             dt.strftime("%Y-%m-%d %H:%M:%S")
         header = """digraph objectgraph {
 \tfontsize=30;
-\tlabel=\"Class Inheritance Graph of the entire Taboot source code.\\n \
+\tlabel=\"Class Inheritance Graph of the entire Taboot source code.\\n\
 http://fedorahosted.org/Taboot/\";"""
+        defaultnode = "node [fontname=Helvetica];"
         footer = "}\n"
-        edges = [last_generated, header]
+        edges = [last_generated, header, defaultnode]
 
         for parent, children in self.connections.iteritems():
+            # http://www.graphviz.org/doc/info/colors.html#brewer
+            color = randrange(1, 10)
+            nodecolor = "\tnode [color=\"/paired10/%s\"];" % color
+            edges.append(nodecolor)
             for child in children:
                 edge = "\t\"%s\"->\"%s\";" % (parent, child)
                 edges.append(edge)

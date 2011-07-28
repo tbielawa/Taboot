@@ -66,7 +66,6 @@ class Disable(command.Run):
 class DeleteLockfile(command.Run):
     """
     Remove the puppet lock file.
-
     """
 
     def __init__(self, **kwargs):
