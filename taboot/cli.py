@@ -131,7 +131,7 @@ Taboot is released under the terms of the GPLv3+ license""")
                               specified then taboot-YYYY-MM-DD-HHMMSS.log \
                               will be used')
     parser.add_argument('-C', '--concurrency', nargs=1, type=int,
-                        help='Sets the cuncurrency for the input script(s)')
+                        help='Sets the concurrency for the input script(s)')
     parser.add_argument('-E', '--edit', action='store_true',
                         default=False,
                         help='Edit the input script(s) before running them \

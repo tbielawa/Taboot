@@ -76,7 +76,7 @@ Adds [LogOutput: \{logfile: LOGFILE}] to the script(s) being run. If LOGFILE is 
 
 *-C CONCURRENCY*, *--concurrency CONCURRENCY*::
 
-Sets the cuncurrency for the input script(s).
+Sets the concurrency for the input script(s).
 
 
 
