@@ -13,7 +13,7 @@ taboot - run a taboot release script
 
 SYNOPSIS
 --------
-taboot [-h] [-V] [-n] [-p] [-s] [-L [LOGFILE]] [-C CONCURRENCY]
+taboot [-h] [-V] [-n] [-p] [-s] [-L [LOGFILE]] [-C CONCURRENCY] [-E]
               [FILE [FILE ...]]
 
 
@@ -77,6 +77,12 @@ Adds [LogOutput: \{logfile: LOGFILE}] to the script(s) being run. If LOGFILE is 
 *-C CONCURRENCY*, *--concurrency CONCURRENCY*::
 
 Sets the cuncurrency for the input script(s).
+
+
+
+*-E*, *--edit*:
+
+Edit the input script(s) before running them using $EDITOR. If $EDITOR is undefined then emacs will be used, if emacs is not found then vi will be used.
 
 
 

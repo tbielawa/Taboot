@@ -21,6 +21,9 @@ import taboot.runner
 import argparse
 import re
 import datetime
+import tempfile
+import os
+from subprocess import call
 from taboot import __version__
 
 
@@ -129,6 +132,12 @@ Taboot is released under the terms of the GPLv3+ license""")
                               will be used')
     parser.add_argument('-C', '--concurrency', nargs=1, type=int,
                         help='Sets the cuncurrency for the input script(s)')
+    parser.add_argument('-E', '--edit', action='store_true',
+                        default=False,
+                        help='Edit the input script(s) before running them \
+                              using $EDITOR.  If $EDITOR is undefined then \
+                              emacs will be used, if emacs is not found then \
+                              vi will be used.')
     parser.add_argument('input_files', nargs='*', metavar='FILE',
                         help='Release file in YAML format.  Reads from stdin \
                               if FILE is \'-\' or not given.')
@@ -176,6 +185,18 @@ Taboot is released under the terms of the GPLv3+ license""")
                 blob = sys.stdin.read()
             else:
                 blob = open(infile).read()
+                if args.edit:
+                    tmpfile = tempfile.NamedTemporaryFile(suffix=".tmp",
+                                              prefix="taboot-")
+                    tmpfile.write(blob)
+                    tmpfile.flush()
+                    try:
+                        EDITOR = os.environ.get('EDITOR', 'emacs')
+                        call([EDITOR, tmpfile.name])
+                    except OSError, e:
+                        call(['vi', tmpfile.name])
+                    blob = open(tmpfile.name).read()
+                    tmpfile.close()
         except IOError, e:
             print "Failed to read input file '%s'. Are you sure it exists?" \
                   % infile

@@ -31,7 +31,7 @@
 taboot \- run a taboot release script
 .SH "SYNOPSIS"
 .sp
-taboot [\-h] [\-V] [\-n] [\-p] [\-s] [\-L [LOGFILE]] [\-C CONCURRENCY] [FILE [FILE \&...]]
+taboot [\-h] [\-V] [\-n] [\-p] [\-s] [\-L [LOGFILE]] [\-C CONCURRENCY] [\-E] [FILE [FILE \&...]]
 .SH "DESCRIPTION"
 .sp
 Taboot is a tool written for scripting and automating the task of performing software releases in a large\-scale infrastructure\&. Release scripts are written using YAML syntax\&.
@@ -81,6 +81,10 @@ Adds [LogOutput: {logfile: LOGFILE}] to the script(s) being run\&. If LOGFILE is
 .RS 4
 Sets the cuncurrency for the input script(s)\&.
 .RE
+.sp
+\fB\-E\fR, \fB\-\-edit\fR:
+.sp
+Edit the input script(s) before running them using $EDITOR\&. If $EDITOR is undefined then emacs will be used, if emacs is not found then vi will be used\&.
 .SH "AUTHOR"
 .sp
 Taboot was originally written by John Eckersberg\&. Tim Bielawa is the current maintainer\&. See the AUTHORS file for a complete list of contributors\&.
