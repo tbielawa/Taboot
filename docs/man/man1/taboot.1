@@ -2,12 +2,12 @@
 .\"     Title: taboot
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 08/01/2011
+.\"      Date: 08/02/2011
 .\"    Manual: System administration commands
 .\"    Source: Taboot 0.3.x
 .\"  Language: English
 .\"
-.TH "TABOOT" "1" "08/01/2011" "Taboot 0\&.3\&.x" "System administration commands"
+.TH "TABOOT" "1" "08/02/2011" "Taboot 0\&.3\&.x" "System administration commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -81,10 +81,11 @@ Adds [LogOutput: {logfile: LOGFILE}] to the script(s) being run\&. If LOGFILE is
 .RS 4
 Sets the concurrency for the input script(s)\&.
 .RE
-.sp
-\fB\-E\fR, \fB\-\-edit\fR:
-.sp
+.PP
+\fB\-E\fR, \fB\-\-edit\fR
+.RS 4
 Edit the input script(s) before running them using $EDITOR\&. If $EDITOR is undefined then emacs will be used, if emacs is not found then vi will be used\&.
+.RE
 .SH "AUTHOR"
 .sp
 Taboot was originally written by John Eckersberg\&. Tim Bielawa is the current maintainer\&. See the AUTHORS file for a complete list of contributors\&.

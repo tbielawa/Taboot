@@ -80,7 +80,7 @@ Sets the concurrency for the input script(s).
 
 
 
-*-E*, *--edit*:
+*-E*, *--edit*::
 
 Edit the input script(s) before running them using $EDITOR. If $EDITOR is undefined then emacs will be used, if emacs is not found then vi will be used.
 
