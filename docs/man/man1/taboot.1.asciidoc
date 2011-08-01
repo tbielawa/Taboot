@@ -13,7 +13,7 @@ taboot - run a taboot release script
 
 SYNOPSIS
 --------
-taboot [-h] [-V] [-n] [-s] [-L [LOGFILE]] [-C CONCURRENCY]
+taboot [-h] [-V] [-n] [-p] [-s] [-L [LOGFILE]] [-C CONCURRENCY]
               [FILE [FILE ...]]
 
 
@@ -54,6 +54,11 @@ Show program's version number and exit.
 *-n*, *--checkonly*::
 
 Don't execute the release, just check script syntax.
+
+
+
+*-p*, *--printonly*::
+Don't execute the release, just check script syntax and print the YAML to be run to stdout.
 
 
 

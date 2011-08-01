@@ -115,6 +115,10 @@ Taboot is released under the terms of the GPLv3+ license""")
                         default=False,
                         help='Don\'t execute the release, just check \
                               script syntax.')
+    parser.add_argument('-p', '--printonly', action='store_true',
+                        default=False,
+                        help='Don\'t execute the release, just check \
+                              script syntax and print yaml to stdout.')
     parser.add_argument('-s', '--skippreflight', action='store_true',
                         default=False,
                         help='Skip preflight sections if they exist.')
@@ -228,6 +232,12 @@ The problem is on line %s, column %s.
                 for b in yamldoc:
                     if 'preflight' in b:
                         del b['preflight']
+
+        # Print output only if -p is given
+        if args.printonly:
+            for yamldoc in ds:
+                print yaml.dump(yamldoc)
+            continue
 
         # Run each YAML document returned from yaml.load_all
         for yamldoc in ds:
