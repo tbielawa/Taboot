@@ -30,6 +30,9 @@ from taboot import __version__
 class MalformedYAML(Exception):
     pass
 
+def log_update(msg):
+    sys.stderr.write(str(msg) + "\n")
+    sys.stderr.flush()
 
 def resolve_types(ds, relative_to):
     """
@@ -162,11 +165,11 @@ Taboot is released under the terms of the GPLv3+ license""")
 
         # Need to print message informing user that we are adding logging and
         # to where
-        print "Adding logging to file: %s" % logfile
+        log_update("Adding logging to file: %s" % logfile)
         addLogging = True
 
     if args.concurrency:
-        print "Setting concurrency to %i." % args.concurrency[0]
+        log_update("Setting concurrency to %i." % args.concurrency[0])
         overrideConcurrency = True
         concurrency = args.concurrency[0]
         if concurrency < 0:
