@@ -260,6 +260,7 @@ The problem is on line %s, column %s.
         # Print output only if -p is given
         if args.printonly:
             for yamldoc in ds:
+                print "---"
                 print yaml.dump(yamldoc)
             continue
 
