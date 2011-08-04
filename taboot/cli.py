@@ -25,6 +25,7 @@ import tempfile
 import os
 from subprocess import call
 from taboot import __version__
+from yamlDoc import YamlDoc
 
 
 class MalformedYAML(Exception):
@@ -262,8 +263,8 @@ The problem is on line %s, column %s.
         # Print output only if -p is given
         if args.printonly:
             for yamldoc in ds:
-                print "---"
-                print yaml.dump(yamldoc)
+                yd = YamlDoc(yamldoc)
+                print yd
             continue
 
         # Run each YAML document returned from yaml.load_all
