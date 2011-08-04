@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.3.0
+Version:        0.3.1
 Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
@@ -84,6 +84,31 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Thu Aug 04 2011 Tim Bielawa <tbielawa@redhat.com> 0.3.1-1
+- Spelling & grammar fixes all around (Fixes #23) (tbielawa@redhat.com)
+- Added -E flag to edit script before running (Fixes #18)
+  (jason.detiberus@redhat.com)
+- Added -p flag (acts like -n in that it checks syntax, but also prints
+  resulting yaml to be run onscreen) (Fixes #18) (jason.detiberus@redhat.com)
+- Cleanup unnecessary documentation (tbielawa@redhat.com)
+- Those are just bad ideas for a project with concurrency as a selling point
+  (Remove user input modules) (tbielawa@redhat.com)
+- Simplify a little example in the docs (tbielawa@redhat.com)
+- Added -C flag for Concurrency, Fixed an error when -L wasn't specified and
+  added CLIOutput when -L is specified and logging wasn't already set
+  (Fixes #18) (jason.detiberus@redhat.com)
+- Added command line flag to add logging (Fixes #18) (jason.detiberus@redhat.com)
+- Add python utility to generate a graphviz dot file of the class inheritance
+  graph of the python source codes. (tbielawa@redhat.com)
+- Add conditional Requires on python-argparse. Update README and release notes.
+  (tbielawa@redhat.com)
+- Exit/continue the main load-loop sooner so we can validate YAML scripts and
+  not blow up when not ran on a minion/overlord (like during testing...)
+  (tbielawa@redhat.com)
+- Switched argument parsing to use argparse (jason.detiberus@redhat.com)
+- Fix nagios scheduling causing log-to-file to fail. (Fixes #24)
+  (tbielawa@redhat.com)
+
 * Thu Jun 23 2011 Tim Bielawa <tbielawa@redhat.com> 0.3.0-1
 - Update version. 0.3.0. If Linux can do it -- so can we. (tbielawa@redhat.com)
 - Now included in EPEL and Fedora. Fixes #9 (tbielawa@redhat.com)
