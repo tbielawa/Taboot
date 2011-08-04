@@ -30,9 +30,11 @@ from taboot import __version__
 class MalformedYAML(Exception):
     pass
 
+
 def log_update(msg):
     sys.stderr.write(str(msg) + "\n")
     sys.stderr.flush()
+
 
 def resolve_types(ds, relative_to):
     """
