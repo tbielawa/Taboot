@@ -25,7 +25,7 @@ import tempfile
 import os
 from subprocess import call
 from taboot import __version__
-from yamlDoc import YamlDoc
+from tabootScript import TabootScript
 
 
 class MalformedYAML(Exception):
@@ -184,6 +184,8 @@ Taboot is released under the terms of the GPLv3+ license""")
     else:
         input_files = ['-']
 
+    scripts = []
+
     for infile in input_files:
         # Open the input file for reading.
         try:
@@ -230,49 +232,37 @@ The problem is on line %s, column %s.
                 msg = "Could not parse YAML. Check over %s again." % infile
                 raise MalformedYAML(msg)
 
+        for doc in ds:
+            scripts.append(TabootScript(doc, infile, args.edit))
+
+    # If you're just validating the YAML we don't need to build
+    # the data structure.
+    if args.checkonly:
+        exit()
+
+    for script in scripts:
         # Add/Modify Logging if -L is given
         if addLogging:
-            for yamldoc in ds:
-                for b in yamldoc:
-                    if 'output' in b:
-                        b['output'].append({'LogOutput': {'logfile': logfile}})
-                    else:
-                        b['output'] = [{'LogOutput': {'logfile': logfile}},
-                                       'CLIOutput']
+             script.addLogging(logfile)
 
         # Add/Modify Concurrency if -C is given
         if overrideConcurrency:
-            for yamldoc in ds:
-                for b in yamldoc:
-                    if 'concurrency' in b:
-                        del b['concurrency']
-                    b['concurrency'] = concurrency
-
-        # If you're just validating the YAML we don't need to build
-        # the data structure.
-        if args.checkonly:
-            continue
+             script.setConcurrency(concurrency)
 
         # Remove the actual preflight elements if -s is given
         if args.skippreflight:
-            for yamldoc in ds:
-                for b in yamldoc:
-                    if 'preflight' in b:
-                        del b['preflight']
+             script.deletePreflight()
 
         # Print output only if -p is given
         if args.printonly:
-            for yamldoc in ds:
-                yd = YamlDoc(yamldoc)
-                print yd
+            print script
             continue
 
         # Run each YAML document returned from yaml.load_all
-        for yamldoc in ds:
-            for runner_source in yamldoc:
-                runner = build_runner(runner_source)
-                if not runner.run():
-                    break
+        for runner_source in script.getYamlDoc():
+            runner = build_runner(runner_source)
+            if not runner.run():
+                break
 
 if __name__ == '__main__':
     main()
