@@ -66,3 +66,23 @@ class Minutes(SleepBase):
         return TaskResult(self, success=True,
                           output="Paused for %s minutes" %
                           self._minutes)
+
+class WaitOnInput(SleepBase):
+    """
+    Halt task processing on a node until the user presses enter.
+
+    :Parameters:
+      - `message`: The message to prompt on the CLI.
+    """
+
+    def __init__(self, message="Press enter to continue\n", **kwargs):
+        super(WaitOnInput, self).__init__(**kwargs)
+        self._message = message
+
+    def run(self, runner):
+        import time
+        start = time.time()
+        raw_input(self._message)
+        return TaskResult(self, success=True,
+                          output="Paused for %s seconds" %
+                          (time.time() - start))
