@@ -266,7 +266,7 @@ The problem is on line %s, column %s.
         # should be updated to have a flag that indicates if it is safe for
         # concurrency
         concurrency = False
-        nonconurrenttask = False
+        nonconcurrenttask = False
         for yamldoc in ds:
             for b in yamldoc:
                 if 'concurrency' in b:
