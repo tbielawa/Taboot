@@ -121,7 +121,11 @@ specified period of time.
     - sleep.Seconds: {seconds: 300}
     # Also pauses execution for 5 minutes
     - sleep.Minutes: {minutes: 5}
-
+    # Pauses execution until the user presses Enter
+    - sleep.WaitOnInput
+    # Also pauses execution until user presses Enter
+    # but also allows you to override the message prompt
+    - sleep.WaitOnInput: {message: "This is the user prompt:"}
 
 Yum
 ---
