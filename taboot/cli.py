@@ -260,7 +260,7 @@ The problem is on line %s, column %s.
                         del b['preflight']
 
         # Verification that concurrent and non-concurrent features are both
-        # not in use.  This is a hack to get the sleep.WaitOnInput (pause) 
+        # not in use.  This is a hack to get the sleep.WaitOnInput (pause)
         # feature up and running, when our new tabootScript class is in place
         # this check should be handled in validateScript and the task classes
         # should be updated to have a flag that indicates if it is safe for
@@ -270,12 +270,15 @@ The problem is on line %s, column %s.
         for yamldoc in ds:
             for b in yamldoc:
                 if 'concurrency' in b:
-                   concurrency = True
+                    concurrency = True
                 for task in b['tasks']:
-                   if task == 'sleep.WaitOnInput':
-                      nonconcurrenttask = True
+                    if ((isinstance(task, str)
+                                and task == 'sleep.WaitOnInput')
+                            or (isinstance(task, dict)
+                                and 'sleep.WaitOnInput' in task)):
+                        nonconcurrenttask = True
         if concurrency == True and nonconcurrenttask == True:
-            msg="""Concurrency is set and a Non-Concurrent task is present.
+            msg = """Concurrency is set and a Non-Concurrent task is present.
 Please choose one of these options:
 1) Use Concurrency and ignore sleep.WaitOnInput
 2) Use sleep.WaitOnInput and ignore Concurrency
@@ -285,15 +288,22 @@ Please choose one of these options:
                 # remove sleep.WaitOnInput
                 for yamldoc in ds:
                     for b in yamldoc:
-                        if 'sleep.WaitOnInput' in b['tasks']:
-                           b['tasks'].remove('sleep.WaitOnInput')
+                        t2r = []
+                        for task in b['tasks']:
+                            if ((isinstance(task, str)
+                                        and task == 'sleep.WaitOnInput')
+                                    or (isinstance(task, dict)
+                                        and 'sleep.WaitOnInput' in task)):
+                                t2r.append(task)
+                        for task in t2r:
+                            b['tasks'].remove(task)
             elif response == "2":
                 for yamldoc in ds:
                     for b in yamldoc:
                         if 'concurrency' in b:
                             del b['concurrency']
             else:
-               exit()
+                exit()
 
         # Print output only if -p is given
         if args.printonly:
