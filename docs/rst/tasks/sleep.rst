@@ -89,7 +89,7 @@ Example::
 
 
 WaitOnInput
-*******
+***********
 
 * API: :class:`taboot.tasks.sleep.WaitOnInput`
 * Keys
