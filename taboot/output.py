@@ -292,3 +292,68 @@ class EmailOutput(_FileLikeOutputObject):
         """
         if self._buffer.pos < self._buffer.len:
             self.flush()
+
+class HTMLOutput(_FileLikeOutputObject):
+    """
+    Output a :class:`taboot.tasks.TaskResult` to the command line
+    with pretty formatting and colors.
+    """
+
+    def _setup(self, host, task, logfile="taboot.html"):
+        """
+        Implementation specific setup for outputting to an HTML file.
+
+        :Parameters:
+           - `host`: name of the host
+           - `task`: name of the task
+         """
+        import Colors
+        import sys
+        self._c = Colors.HTMLColors()
+        self._log_fd = open(logfile, 'a')
+
+        name = self._fmt_anchor(self._fmt_hostname(host))
+
+        start_msg = """<p><tt>%s:</tt></p>
+<p><tt>%s Starting Task[%s]\n</tt>""" % (name, self.timestamp, task)
+        self._log_fd.write(start_msg)
+        self._log_fd.flush()
+
+    def _fmt_anchor(self, text):
+        """
+        Format an #anchor and a clickable link to it
+        """
+        h = hash(self.timestamp)
+        anchor_str = "<a name='%s' href='#%s'>%s</a>" % (h, h, text)
+        return anchor_str
+
+    def _fmt_hostname(self, n):
+        """
+        Standardize the hostname formatting
+        """
+        return "<b>%s</b>" % self._c.format_string(n, 'blue')
+
+    def _write(self, result):
+        """
+        DO IT!
+        """
+        import types
+        import sys
+
+        name = self._fmt_hostname(result.host)
+
+        if result.success:
+            success_str = 'OK'
+        else:
+            success_str = 'FAIL'
+
+        self._log_fd.write("<p><tt>%s:\n</tt></p>\n<p><tt>%s Finished Task[%s]: %s</tt></p>\n" % (
+            name, self.timestamp, result.task, success_str))
+
+        if isinstance(result.output, types.ListType):
+            for r in result.output:
+                self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" % r.strip())
+        else:
+            self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" % result.output.strip())
+
+        self._log_fd.flush()

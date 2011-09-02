@@ -1,0 +1,11 @@
+# Demonstrates usage of the various sleep tasks
+---
+- hosts: [griddle]
+  output:
+    - HTMLOutput
+  tasks:
+    - command.Run: {command: echo "Hello. There will be a 5 second pause following this message."}
+    - sleep.Seconds: {seconds: 5}
+    - command.Run: {command: echo "Following this message you will be prompted to continue."}
+    - sleep.WaitOnInput: {message: "Press enter when you're ready to continue:"}
+    - command.Run: {command: echo "This script will terminate following this message."}
