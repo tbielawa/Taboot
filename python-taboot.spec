@@ -20,6 +20,7 @@ Requires:       func
 Requires:       PyYAML
 %{?fc14:Requires: python-argparse}
 %{?el5:Requires: python-argparse}
+%{?el6:Requires: python-argparse}
 
 
 %description
