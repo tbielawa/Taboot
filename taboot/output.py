@@ -23,6 +23,7 @@ class _FileLikeOutputObject(object):
 
     import exceptions
     import time as _time
+    defaults = None
 
     def __init__(self, *args, **kwargs):
         """
@@ -32,6 +33,14 @@ class _FileLikeOutputObject(object):
            - `args`: all non-keyword arguments.
            - `kwargs`: all keyword arguments.
         """
+        import ConfigParser
+        import os.path
+
+        if _FileLikeOutputObject.defaults is None:
+            if os.path.expanduser("~/.taboot.conf"):
+                _FileLikeOutputObject.defaults = ConfigParser.ConfigParser()
+                _FileLikeOutputObject.defaults.read(os.path.expanduser("~/.taboot.conf"))
+
         self._pos = 0L
         self._closed = False
         self._setup(*args, **kwargs)
@@ -292,3 +301,117 @@ class EmailOutput(_FileLikeOutputObject):
         """
         if self._buffer.pos < self._buffer.len:
             self.flush()
+
+
+class HTMLOutput(_FileLikeOutputObject):
+    """
+    Output a :class:`taboot.tasks.TaskResult` to the command line
+    with pretty formatting and colors.
+    """
+
+    logfile_path = None
+
+    def _setup(self, host, task, logfile="taboot.html", destdir="."):
+        """
+        Implementation specific setup for outputting to an HTML file.
+
+        :Parameters:
+           - `host`: name of the host
+           - `task`: name of the task
+           - `logfile`: name of the file to log to
+           - `destdir`: directory in which to save the log file to
+         """
+        import Colors
+        import sys
+        import os.path
+        import os
+
+        # Is a default set for $param?
+        # Is $param the methods default?
+
+        if HTMLOutput.defaults is not None:
+            if HTMLOutput.defaults.has_option("HTMLOutput", "logfile"):
+                if not logfile == "taboot.html":
+                    _logfile = logfile
+                else:
+                    _logfile = HTMLOutput.defaults.get("HTMLOutput", "logfile")
+            else:
+                _logfile = logfile
+
+            if HTMLOutput.defaults.has_option("HTMLOutput", "destdir"):
+                if not destdir == ".":
+                    _destdir = destdir
+                else:
+                    _destdir = HTMLOutput.defaults.get("HTMLOutput", "destdir")
+            else:
+                _destdir = destdir
+
+        else:
+            # No defaults set, just use what was passed in
+            _destdir = destdir
+            _logfile = logfile
+
+        # Now we join them together!
+        self._logfile_path = os.path.join(_destdir, _logfile)
+        if not os.path.exists(_destdir):
+            os.makedirs(_destdir, 0644)
+
+        self._c = Colors.HTMLColors()
+        self._log_fd = open(self._logfile_path, 'a')
+
+        # Lets only print this when it is set or changed
+        if HTMLOutput.logfile_path is None or \
+                not HTMLOutput.logfile_path == self._logfile_path:
+            sys.stderr.write("Logging HTML Output to %s\n" % self._logfile_path)
+            HTMLOutput.logfile_path = self._logfile_path
+
+        sys.stderr.flush()
+
+        name = self._fmt_anchor(self._fmt_hostname(host))
+
+        start_msg = """<p><tt>%s:</tt></p>
+<p><tt>%s Starting Task[%s]\n</tt>""" % (name, self.timestamp, task)
+        self._log_fd.write(start_msg)
+        self._log_fd.flush()
+
+    def _fmt_anchor(self, text):
+        """
+        Format an #anchor and a clickable link to it
+        """
+        h = hash(self.timestamp)
+        anchor_str = "<a name='%s' href='#%s'>%s</a>" % (h, h, text)
+        return anchor_str
+
+    def _fmt_hostname(self, n):
+        """
+        Standardize the hostname formatting
+        """
+        return "<b>%s</b>" % self._c.format_string(n, 'blue')
+
+    def _write(self, result):
+        """
+        DO IT!
+        """
+        import types
+        import sys
+
+        name = self._fmt_hostname(result.host)
+
+        if result.success:
+            success_str = 'OK'
+        else:
+            success_str = 'FAIL'
+
+        self._log_fd.write("<p><tt>%s:\n</tt></p>\n<p><tt>%s "\
+                               "Finished Task[%s]: %s</tt></p>\n" %
+                           (name, self.timestamp, result.task, success_str))
+
+        if isinstance(result.output, types.ListType):
+            for r in result.output:
+                self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" %
+                                   r.strip())
+        else:
+            self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" %
+                               result.output.strip())
+
+        self._log_fd.flush()

@@ -1,0 +1,8 @@
+
+# A simple demonstration. One host to run against ('griddle') using
+# the command.Run task to echo some text
+---
+- hosts: [griddle]
+  output: [HTMLOutput]
+  tasks:
+    - command.Run: {command: echo "This is an echo on `hostname`"}
