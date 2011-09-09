@@ -1,0 +1,27 @@
+# Demonstrates usage of how to use the HTMLOutput option.  When this
+# document runs the logfile will be 'taboot.html' and will be saved in
+# ./html-logs. The directory will be created if it doesn't exist.
+#
+# The logfile and destdir options can be overrode via
+# ~/.taboot.conf.
+#
+# Example:
+#
+# [HTMLOutput]
+# destdir: /var/www/logs
+# logfile: html-logfile.html
+---
+- hosts: [griddle]
+  output:
+    - CLIOutput
+    - HTMLOutput: {destdir: ./html-logs}
+  tasks:
+    - command.Run: {command: echo "This is the first example for HTMLOutput, it will be saved in ./html-logs"}
+---
+# When this document runs the destdir will reset to default ('.')
+- hosts: [griddle]
+  output:
+    - CLIOutput
+    - HTMLOutput: {logfile: html-logfile.html}
+  tasks:
+    - command.Run: {command: echo "This is the second example for HTMLOutpt. It will be saved as html-logfile.html"}
