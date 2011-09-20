@@ -26,7 +26,35 @@ __tasks__ blocks. The syntax of each possible tasks varies. Taboot
 comes with many built-in tasks.
 
 This quick-reference is example based and only uses abbreviated forms
-where possible.
+where possible. Additionally, the options for the __Output__ block are
+provided.
+
+
+Output
+------
+
+The __output__ block lets you choose zero or more methods to log the
+taboot run. The *CLIOutput* method is the default. See the online
+documentation to learn how to set system-wide defaults for the
+*HTMLOutput* logger.
+
+[literal]
+---
+- hosts: [www0*.company.com]
+  output:
+    # CLIOutput is the default
+    - CLIOutput
+    # You can also log to a file, 'taboot.log' is the default name
+    - LogOutput
+    # The 'logfile' keyword lets you choose a different name
+    - LogOutput: {logfile: update-httpd.log}
+    # Log to an HTML file ('taboot.html') with HTMLOutput
+    - HTMLOutput
+    # As above, but put the logfile in the webservers log directory
+    - HTMLOutput: {destdir: /var/www/html/logs}
+    # HTML output again, but with a named file
+    - HTMLOutput: {logfile: update-httpd.html}
+
 
 
 Command
