@@ -11,6 +11,7 @@ of the available output methods in greater detail.
 
 * :ref:`cli-output`
 * :ref:`log-output`
+* :ref:`html-output`
 * :ref:`email-output`
 
 
@@ -59,6 +60,61 @@ Abbreviated form::
 
   ---
     output: [LogOutput: {logfile: taboot.log}]
+
+
+
+.. _html-output:
+
+HTMLOutput
+**********
+
+* API: :class:`taboot.output.HTMLOutput`
+
+`taboot` can log a session to an HTML file with the ``HTMLOutput``
+method if requested.
+
+
+* Keys
+
+  * ``logfile``
+
+    * Type: String
+    * Default: taboot.html
+    * Required: No, has default
+    * Description: Name of file to log to.
+
+  * ``destdir``
+
+    * Type: String
+    * Default: Present working directory
+    * Required: No, has default
+    * Description: Name of directory to save log file in.
+
+
+Special the ``HTMLOutput`` option is the ability to save the defaults
+for ``logfile`` and ``destdir`` to a configuration file,
+``~/.taboot.conf``.
+
+
+Config File Syntax::
+
+  [HTMLOutput]
+  destdir=/var/www/html
+  logfile=taboot.html
+
+
+HTMLOutput Syntax::
+
+  ---
+    output:
+      - HTMLOutput:
+          logfile: taboot.log
+
+Abbreviated form::
+
+  ---
+    output: [HTMLOutput: {logfile: taboot.html, destdir: /var/www/html}]
+
 
 
 .. _email-output:
