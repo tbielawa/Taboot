@@ -140,3 +140,57 @@ class ScheduleDowntime(NagiosBase):
                 t.sucess = t.success & True
             t.output = result
         return t
+
+
+class SilenceHost(NagiosBase):
+    """
+    Silence all notifications for a given host
+    """
+
+    def __init__(self, nagios_url, **kwargs):
+        """
+        :Parameters:
+          - `nagios_url`: Hostname of the Nagios server.
+        """
+        target_host = kwargs['host']
+        kwargs['host'] = self._fix_nagios_url(nagios_url)
+        super(SilenceHost, self).__init__(target_host, **kwargs)
+        self._command = 'nagios.silence_host'
+
+    def _process_result(self, result):
+        t = TaskResult(self)
+        t.success = True
+        for r in result:
+            if r.startswith("Fail: "):
+                t.success = t.success & False
+            else:
+                t.sucess = t.success & True
+            t.output = result
+        return t
+
+
+class UnsilenceHost(NagiosBase):
+    """
+    Unsilence all notifications for a given host
+    """
+
+    def __init__(self, nagios_url, **kwargs):
+        """
+        :Parameters:
+          - `nagios_url`: Hostname of the Nagios server.
+        """
+        target_host = kwargs['host']
+        kwargs['host'] = self._fix_nagios_url(nagios_url)
+        super(UnsilenceHost, self).__init__(target_host, **kwargs)
+        self._command = 'nagios.unsilence_host'
+
+    def _process_result(self, result):
+        t = TaskResult(self)
+        t.success = True
+        for r in result:
+            if r.startswith("Fail: "):
+                t.success = t.success & False
+            else:
+                t.sucess = t.success & True
+            t.output = result
+        return t

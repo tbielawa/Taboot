@@ -2,12 +2,12 @@
 .\"     Title: taboot-tasks
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 09/19/2011
+.\"      Date: 09/29/2011
 .\"    Manual: Taboot
 .\"    Source: Taboot 0.3.x
 .\"  Language: English
 .\"
-.TH "TABOOT\-TASKS" "5" "09/19/2011" "Taboot 0\&.3\&.x" "Taboot"
+.TH "TABOOT\-TASKS" "5" "09/29/2011" "Taboot 0\&.3\&.x" "Taboot"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -53,12 +53,15 @@ The \fIoutput\fR block lets you choose zero or more methods to log the taboot ru
     \- LogOutput
     # The \*(Aqlogfile\*(Aq keyword lets you choose a different name
     \- LogOutput: {logfile: update\-httpd\&.log}
-    # Log to an HTML file (\*(Aqtaboot\&.html\*(Aq) with HTMLOutput
+    # Log to an HTML file (\*(Aqtaboot\-%s\&.html\*(Aq)
     \- HTMLOutput
     # As above, but put the logfile in the webservers log directory
     \- HTMLOutput: {destdir: /var/www/html/logs}
     # HTML output again, but with a named file
     \- HTMLOutput: {logfile: update\-httpd\&.html}
+    # HTML output where *%s* is substituted with a datestamp in the
+    # form YYYY\-MM\-DD\-HHMMSS
+    \- HTMLOutput: {logfile: update\-httpd\-%s\&.html}
 .fi
 .if n \{\
 .RE
@@ -149,6 +152,12 @@ The \fBNagios\fR task lets you handle notifications and set downtime from your T
         nagios_url: nagios\&.example\&.com
         service: [httpd, git, XMLRPC]
         minutes: 60
+    # Silence all host and service notifications
+    \- nagios\&.SilenceHost:
+        nagios_url: nagios\&.example\&.com
+    # Unsilence all host and service notifications
+    \- nagios\&.UnsilenceHost:
+        nagios_url: nagios\&.example\&.com
 .fi
 .if n \{\
 .RE

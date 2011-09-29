@@ -7,6 +7,9 @@ Nagios
   * EnableNotifications
   * DisableNotifications
   * ScheduleDowntime
+  * SilenceHost
+  * UnsilenceHost
+
 
 The ``nagios`` task lets you handle notification and set downtime
 from your Taboot scripts.
@@ -48,6 +51,10 @@ EnableAlerts
     * Required: Yes
     * Description: Hostname of the nagios server.
 
+
+This class enables host alerts for the current host.
+
+
 Syntax::
 
     ---
@@ -81,6 +88,10 @@ DisableAlerts
     * Default: None
     * Required: Yes
     * Description: Hostname of the nagios server.
+
+
+This class disables host alerts for the current host.
+
 
 Syntax::
 
@@ -170,3 +181,88 @@ Example #2::
             nagios_url: nagios.example.com
             service: [httpd, git, XMLRPC]
             minutes: 60
+
+
+
+SilenceHost
+***********
+
+* API: :class:`taboot.tasks.nagios.SilenceHost`
+* Keys
+
+  * ``nagios_url``
+
+    * Type: String
+    * Default: None
+    * Required: Yes
+    * Description: Hostname of the nagios server.
+
+
+This class disables all host and service notifications for the current
+host.
+
+
+Syntax::
+
+    ---
+      tasks:
+        # Normal form
+        - nagios.SilenceHost:
+            nagios_url: nagios-hostname
+
+        # Abbreviated form
+        - nagios.SilenceHost: {nagios_url: nagios-hostname}
+
+
+Example::
+
+    ---
+    - hosts:
+        - www*
+      tasks:
+        - nagios.SilenceHost: {nagios_url: nagios.example.com}
+
+
+.. versionadded:: 0.3.2
+
+
+UnsilenceHost
+*************
+
+* API: :class:`taboot.tasks.nagios.UnsilenceHost`
+* Keys
+
+p  * ``nagios_url``
+
+    * Type: String
+    * Default: None
+    * Required: Yes
+    * Description: Hostname of the nagios server.
+
+
+This class enables all host and service notifications for the current
+host.
+
+
+Syntax::
+
+    ---
+      tasks:
+        # Normal form
+        - nagios.UnsilenceHost:
+            nagios_url: nagios-hostname
+
+        # Abbreviated form
+        - nagios.UnsilenceHost: {nagios_url: nagios-hostname}
+
+
+Example::
+
+    ---
+    - hosts:
+        - www*
+      tasks:
+        - nagios.UnsilenceHost: {nagios_url: nagios.example.com}
+
+
+.. versionadded:: 0.3.2

@@ -48,13 +48,15 @@ documentation to learn how to set system-wide defaults for the
     - LogOutput
     # The 'logfile' keyword lets you choose a different name
     - LogOutput: {logfile: update-httpd.log}
-    # Log to an HTML file ('taboot.html') with HTMLOutput
+    # Log to an HTML file ('taboot-%s.html')
     - HTMLOutput
     # As above, but put the logfile in the webservers log directory
     - HTMLOutput: {destdir: /var/www/html/logs}
     # HTML output again, but with a named file
     - HTMLOutput: {logfile: update-httpd.html}
-
+    # HTML output where *%s* is substituted with a datestamp in the
+    # form YYYY-MM-DD-HHMMSS
+    - HTMLOutput: {logfile: update-httpd-%s.html}
 
 
 Command
@@ -133,6 +135,12 @@ your Taboot scripts.
         nagios_url: nagios.example.com
         service: [httpd, git, XMLRPC]
         minutes: 60
+    # Silence all host and service notifications
+    - nagios.SilenceHost:
+        nagios_url: nagios.example.com
+    # Unsilence all host and service notifications
+    - nagios.UnsilenceHost:
+        nagios_url: nagios.example.com
 
 
 Sleep
