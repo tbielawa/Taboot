@@ -372,7 +372,7 @@ class HTMLOutput(_FileLikeOutputObject):
         # Figured it all out, now we join them together!
         self._logfile_path = os.path.join(_destdir, _logfile)
         if not os.path.exists(_destdir):
-            os.makedirs(_destdir, 0644)
+            os.makedirs(_destdir, 0755)
 
         self._c = Colors.HTMLColors()
         self._log_fd = open(self._logfile_path, 'a')
