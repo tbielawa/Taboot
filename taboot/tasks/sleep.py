@@ -16,6 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from taboot.tasks import BaseTask, TaskResult
+from termios import tcflush, TCIFLUSH
+import sys
 
 
 class SleepBase(BaseTask):
@@ -67,6 +69,7 @@ class Minutes(SleepBase):
                           output="Paused for %s minutes" %
                           self._minutes)
 
+
 class WaitOnInput(SleepBase):
     """
     Halt task processing on a node until the user presses enter.
@@ -82,6 +85,7 @@ class WaitOnInput(SleepBase):
     def run(self, runner):
         import time
         start = time.time()
+        tcflush(sys.stdin, TCIFLUSH)
         raw_input(self._message)
         return TaskResult(self, success=True,
                           output="Paused for %s seconds" %

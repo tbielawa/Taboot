@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.3.1
+Version:        0.3.2
 Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
@@ -20,6 +20,7 @@ Requires:       func
 Requires:       PyYAML
 %{?fc14:Requires: python-argparse}
 %{?el5:Requires: python-argparse}
+%{?el6:Requires: python-argparse}
 
 
 %description
@@ -84,6 +85,15 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Thu Sep 29 2011 Tim Bielawa <tbielawa@redhat.com> 0.3.2-1
+- Add Nagios (Un)SilenceHost classes (Fixes: #29) (tbielawa@redhat.com)
+- Adding WaitOnInput subclass to SleepBase class for pausing until
+  user input (Fixes: #30) (jason.detiberus@redhat.com)
+- New HTMLOutput logger (Fixes: #31) (tbielawa@redhat.com)
+- 'hacking' directory in git tree has script to make development testing easier.
+- Update docs. pep8 fixes
+- Make python-argparse a Requires for el6 as well
+
 * Thu Aug 04 2011 Tim Bielawa <tbielawa@redhat.com> 0.3.1-1
 - Spelling & grammar fixes all around (Fixes #23) (tbielawa@redhat.com)
 - Added -E flag to edit script before running (Fixes #18)

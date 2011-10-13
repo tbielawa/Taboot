@@ -23,6 +23,8 @@ class _FileLikeOutputObject(object):
 
     import exceptions
     import time as _time
+    defaults = None
+    starttime = None
 
     def __init__(self, *args, **kwargs):
         """
@@ -32,6 +34,20 @@ class _FileLikeOutputObject(object):
            - `args`: all non-keyword arguments.
            - `kwargs`: all keyword arguments.
         """
+        import ConfigParser
+        import os.path
+
+        if _FileLikeOutputObject.defaults is None:
+            if os.path.expanduser("~/.taboot.conf"):
+                _FileLikeOutputObject.defaults = ConfigParser.ConfigParser()
+                _FileLikeOutputObject.defaults.read(
+                    os.path.expanduser("~/.taboot.conf"))
+
+        # Only set the start time once, not for each logger instance
+        if _FileLikeOutputObject.starttime is None:
+            import datetime
+            _FileLikeOutputObject.starttime = datetime.datetime.today()
+
         self._pos = 0L
         self._closed = False
         self._setup(*args, **kwargs)
@@ -133,7 +149,7 @@ class _FileLikeOutputObject(object):
     # Read-only Properties
     closed = property(lambda self: self._closed)
     timestamp = property(lambda self: self._time.strftime(
-        "%Y-%m-%d %H:%M:%S", self._time.localtime()))
+            "%Y-%m-%d %H:%M:%S", self._time.localtime()))
 
 
 class CLIOutput(_FileLikeOutputObject):
@@ -292,3 +308,128 @@ class EmailOutput(_FileLikeOutputObject):
         """
         if self._buffer.pos < self._buffer.len:
             self.flush()
+
+
+class HTMLOutput(_FileLikeOutputObject):
+    """
+    Output a :class:`taboot.tasks.TaskResult` to the command line
+    with pretty formatting and colors.
+    """
+
+    logfile_path = None
+
+    def _expand_starttime(self, param):
+        """
+        Expand any instances of "%s" in `param`
+        """
+        if '%s' in param:
+            p = param % HTMLOutput.starttime
+            return p.replace(" ", "-")
+        else:
+            return param
+
+    def _setup(self, host, task, logfile="taboot-%s.html", destdir="."):
+        """
+        Implementation specific setup for outputting to an HTML file.
+
+        :Parameters:
+           - `host`: name of the host
+           - `task`: name of the task
+           - `logfile`: name of the file to log to, '%s' is substituted
+              with a datestamp
+           - `destdir`: directory in which to save the log file to
+        """
+        import Colors
+        import sys
+        import os.path
+        import os
+
+        _default_logfile = "taboot-%s.html"
+        _default_destdir = "."
+
+        # Pick if the parameter is changed
+        # Pick if above is false and logfile is set in defaults
+        # Else, use parameter
+        if not logfile == _default_logfile:
+            _logfile = logfile
+        elif HTMLOutput.defaults is not None and \
+                HTMLOutput.defaults.has_option("HTMLOutput", "logfile"):
+            _logfile = HTMLOutput.defaults.get("HTMLOutput", "logfile")
+        else:
+            _logfile = logfile
+
+        # Expand %s into a time stamp if necessary
+        _logfile = self._expand_starttime(_logfile)
+
+        if not destdir == _default_destdir:
+            _destdir = destdir
+        elif HTMLOutput.defaults is not None and \
+                HTMLOutput.defaults.has_option("HTMLOutput", "destdir"):
+            _destdir = HTMLOutput.defaults.get("HTMLOutput", "destdir")
+        else:
+            _destdir = destdir
+
+        # Figured it all out, now we join them together!
+        self._logfile_path = os.path.join(_destdir, _logfile)
+        if not os.path.exists(_destdir):
+            os.makedirs(_destdir, 0644)
+
+        self._c = Colors.HTMLColors()
+        self._log_fd = open(self._logfile_path, 'a')
+
+        # Lets only print this when it is set or changed
+        if HTMLOutput.logfile_path is None or \
+                not HTMLOutput.logfile_path == self._logfile_path:
+            sys.stderr.write("Logging HTML Output to %s\n" % \
+                                 self._logfile_path)
+            HTMLOutput.logfile_path = self._logfile_path
+            sys.stderr.flush()
+
+        # Log the start of this task
+        name = self._fmt_anchor(self._fmt_hostname(host))
+        start_msg = """<p><tt>%s:</tt></p>
+<p><tt>%s Starting Task[%s]\n</tt>""" % (name, self.timestamp, task)
+        self._log_fd.write(start_msg)
+        self._log_fd.flush()
+
+    def _fmt_anchor(self, text):
+        """
+        Format an #anchor and a clickable link to it
+        """
+        h = hash(self.timestamp)
+        anchor_str = "<a name='%s' href='#%s'>%s</a>" % (h, h, text)
+        return anchor_str
+
+    def _fmt_hostname(self, n):
+        """
+        Standardize the hostname formatting
+        """
+        return "<b>%s</b>" % self._c.format_string(n, 'blue')
+
+    def _write(self, result):
+        """
+        DO IT!
+        """
+        import types
+        import sys
+
+        name = self._fmt_hostname(result.host)
+
+        if result.success:
+            success_str = 'OK'
+        else:
+            success_str = 'FAIL'
+
+        self._log_fd.write("<p><tt>%s:\n</tt></p>\n<p><tt>%s "\
+                               "Finished Task[%s]: %s</tt></p>\n" %
+                           (name, self.timestamp, result.task, success_str))
+
+        if isinstance(result.output, types.ListType):
+            for r in result.output:
+                self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" %
+                                   r.strip())
+        else:
+            self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" %
+                               result.output.strip())
+
+        self._log_fd.flush()
