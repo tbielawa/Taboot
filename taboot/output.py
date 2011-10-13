@@ -426,10 +426,10 @@ class HTMLOutput(_FileLikeOutputObject):
 
         if isinstance(result.output, types.ListType):
             for r in result.output:
-                self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" %
+                self._log_fd.write("<pre>%s</pre>\n<br />\n<br />\n" %
                                    r.strip())
         else:
-            self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" %
+            self._log_fd.write("<pre>%s</pre>\n<br />\n<br />\n" %
                                result.output.strip())
 
         self._log_fd.flush()
