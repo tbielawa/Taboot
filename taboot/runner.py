@@ -25,6 +25,7 @@ class Runner(object):
 
     import threading
     import taboot.output
+    from util import instantiator
 
     def __init__(self, hosts, tasks, concurrency=1,
                  preflight=[],
@@ -249,11 +250,11 @@ class TaskRunner(threading.Thread):
             if task['ignore_errors'] in ('True', 'true', 1):
                 ignore_errors = True
 
-        task = self.__instantiator(task, 'taboot.tasks', host=self._host)
+        task = instantiator(task, 'taboot.tasks', host=self._host)
 
         outputters = []
         for o in self._output:
-            instance = self.__instantiator(o, 'taboot.output',
+            instance = instantiator(o, 'taboot.output',
                                            host=self._host,
                                            task=task)
             outputters.append(instance)
@@ -268,50 +269,3 @@ class TaskRunner(threading.Thread):
 
         result.ignore_errors = ignore_errors
         return result
-
-    def __instantiator(self, type_blob, relative_to, **kwargs):
-        """
-        Instantiate a type, which is defined by a type blob in the
-        following format:
-
-          - If no paremeters are required for the type, then the blob
-            should be a single string describing thd desired type
-
-          - If parameters are required, then the type blob must be a
-            dictionary with only one key that is a string describing
-            the desired type.  The value associated with this key
-            should be dictionary which maps the parameter:value pairs
-            required when instantiating the type.
-
-        Returns the instantiated object.
-        """
-
-        __import__(relative_to)
-
-        def str2type(s):
-            import sys
-            tokens = s.split('.')
-            if len(tokens) == 1:
-                return getattr(sys.modules[relative_to], tokens[0])
-            else:
-                pkg = "%s.%s" % (relative_to, tokens[0])
-                __import__(pkg)
-                return getattr(sys.modules[pkg], tokens[1])
-
-        if isinstance(type_blob, basestring):
-            instance_type = str2type(type_blob)
-        else:
-            if len(type_blob.keys()) != 1:
-                raise Exception("Number of keys isn't 1")
-            instance_type = str2type(type_blob.keys()[0])
-            kwargs.update(type_blob[type_blob.keys()[0]])
-
-        try:
-            return instance_type(**kwargs)
-        except TypeError, e:
-            import pprint
-            print "Unable to instantiate %s with the following arguments:"\
-                % instance_type
-            pprint.pprint(kwargs)
-            print "Full backtrace below\n"
-            raise

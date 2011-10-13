@@ -17,6 +17,7 @@
 
 
 import yaml
+from util import resolve_types, instantiator
 
 
 class YamlDoc:
@@ -27,7 +28,7 @@ class YamlDoc:
         self.yamlDoc = yamlDoc
 
     def getYamlDoc(self):
-        return yamlDoc
+        return self.yamlDoc
 
     def __str__(self):
         return ("---\n" + yaml.dump(self.yamlDoc))
@@ -38,7 +39,19 @@ class TabootScript(YamlDoc):
     Representation of a Taboot Script
     """
     def validateScript(self):
-        # TODO add validation logic and throw exception if invalid
+        # Validate that concurrent and non-concurrent tasks don't exist in the
+        # same script.  Still need to finish, need to get concurrency value if
+        # it exists, then iterate through to see if there are any non-conurrent
+        # tasks in, if so raise a ConcurrencyException, will have to catch in
+        # cli.py and I'm thinking that we can offer the user the ability to
+        # edit the script to correct
+#        for b in self.yamlDoc:
+#            tasks = resolve_types(b['tasks'], 'taboot.tasks')
+#            for task in tasks:
+#                task = instantiator(task, 'taboot.tasks', host="*")
+#                print(task.concurrentFriendly)
+
+        # TODO add additional validation logic and throw exception if invalid
         return True
 
     def __init__(self, yamlDoc, fileName, edited):
@@ -65,4 +78,3 @@ class TabootScript(YamlDoc):
     def setConcurrency(self, concurrency):
         for b in self.yamlDoc:
             b['concurrency'] = concurrency
-                

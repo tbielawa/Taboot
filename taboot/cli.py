@@ -26,6 +26,7 @@ import os
 from subprocess import call
 from taboot import __version__
 from tabootScript import TabootScript
+from util import resolve_types
 
 
 class MalformedYAML(Exception):
@@ -35,45 +36,6 @@ class MalformedYAML(Exception):
 def log_update(msg):
     sys.stderr.write(str(msg) + "\n")
     sys.stderr.flush()
-
-
-def resolve_types(ds, relative_to):
-    """
-    Recursively translate string representation of a type within a
-    datastructure into an actual type instance.
-
-    :Parameters:
-      - `ds`: An arbitrary datastructure.  Within `ds`, if a dict key named
-        `type` is encountered, the string contained there is replaced with the
-        actual type named.
-      - `relative_to`: The prefix which types are relative to; used during
-        import.  As an example, if `relative_to`='taboot.tasks' and `ds`
-        contains a `type` key `command.Run`, then the type is imported as
-        `taboot.tasks.command.Run`.
-    """
-    __import__(relative_to)
-
-    if isinstance(ds, list):
-        result = []
-        for item in ds:
-            result.append(resolve_types(item, relative_to))
-        return result
-    elif isinstance(ds, dict):
-        result = {}
-        for k, v in ds.iteritems():
-            if k == 'type':
-                tokens = v.split('.')
-                if len(tokens) == 1:
-                    result[k] = getattr(sys.modules[relative_to], tokens[0])
-                else:
-                    pkg = "%s.%s" % (relative_to, tokens[0])
-                    __import__(pkg)
-                    result[k] = getattr(sys.modules[pkg], tokens[1])
-            else:
-                result[k] = resolve_types(v, relative_to)
-        return result
-    else:
-        return ds
 
 
 def build_runner(ds):
@@ -86,6 +48,7 @@ def build_runner(ds):
         when instantiating runner.  All types are processed through
         :function:`resolve_types` before handing off for instantiation.
     """
+
     ds['tasks'] = resolve_types(ds['tasks'], 'taboot.tasks')
     if 'output' in ds:
         ds['output'] = resolve_types(ds['output'], 'taboot.output')
@@ -243,15 +206,15 @@ The problem is on line %s, column %s.
     for script in scripts:
         # Add/Modify Logging if -L is given
         if addLogging:
-             script.addLogging(logfile)
+            script.addLogging(logfile)
 
         # Add/Modify Concurrency if -C is given
         if overrideConcurrency:
-             script.setConcurrency(concurrency)
+            script.setConcurrency(concurrency)
 
         # Remove the actual preflight elements if -s is given
         if args.skippreflight:
-             script.deletePreflight()
+            script.deletePreflight()
 
         # Verification that concurrent and non-concurrent features are both
         # not in use.  This is a hack to get the sleep.WaitOnInput (pause)
@@ -261,16 +224,16 @@ The problem is on line %s, column %s.
         # concurrency
         concurrency = False
         nonconcurrenttask = False
-        for yamldoc in ds:
-            for b in yamldoc:
-                if 'concurrency' in b:
-                    concurrency = True
-                for task in b['tasks']:
-                    if ((isinstance(task, str)
-                                and task == 'sleep.WaitOnInput')
-                            or (isinstance(task, dict)
-                                and 'sleep.WaitOnInput' in task)):
-                        nonconcurrenttask = True
+        doc = script.getYamlDoc()
+        for b in doc:
+            if 'concurrency' in b:
+                concurrency = True
+            for task in b['tasks']:
+                if ((isinstance(task, str)
+                            and task == 'sleep.WaitOnInput')
+                        or (isinstance(task, dict)
+                            and 'sleep.WaitOnInput' in task)):
+                    nonconcurrenttask = True
         if concurrency == True and nonconcurrenttask == True:
             msg = """Concurrency is set and a Non-Concurrent task is present.
 Please choose one of these options:
@@ -280,22 +243,20 @@ Please choose one of these options:
             response = raw_input(msg)
             if response == "1":
                 # remove sleep.WaitOnInput
-                for yamldoc in ds:
-                    for b in yamldoc:
-                        t2r = []
-                        for task in b['tasks']:
-                            if ((isinstance(task, str)
-                                        and task == 'sleep.WaitOnInput')
-                                    or (isinstance(task, dict)
-                                        and 'sleep.WaitOnInput' in task)):
-                                t2r.append(task)
-                        for task in t2r:
-                            b['tasks'].remove(task)
+                for b in doc:
+                    t2r = []
+                    for task in b['tasks']:
+                        if ((isinstance(task, str)
+                                    and task == 'sleep.WaitOnInput')
+                                or (isinstance(task, dict)
+                                    and 'sleep.WaitOnInput' in task)):
+                            t2r.append(task)
+                    for task in t2r:
+                        b['tasks'].remove(task)
             elif response == "2":
-                for yamldoc in ds:
-                    for b in yamldoc:
-                        if 'concurrency' in b:
-                            del b['concurrency']
+                for b in doc:
+                    if 'concurrency' in b:
+                        del b['concurrency']
             else:
                 exit()
 

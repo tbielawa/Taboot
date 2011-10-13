@@ -81,6 +81,7 @@ class WaitOnInput(SleepBase):
     def __init__(self, message="Press enter to continue\n", **kwargs):
         super(WaitOnInput, self).__init__(**kwargs)
         self._message = message
+        self.concurrentFriendly = False
 
     def run(self, runner):
         import time

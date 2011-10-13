@@ -29,6 +29,7 @@ class BaseTask(object):
         self._name = self._name[next:self._name.rindex("'")]
         self._args = args
         self.host = kwargs['host']
+        self.concurrentFriendly = True
 
     def __repr__(self):
         return "%s%s" % (self._name, self._args)
