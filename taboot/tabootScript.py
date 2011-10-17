@@ -17,7 +17,7 @@
 
 
 import yaml
-from util import resolve_types, instantiator
+from util import resolve_types, instantiator, log_update
 
 
 class YamlDoc:
@@ -45,11 +45,13 @@ class TabootScript(YamlDoc):
         # tasks in, if so raise a ConcurrencyException, will have to catch in
         # cli.py and I'm thinking that we can offer the user the ability to
         # edit the script to correct
-#        for b in self.yamlDoc:
-#            tasks = resolve_types(b['tasks'], 'taboot.tasks')
-#            for task in tasks:
-#                task = instantiator(task, 'taboot.tasks', host="*")
-#                print(task.concurrentFriendly)
+        if self.getConcurrency() > 1:
+            for b in self.yamlDoc:
+                tasks = resolve_types(b['tasks'], 'taboot.tasks')
+                for task in tasks:
+                    task = instantiator(task, 'taboot.tasks', host="*")
+                    if(task.concurrentFriendly == False):
+                        raise ConcurrencyException(task)
 
         # TODO add additional validation logic and throw exception if invalid
         return True
@@ -78,3 +80,24 @@ class TabootScript(YamlDoc):
     def setConcurrency(self, concurrency):
         for b in self.yamlDoc:
             b['concurrency'] = concurrency
+        try:
+            log_update("Attempting to set concurrency to: %s" % concurrency)
+            self.validateScript()
+        except ConcurrencyException as e:
+            log_update("Cannot set concurrency: %s" % e)
+            self.setConcurrency(1)
+
+    def getConcurrency(self):
+        for b in self.yamlDoc:
+            if 'concurrency' in b:
+                return b['concurrency']
+        return 1
+
+
+class ConcurrencyException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr("Concurrency Set and Non-concurrent task: %s present"
+                    % self.value)

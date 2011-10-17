@@ -25,17 +25,12 @@ import tempfile
 import os
 from subprocess import call
 from taboot import __version__
-from tabootScript import TabootScript
-from util import resolve_types
+from tabootScript import TabootScript, ConcurrencyException
+from util import resolve_types, log_update
 
 
 class MalformedYAML(Exception):
     pass
-
-
-def log_update(msg):
-    sys.stderr.write(str(msg) + "\n")
-    sys.stderr.flush()
 
 
 def build_runner(ds):
@@ -55,6 +50,28 @@ def build_runner(ds):
     if 'preflight' in ds:
         ds['preflight'] = resolve_types(ds['preflight'], 'taboot.tasks')
     return taboot.runner.Runner(**ds)
+
+
+def removeTask(doc, task):
+    task = str(task).replace('taboot.tasks.', '').replace('()', '')
+    for b in doc:
+        t2r = []
+        for t in b['tasks']:
+            if ((isinstance(t, str)
+                        and t == task)
+                    or (isinstance(t, dict)
+                        and task in t)):
+                t2r.append(t)
+        for t in t2r:
+            b['tasks'].remove(t)
+    return doc
+
+
+def removeConcurrency(doc):
+    for b in doc:
+        if 'concurrency' in b:
+            del b['concurrency']
+    return doc
 
 
 def main():
@@ -134,14 +151,6 @@ Taboot is released under the terms of the GPLv3+ license""")
         log_update("Adding logging to file: %s" % logfile)
         addLogging = True
 
-    if args.concurrency:
-        log_update("Setting concurrency to %i." % args.concurrency[0])
-        overrideConcurrency = True
-        concurrency = args.concurrency[0]
-        if concurrency < 0:
-            print "Concurrency has to be a positive value"
-            sys.exit(1)
-
     if len(args.input_files) >= 1:
         input_files = args.input_files
     else:
@@ -196,7 +205,21 @@ The problem is on line %s, column %s.
                 raise MalformedYAML(msg)
 
         for doc in ds:
-            scripts.append(TabootScript(doc, infile, args.edit))
+            try:
+                scripts.append(TabootScript(doc, infile, args.edit))
+            except ConcurrencyException as e:
+                msg = """%s
+Please choose one of these options:
+1) Use Concurrency and ignore %s
+2) Use %s and ignore Concurrency
+3) exit\n""" % (e, e.value, e.value)
+                response = raw_input(msg)
+                if response == "1":
+                    ds.append(removeTask(doc, e.value))
+                elif response == "2":
+                    ds.append(removeConcurrency(doc))
+                else:
+                    exit()
 
     # If you're just validating the YAML we don't need to build
     # the data structure.
@@ -209,56 +232,12 @@ The problem is on line %s, column %s.
             script.addLogging(logfile)
 
         # Add/Modify Concurrency if -C is given
-        if overrideConcurrency:
-            script.setConcurrency(concurrency)
+        if args.concurrency:
+            script.setConcurrency(args.concurrency[0])
 
         # Remove the actual preflight elements if -s is given
         if args.skippreflight:
             script.deletePreflight()
-
-        # Verification that concurrent and non-concurrent features are both
-        # not in use.  This is a hack to get the sleep.WaitOnInput (pause)
-        # feature up and running, when our new tabootScript class is in place
-        # this check should be handled in validateScript and the task classes
-        # should be updated to have a flag that indicates if it is safe for
-        # concurrency
-        concurrency = False
-        nonconcurrenttask = False
-        doc = script.getYamlDoc()
-        for b in doc:
-            if 'concurrency' in b:
-                concurrency = True
-            for task in b['tasks']:
-                if ((isinstance(task, str)
-                            and task == 'sleep.WaitOnInput')
-                        or (isinstance(task, dict)
-                            and 'sleep.WaitOnInput' in task)):
-                    nonconcurrenttask = True
-        if concurrency == True and nonconcurrenttask == True:
-            msg = """Concurrency is set and a Non-Concurrent task is present.
-Please choose one of these options:
-1) Use Concurrency and ignore sleep.WaitOnInput
-2) Use sleep.WaitOnInput and ignore Concurrency
-3) exit\n"""
-            response = raw_input(msg)
-            if response == "1":
-                # remove sleep.WaitOnInput
-                for b in doc:
-                    t2r = []
-                    for task in b['tasks']:
-                        if ((isinstance(task, str)
-                                    and task == 'sleep.WaitOnInput')
-                                or (isinstance(task, dict)
-                                    and 'sleep.WaitOnInput' in task)):
-                            t2r.append(task)
-                    for task in t2r:
-                        b['tasks'].remove(task)
-            elif response == "2":
-                for b in doc:
-                    if 'concurrency' in b:
-                        del b['concurrency']
-            else:
-                exit()
 
         # Print output only if -p is given
         if args.printonly:

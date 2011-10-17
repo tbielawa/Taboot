@@ -83,6 +83,7 @@ class Colors(object):
             return True
         return False
 
+
 class HTMLColors(Colors):
     """
     Simple HTML string coloring object

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+
 
 def resolve_types(ds, relative_to):
     """
@@ -101,3 +103,8 @@ def instantiator(type_blob, relative_to, **kwargs):
         pprint.pprint(kwargs)
         print "Full backtrace below\n"
         raise
+
+
+def log_update(msg):
+    sys.stderr.write(str(msg) + "\n")
+    sys.stderr.flush()
