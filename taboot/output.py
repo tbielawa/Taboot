@@ -372,7 +372,7 @@ class HTMLOutput(_FileLikeOutputObject):
         # Figured it all out, now we join them together!
         self._logfile_path = os.path.join(_destdir, _logfile)
         if not os.path.exists(_destdir):
-            os.makedirs(_destdir, 0644)
+            os.makedirs(_destdir, 0755)
 
         self._c = Colors.HTMLColors()
         self._log_fd = open(self._logfile_path, 'a')
@@ -426,10 +426,10 @@ class HTMLOutput(_FileLikeOutputObject):
 
         if isinstance(result.output, types.ListType):
             for r in result.output:
-                self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" %
+                self._log_fd.write("<pre>%s</pre>\n<br />\n<br />\n" %
                                    r.strip())
         else:
-            self._log_fd.write("<p><tt>%s</tt></p>\n<br />\n<br />\n" %
+            self._log_fd.write("<pre>%s</pre>\n<br />\n<br />\n" %
                                result.output.strip())
 
         self._log_fd.flush()
