@@ -63,23 +63,20 @@ class TabootScript(YamlDoc):
         self.validateScript()
 
     def deletePreflight(self):
-        for b in self.yamlDoc:
-            if 'preflight' in b:
-                del b['preflight']
+        if 'preflight' in self.yamlDoc[0]:
+            del self.yamlDoc[0]['preflight']
         self.validateScript()
 
     def addLogging(self, logfile):
-        for b in self.yamlDoc:
-            if 'output' in b:
-                b['output'].append({'LogOutput': {'logfile': logfile}})
-            else:
-                b['output'] = [{'LogOutput': {'logfile': logfile}},
+        if 'output' in self.yamlDoc[0]:
+            self.yamlDoc[0]['output'].append({'LogOutput': {'logfile': logfile}})
+        else:
+            self.yamlDoc[0]['output'] = [{'LogOutput': {'logfile': logfile}},
                                'CLIOutput']
         self.validateScript()
 
     def setConcurrency(self, concurrency):
-        for b in self.yamlDoc:
-            b['concurrency'] = concurrency
+        self.yamlDoc[0]['concurrency'] = concurrency
         try:
             log_update("Attempting to set concurrency to: %s" % concurrency)
             self.validateScript()
@@ -88,10 +85,35 @@ class TabootScript(YamlDoc):
             self.setConcurrency(1)
 
     def getConcurrency(self):
-        for b in self.yamlDoc:
-            if 'concurrency' in b:
-                return b['concurrency']
+        if 'concurrency' in self.yamlDoc[0]:
+            return self.yamlDoc[0]['concurrency']
         return 1
+
+    def hasPreflight(self):
+        if 'preflight' in self.yamlDoc[0]:
+            return True
+        else:
+            return False
+
+    def getPreflight(self):
+        if hasPreflight(self):
+            return self.yamlDoc[0]['preflight']
+
+    def getTasks(self):
+        return self.yamlDoc[0]['tasks']
+
+    def getHosts(self):
+        return self.yamlDoc[0]['hosts']
+
+    def hasOutput(self):
+        if 'output' in self.yamlDoc[0]:
+            return True
+        else:
+            return False
+
+    def getOutput(self):
+        if hasOutput(self):
+            return self.yamlDoc[0]['output']
 
 
 class ConcurrencyException(Exception):
