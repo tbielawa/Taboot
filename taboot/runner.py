@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import threading
+from util import instantiator
 
 
 class Runner(object):
@@ -25,55 +26,26 @@ class Runner(object):
 
     import threading
     import taboot.output
-    from util import instantiator
 
-    def __init__(self, hosts, tasks, concurrency=1,
-                 preflight=[],
-                 output=['CLIOutput'],
-                 expand_globs=True):
+    def __init__(self, script, expand_globs=True):
         """
         :Parameters:
-           - `hosts`: a List of Func-compatible host globs to operate on.
-
-           - `tasks`: a List of tasks to execute. Each item in this
-             list must be a dict of the following format:
-
-               - Required key named `type`. This must be a
-                 instantiable type.
-
-               - Optional key named `args`. This is expanded as the
-                 positional arguments when instantiating `type`. If
-                 not present, the empty tuple `()` is assumed. If
-                 `args` is not a tuple, it is assumed that the value
-                 of `args` should be the only item contained within a
-                 1-tuple and is treated as such.
-
-               - Optional key named `kwargs`. This is exapanded as the
-                 keyword arguments when instantiating `type`. If
-                 kwargs is not defined, it is assumed to be the empty
-                 dict `{}`.
-
-           - `concurrency`: the number of hosts on which to operate on
-             simultaneously.
-
-           - `output`: a list following the same format as `tasks`,
-             containing types (and possibly arguments) used for output
+           - `script`: an instance of tabootScript
 
            - `expand_globs`: whether to expand the globs or just leave
              them as is.
         """
-        self._hosts = hosts
-        self._preflight_tasks = preflight
-        self._preflight_semaphore = self.threading.Semaphore(len(preflight))
+        self._hosts = script.getHosts()
+        self._preflight_tasks = script.getPreflightTypes()
+        self._preflight_semaphore = self.threading.Semaphore(
+                                         script.getPreflightLength())
         self._preflight_tasks_q = []
-        self._tasks = tasks
-        self._concurrency = concurrency
-        self._output = output
+        self._tasks = script.getTaskTypes()
+        self._concurrency = script.getConcurrency()
+        self._output = script.getOutputTypes()
         self._task_q = []
         if expand_globs:
             self._hosts = self._expand_globs()
-        else:
-            self._hosts = hosts
         self._semaphore = self.threading.Semaphore(self._concurrency)
         self._fail_event = self.threading.Event()
 

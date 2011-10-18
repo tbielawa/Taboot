@@ -46,12 +46,13 @@ class TabootScript(YamlDoc):
         # cli.py and I'm thinking that we can offer the user the ability to
         # edit the script to correct
         if self.getConcurrency() > 1:
-            for b in self.yamlDoc:
-                tasks = resolve_types(b['tasks'], 'taboot.tasks')
-                for task in tasks:
-                    task = instantiator(task, 'taboot.tasks', host="*")
-                    if(task.concurrentFriendly == False):
-                        raise ConcurrencyException(task)
+            tasks = self.getTaskTypes()
+            for task in tasks:
+                task = instantiator(task, 'taboot.tasks', host="*")
+                if(task.concurrentFriendly == False):
+                    raise ConcurrencyException(task)
+
+        # TODO add validation logic to ensure that hosts, tasks are present
 
         # TODO add additional validation logic and throw exception if invalid
         return True
@@ -63,13 +64,14 @@ class TabootScript(YamlDoc):
         self.validateScript()
 
     def deletePreflight(self):
-        if 'preflight' in self.yamlDoc[0]:
+        if self.hasPreflight():
             del self.yamlDoc[0]['preflight']
         self.validateScript()
 
     def addLogging(self, logfile):
         if 'output' in self.yamlDoc[0]:
-            self.yamlDoc[0]['output'].append({'LogOutput': {'logfile': logfile}})
+            self.yamlDoc[0]['output'].append(
+                           {'LogOutput': {'logfile': logfile}})
         else:
             self.yamlDoc[0]['output'] = [{'LogOutput': {'logfile': logfile}},
                                'CLIOutput']
@@ -96,11 +98,25 @@ class TabootScript(YamlDoc):
             return False
 
     def getPreflight(self):
-        if hasPreflight(self):
+        if self.hasPreflight():
             return self.yamlDoc[0]['preflight']
+        else:
+            return []
+
+    def getPreflightTypes(self):
+        return resolve_types(self.getPreflight(), 'taboot.tasks')
+
+    def getPreflightLength(self):
+        return len(self.getPreflight())
 
     def getTasks(self):
         return self.yamlDoc[0]['tasks']
+
+    def getTaskTypes(self):
+        return resolve_types(self.getTasks(), 'taboot.tasks')
+
+    def getTaskLength(self):
+        return len(self.getTasks())
 
     def getHosts(self):
         return self.yamlDoc[0]['hosts']
@@ -112,8 +128,13 @@ class TabootScript(YamlDoc):
             return False
 
     def getOutput(self):
-        if hasOutput(self):
+        if self.hasOutput():
             return self.yamlDoc[0]['output']
+        else:
+            return ['CLIOutput']
+
+    def getOutputTypes(self):
+        return resolve_types(self.getOutput(), 'taboot.output')
 
 
 class ConcurrencyException(Exception):

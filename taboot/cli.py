@@ -33,25 +33,6 @@ class MalformedYAML(Exception):
     pass
 
 
-def build_runner(ds):
-    """
-    Build a :class:`taboot.runner.Runner` instance from the given
-    datastructure.
-
-    :Parameters:
-      - `ds`: Datastructure roughly representing keyword arguments to be used
-        when instantiating runner.  All types are processed through
-        :function:`resolve_types` before handing off for instantiation.
-    """
-
-    ds['tasks'] = resolve_types(ds['tasks'], 'taboot.tasks')
-    if 'output' in ds:
-        ds['output'] = resolve_types(ds['output'], 'taboot.output')
-    if 'preflight' in ds:
-        ds['preflight'] = resolve_types(ds['preflight'], 'taboot.tasks')
-    return taboot.runner.Runner(**ds)
-
-
 def removeTask(doc, task):
     task = str(task).replace('taboot.tasks.', '').replace('()', '')
     for b in doc:
@@ -246,7 +227,7 @@ Please choose one of these options:
 
         # Run each YAML document returned from yaml.load_all
         for runner_source in script.getYamlDoc():
-            runner = build_runner(runner_source)
+            runner = taboot.runner.Runner(script)
             if not runner.run():
                 break
 
