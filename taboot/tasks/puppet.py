@@ -18,7 +18,7 @@
 from taboot.tasks import command
 
 PUPPET_LOCKFILE = "/var/lib/puppet/state/puppetdlock"
-
+PUPPET_RUN_CMD = "puppetd --test --color=false"
 
 class Run(command.Run):
     """
@@ -27,9 +27,13 @@ class Run(command.Run):
     See also: SafeRun
     """
 
-    def __init__(self, **kwargs):
-        super(Run, self).__init__('puppetd --test --color=false || true',
-                                  **kwargs)
+    def __init__(self, server="", **kwargs):
+        if (server==""):
+            pcmd = PUPPET_RUN_CMD
+        else:
+            pcmd = PUPPET_RUN_CMD + " --server=%s" % server
+        pcmd += " || true"
+        super(Run, self).__init__(pcmd, **kwargs)
 
 
 class SafeRun(command.Run):
@@ -40,9 +44,12 @@ class SafeRun(command.Run):
     if puppet returns with a non-zero exit status.
     """
 
-    def __init__(self, **kwargs):
-        super(SafeRun, self).__init__('puppetd --test --color=false',
-                                  **kwargs)
+    def __init__(self, server="", **kwargs):
+        if (server==""):
+            pcmd = PUPPET_RUN_CMD
+        else:
+            pcmd = PUPPET_RUN_CMD + " --server=%s" % server
+        super(SafeRun, self).__init__(pcmd, **kwargs)
 
 
 class Enable(command.Run):
