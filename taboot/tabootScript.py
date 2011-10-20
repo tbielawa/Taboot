@@ -20,7 +20,7 @@ import yaml
 from util import resolve_types, instantiator, log_update
 
 
-class YamlDoc:
+class YamlDoc(object):
     """
     Representation of a Yaml Document
     """
