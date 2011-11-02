@@ -4,6 +4,7 @@ ASCII2MAN = a2x -D $(dir $@) -d manpage -f manpage $<
 ASCII2HTMLMAN = a2x -D docs/html/man/ -d manpage -f xhtml
 NAME := python-taboot
 VERSION := $(shell cat VERSION)
+RELEASE := $(shell awk '/Release/{print $$2}' < python-taboot.spec | cut -d "%" -f1)
 CURVERSION := $(shell python -c "import taboot; print taboot.__version__")
 FULLNAME = $(NAME)-$(VERSION)
 MANPAGES := docs/man/man1/taboot.1 docs/man/man5/taboot-tasks.5
@@ -70,12 +71,8 @@ rpm:
 tag: clean
 	tito tag
 
-release: clean tag
-# Release is a maintainer target. Should handle version bumping,
-# source tagging, building docs, creating an sdist for tar.gz
-# installs, and building the srpm and rpm (tito will help with a lot
-# of this).
-	tito build --rpm
+release:
+	@echo $(RELEASE)
 
 testrelease:
 # Like a release but in a "build --test" kind of way.
