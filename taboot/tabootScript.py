@@ -19,7 +19,7 @@
 import yaml
 
 
-class YamlDoc:
+class YamlDoc(object):
     """
     Representation of a Yaml Document
     """
