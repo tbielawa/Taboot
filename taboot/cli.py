@@ -243,15 +243,15 @@ The problem is on line %s, column %s.
     for script in scripts:
         # Add/Modify Logging if -L is given
         if addLogging:
-             script.addLogging(logfile)
+            script.addLogging(logfile)
 
         # Add/Modify Concurrency if -C is given
         if overrideConcurrency:
-             script.setConcurrency(concurrency)
+            script.setConcurrency(concurrency)
 
         # Remove the actual preflight elements if -s is given
         if args.skippreflight:
-             script.deletePreflight()
+            script.deletePreflight()
 
         # Verification that concurrent and non-concurrent features are both
         # not in use.  This is a hack to get the sleep.WaitOnInput (pause)

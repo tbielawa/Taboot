@@ -65,4 +65,3 @@ class TabootScript(YamlDoc):
     def setConcurrency(self, concurrency):
         for b in self.yamlDoc:
             b['concurrency'] = concurrency
-                
