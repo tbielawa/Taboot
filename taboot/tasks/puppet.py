@@ -17,26 +17,35 @@
 
 from taboot.tasks import command
 
-PUPPET_LOCKFILE = "/var/lib/puppet/state/puppetdlock"
-PUPPET_RUN_CMD = "puppetd --test --color=false"
 
-class Run(command.Run):
+
+
+class PuppetBase(command.Run):
+    """
+    Base class for puppet commands
+    """
+
+    def __init__(self, pcmd, **kwargs):
+        super(PuppetBase, self).__init__(pcmd, **kwargs)
+
+class Run(PuppetBase):
     """
     Run 'puppetd --test || true'
 
     See also: SafeRun
     """
 
-    def __init__(self, server="", **kwargs):
-        if (server==""):
-            pcmd = PUPPET_RUN_CMD
-        else:
-            pcmd = PUPPET_RUN_CMD + " --server=%s" % server
-        pcmd += " || true"
+    def __init__(self, server="", safe=False, **kwargs):
+        pcmd = "puppetd --test --color=false"
+        if server != "":
+            pcmd += " --server=%s" % server
+        if safe == False:
+            # If safe is False, ignore the return code of the puppet run
+            pcmd += " || true"
         super(Run, self).__init__(pcmd, **kwargs)
 
 
-class SafeRun(command.Run):
+class SafeRun(Run):
     """
     Run 'puppetd --test'.
 
@@ -45,14 +54,10 @@ class SafeRun(command.Run):
     """
 
     def __init__(self, server="", **kwargs):
-        if (server==""):
-            pcmd = PUPPET_RUN_CMD
-        else:
-            pcmd = PUPPET_RUN_CMD + " --server=%s" % server
-        super(SafeRun, self).__init__(pcmd, **kwargs)
+        super(SafeRun, self).__init__(server, safe=True, **kwargs)
 
 
-class Enable(command.Run):
+class Enable(PuppetBase):
     """
     Run 'puppetd --enable'.
     """
@@ -61,7 +66,7 @@ class Enable(command.Run):
         super(Enable, self).__init__('puppetd --enable', **kwargs)
 
 
-class Disable(command.Run):
+class Disable(PuppetBase):
     """
     Run 'puppetd --disable'.
     """
@@ -70,11 +75,12 @@ class Disable(command.Run):
         super(Disable, self).__init__('puppetd --disable', **kwargs)
 
 
-class DeleteLockfile(command.Run):
+class DeleteLockfile(PuppetBase):
     """
     Remove the puppet lock file.
     """
 
     def __init__(self, **kwargs):
+        PUPPET_LOCKFILE = "/var/lib/puppet/state/puppetdlock"
         super(DeleteLockfile, self).__init__("rm -f %s" % PUPPET_LOCKFILE,
                                              **kwargs)
