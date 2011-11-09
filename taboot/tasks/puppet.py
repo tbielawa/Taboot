@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from taboot.tasks import command
-
-
+from taboot.tasks import command, TaskResult
 
 
 class PuppetBase(command.Run):
@@ -27,6 +25,7 @@ class PuppetBase(command.Run):
 
     def __init__(self, pcmd, **kwargs):
         super(PuppetBase, self).__init__(pcmd, **kwargs)
+
 
 class Run(PuppetBase):
     """
@@ -43,6 +42,11 @@ class Run(PuppetBase):
             # If safe is False, ignore the return code of the puppet run
             pcmd += " || true"
         super(Run, self).__init__(pcmd, **kwargs)
+
+    def run(self, runner):
+        result = super(Run, self).run(runner)
+        return PuppetTaskResult(result.taskObj, result.success,
+                                     result.output, result.ignore_errors)
 
 
 class SafeRun(Run):
@@ -84,3 +88,13 @@ class DeleteLockfile(PuppetBase):
         PUPPET_LOCKFILE = "/var/lib/puppet/state/puppetdlock"
         super(DeleteLockfile, self).__init__("rm -f %s" % PUPPET_LOCKFILE,
                                              **kwargs)
+
+
+class PuppetTaskResult(TaskResult):
+    """
+    Wrapper around TaskResult to be able to differentiate in output class
+    """
+
+    def __init__(self, task, success=False, output='', ignore_errors=False):
+        super(PuppetTaskResult, self).__init__(task, success, output,
+                                               ignore_errors)

@@ -134,12 +134,16 @@ class TaskResult(object):
         if hasattr(task, 'host'):
             self._host = task.host
         self._task = repr(task)
+        self._taskObj = task
         self._success = success
         self._output = output
         self._ignore_errors = ignore_errors
 
     def _gettask(self):
         return self._task
+
+    def _gettaskObj(self):
+        return self._taskObj
 
     def _settask(self, t):
         self._task = repr(t)
@@ -170,3 +174,4 @@ class TaskResult(object):
     output = property(_getoutput, _setoutput)
     ignore_errors = property(_getignore_errors, _setignore_errors)
     host = property(_gethost)
+    taskObj = property(_gettaskObj)
