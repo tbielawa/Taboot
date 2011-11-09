@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from taboot.tasks.puppet import PuppetTaskResult
+from taboot.tasks.rpm import RPMTaskResult
 import re
 
 
@@ -215,6 +216,20 @@ class CLIOutput(_FileLikeOutputObject):
                 elif re.match('err:', line):
                     self._sys.stdout.write("%s\n" % self._c.format_string(
                         line.strip(), 'red'))
+                else:
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'normal'))
+        elif isinstance(result, RPMTaskResult):
+            # If result is an instance of RPMTaskResult,
+            # colorize the rpm.PostManifest output
+            lines = result.output.splitlines()
+            for line in lines:
+                if line.startswith('-'):
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'red'))
+                elif line.startswith('+'):
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'green'))
                 else:
                     self._sys.stdout.write("%s\n" % self._c.format_string(
                         line.strip(), 'normal'))
@@ -470,6 +485,23 @@ class HTMLOutput(_FileLikeOutputObject):
                     self._log_fd.write("%s<br />\n" %
                                    self._c.format_string(line.strip(),
                                                          'red'))
+                else:
+                    self._log_fd.write("%s<br />\n" %
+                                   line.strip())
+            self._log_fd.write("<br /><br />\n")
+        elif isinstance(result, RPMTaskResult):
+            # If result is an instance of RPMTaskResult,
+            # colorize the rpm.PostManifest output
+            lines = result.output.splitlines()
+            for line in lines:
+                if line.startswith('-'):
+                    self._log_fd.write("%s<br />\n" %
+                                   self._c.format_string(line.strip(),
+                                                         'red'))
+                elif line.startswith('+'):
+                    self._log_fd.write("%s<br />\n" %
+                                   self._c.format_string(line.strip(),
+                                                         'green'))
                 else:
                     self._log_fd.write("%s<br />\n" %
                                    line.strip())

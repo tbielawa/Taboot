@@ -18,6 +18,15 @@
 from taboot.tasks import command, TaskResult
 
 
+class RPMBase(command.Run):
+    """
+    Base class for rpm commands
+    """
+
+    def __init__(self, pcmd, **kwargs):
+        super(RPMBase, self).__init__(pcmd, **kwargs)
+
+
 class PreManifest(command.Run):
     """
     Gather list of installed RPMs.  A later invocation of :class:`PostManifest`
@@ -78,4 +87,15 @@ class PostManifest(command.Run):
 
         result.output = ''.join(diff_output)
 
-        return result
+        return RPMTaskResult(result.taskObj, result.success,
+                                     result.output, result.ignore_errors)
+
+
+class RPMTaskResult(TaskResult):
+    """
+    Wrapper around TaskResult to be able to differentiate in output class
+    """
+
+    def __init__(self, task, success=False, output='', ignore_errors=False):
+        super(RPMTaskResult, self).__init__(task, success, output,
+                                               ignore_errors)
