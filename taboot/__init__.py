@@ -26,5 +26,5 @@ certain groups of hosts.
 __docformat__ = 'restructuredtext'
 __author__ = "John Eckersberg"
 __license__ = 'GPLv3+'
-__version__ = '0.3.2'
+__version__ = '0.4.0'
 __url__ = 'https://fedorahosted.org/Taboot/'
