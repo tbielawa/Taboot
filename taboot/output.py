@@ -452,8 +452,12 @@ class HTMLOutput(_FileLikeOutputObject):
         """
         import types
         import sys
+        import cgi
 
         name = self._fmt_hostname(result.host)
+
+        # escape any html in result.output
+        result.output = cgi.escape(result.output)
 
         if result.success:
             success_str = self._c.format_string('OK', 'green')
