@@ -18,7 +18,14 @@
 from taboot.tasks import command
 
 
-class Start(command.Run):
+class ServiceBase(command.Run):
+    """
+    Base Class for system service tasks
+    """
+    pass
+
+
+class Start(ServiceBase):
     """
     Start a service.
 
@@ -30,7 +37,7 @@ class Start(command.Run):
         super(Start, self).__init__('service %s start' % service, **kwargs)
 
 
-class Stop(command.Run):
+class Stop(ServiceBase):
     """
     Stop a service.
 
@@ -42,7 +49,7 @@ class Stop(command.Run):
         super(Stop, self).__init__('service %s stop' % service, **kwargs)
 
 
-class Restart(command.Run):
+class Restart(ServiceBase):
     """
     Restart a service.
 

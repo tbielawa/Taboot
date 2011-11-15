@@ -49,7 +49,7 @@ class Run(PuppetBase):
                                      result.output, result.ignore_errors)
 
 
-class SafeRun(Run):
+class SafeRun(puppet.Run):
     """
     Run 'puppetd --test'.
 
