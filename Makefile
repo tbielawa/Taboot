@@ -57,8 +57,7 @@ testdist: clean
 	tito build --test --tgz
 
 sdist: clean
-	@echo "Remember that you should only sdist if you've tagged this release first."
-	tito build --tgz
+	python ./setup.py sdist
 
 srpm: clean
 	@echo "Remember that you shold only srpm if you've tagged this release first."
