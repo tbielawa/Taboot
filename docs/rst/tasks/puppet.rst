@@ -21,7 +21,12 @@ Run
 * API: :class:`taboot.tasks.puppet.Run`
 * Keys
 
-  * `None`
+  * ``server``
+
+    * Type: String
+    * Default: ""
+    * Required: No (has default)
+    * Description: Puppet Master to run against
 
 The ``Run`` class triggers a manual catalog run. This is equivalent to
 ``puppetd --test``. This will **not** abort the release if puppet
@@ -34,6 +39,9 @@ Syntax::
     ---
       tasks:
         - puppet.Run
+
+        # Run against a different puppet master
+        - puppet.Run: {server: my.puppet.server}
 
 
 Example::
@@ -56,7 +64,12 @@ SafeRun
 * API: :class:`taboot.tasks.puppet.SafeRun`
 * Keys
 
-  * `None`
+  * ``server``
+
+    * Type: String
+    * Default: ""
+    * Required: No (has default)
+    * Description: Puppet Master to run against
 
 The ``SafeRun`` class triggers a manual catalog run. This is
 equivalent to ``puppetd --test``. This **will** abort the release if
@@ -69,7 +82,10 @@ Syntax::
 
     ---
       tasks:
-        - puppet.Run
+        - puppet.SafeRun
+
+        # Run against a different puppet master
+        - puppet.SafeRun: {server: my.puppet.server}
 
 
 Example::
@@ -78,7 +94,7 @@ Example::
     - hosts:
         - www*
       tasks:
-        - puppet.Run
+        - puppet.SafeRun
 
 .. versionadded:: 0.2.11
 
