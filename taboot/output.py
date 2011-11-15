@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from taboot.tasks.puppet import PuppetTaskResult
+from taboot.tasks.rpm import RPMTaskResult
+import re
+
 
 class _FileLikeOutputObject(object):
     """
@@ -195,13 +199,49 @@ class CLIOutput(_FileLikeOutputObject):
             self.timestamp, self._c.format_string(
                 result.task, output_color)))
 
-        if isinstance(result.output, types.ListType):
-            for r in result.output:
-                self._sys.stdout.write("%s\n" % self._c.format_string(
-                        r.strip(), output_color))
+        if isinstance(result, PuppetTaskResult):
+            # If result is an instance of PuppetTaskResult,
+            # colorize the puppet output
+            lines = result.output.splitlines()
+            for line in lines:
+                if re.match('info:', line):
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'green'))
+                elif re.match('notice:', line):
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'blue'))
+                elif re.match('warning:', line):
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'yellow'))
+                elif re.match('err:', line):
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'red'))
+                else:
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'normal'))
+        elif isinstance(result, RPMTaskResult):
+            # If result is an instance of RPMTaskResult,
+            # colorize the rpm.PostManifest output
+            lines = result.output.splitlines()
+            for line in lines:
+                if line.startswith('-'):
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'red'))
+                elif line.startswith('+'):
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'green'))
+                else:
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                        line.strip(), 'normal'))
         else:
-            self._sys.stdout.write("%s\n" % self._c.format_string(
-                    result.output.strip(), output_color))
+            # Use standard pass/fall coloring for output
+            if isinstance(result.output, types.ListType):
+                for r in result.output:
+                    self._sys.stdout.write("%s\n" % self._c.format_string(
+                            r.strip(), output_color))
+            else:
+                self._sys.stdout.write("%s\n" % self._c.format_string(
+                        result.output.strip(), output_color))
 
 
 class LogOutput(_FileLikeOutputObject):
@@ -416,20 +456,64 @@ class HTMLOutput(_FileLikeOutputObject):
         name = self._fmt_hostname(result.host)
 
         if result.success:
-            success_str = 'OK'
+            success_str = self._c.format_string('OK', 'green')
         else:
-            success_str = 'FAIL'
+            success_str = self._c.format_string('FAIL', 'red')
 
         self._log_fd.write("<p><tt>%s:\n</tt></p>\n<p><tt>%s "\
                                "Finished Task[%s]: %s</tt></p>\n" %
                            (name, self.timestamp, result.task, success_str))
 
-        if isinstance(result.output, types.ListType):
-            for r in result.output:
-                self._log_fd.write("<pre>%s</pre>\n<br />\n<br />\n" %
-                                   r.strip())
+        if isinstance(result, PuppetTaskResult):
+            # If result is an instance of PuppetTaskResult,
+            # colorize the puppet output
+            lines = result.output.splitlines()
+            for line in lines:
+                if re.match('info:', line):
+                    self._log_fd.write("%s<br />\n" %
+                                   self._c.format_string(line.strip(),
+                                                         'green'))
+                elif re.match('notice:', line):
+                    self._log_fd.write("%s<br />\n" %
+                                   self._c.format_string(line.strip(),
+                                                         'blue'))
+                elif re.match('warning:', line):
+                    self._log_fd.write("%s<br />\n" %
+                                   self._c.format_string(line.strip(),
+                                                         'yellow'))
+                elif re.match('err:', line):
+                    self._log_fd.write("%s<br />\n" %
+                                   self._c.format_string(line.strip(),
+                                                         'red'))
+                else:
+                    self._log_fd.write("%s<br />\n" %
+                                   line.strip())
+            self._log_fd.write("<br /><br />\n")
+        elif isinstance(result, RPMTaskResult):
+            # If result is an instance of RPMTaskResult,
+            # colorize the rpm.PostManifest output
+            lines = result.output.splitlines()
+            for line in lines:
+                if line.startswith('-'):
+                    self._log_fd.write("%s<br />\n" %
+                                   self._c.format_string(line.strip(),
+                                                         'red'))
+                elif line.startswith('+'):
+                    self._log_fd.write("%s<br />\n" %
+                                   self._c.format_string(line.strip(),
+                                                         'green'))
+                else:
+                    self._log_fd.write("%s<br />\n" %
+                                   line.strip())
+            self._log_fd.write("<br /><br />\n")
         else:
-            self._log_fd.write("<pre>%s</pre>\n<br />\n<br />\n" %
+            # Use standard pass/fall coloring for output
+            if isinstance(result.output, types.ListType):
+                for r in result.output:
+                    self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
+                                       r.strip())
+            else:
+                self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
                                result.output.strip())
 
         self._log_fd.flush()
