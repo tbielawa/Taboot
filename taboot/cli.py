@@ -40,10 +40,12 @@ def make_blob_copy(blob):
     tmpfile.flush()
     return tmpfile
 
+
 def sync_blob_copy(tmpfile):
     blob = open(tmpfile.name).read()
     tmpfile.close()
     return blob
+
 
 class MalformedYAML(Exception):
     pass
