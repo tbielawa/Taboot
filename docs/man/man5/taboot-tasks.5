@@ -2,12 +2,12 @@
 .\"     Title: taboot-tasks
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 11/08/2011
+.\"      Date: 12/08/2011
 .\"    Manual: Taboot
-.\"    Source: Taboot 0.3.x
+.\"    Source: Taboot 0.4.x
 .\"  Language: English
 .\"
-.TH "TABOOT\-TASKS" "5" "11/08/2011" "Taboot 0\&.3\&.x" "Taboot"
+.TH "TABOOT\-TASKS" "5" "12/08/2011" "Taboot 0\&.4\&.x" "Taboot"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,11 +31,11 @@
 taboot-tasks \- quick reference for the built in tasks
 .SH "DESCRIPTION"
 .sp
-Taboot is a tool for written for scripting and automating the task of performing software releases in a large\-scale infrastructure\&. Release scripts are written using YAML syntax\&.
+Taboot is a tool written for scripting and automating the task of performing software releases in a large\-scale infrastructure\&. Release scripts are written using YAML syntax\&.
 .sp
 Taboot tasks are pre\-written actions to perform on a given host\&. For example, scheduling downtime in Nagios, or updating all the RPMs on a system\&. The tasks documented here can be used in \fIpreflight\fR and \fItasks\fR blocks\&. The syntax of each possible tasks varies\&. Taboot comes with many built\-in tasks\&.
 .sp
-This quick\-reference is example based and only uses abbreviated forms where possible\&. Additionally, the options for the \fIOutput\fR block are provided\&.
+This quick\-reference is example based and only uses abbreviated forms where possible\&. Additionally, the options for the \fIoutput\fR block are provided\&.
 .SH "OUTPUT"
 .sp
 The \fIoutput\fR block lets you choose zero or more methods to log the taboot run\&. The \fBCLIOutput\fR method is the default\&. See the online documentation to learn how to set system\-wide defaults for the \fBHTMLOutput\fR logger\&.

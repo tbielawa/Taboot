@@ -2,7 +2,7 @@ taboot(1)
 =========
 :doctype:manpage
 :man source:   Taboot
-:man version:  0.3.x
+:man version:  0.4.x
 :man manual:   System administration commands
 
 NAME
@@ -58,7 +58,9 @@ Don't execute the release, just check script syntax.
 
 
 *-p*, *--printonly*::
-Don't execute the release, just check script syntax and print the YAML to be run to stdout.
+
+Don't execute the release, just check script syntax and print the YAML
+to be run to stdout.
 
 
 
@@ -70,7 +72,9 @@ Skip preflight sections if they exist.
 
 *-L [LOGFILE]*, *--logfile [LOGFILE]*::
 
-Adds [LogOutput: \{logfile: LOGFILE}] to the script(s) being run. If LOGFILE is not specified then taboot-YYYY-MM-DD-HHMMSS.log will be used.
+Adds [LogOutput: \{logfile: LOGFILE}] to the script(s) being run. If
+LOGFILE is not specified then taboot-YYYY-MM-DD-HHMMSS.log will be
+used.
 
 
 
@@ -82,7 +86,9 @@ Sets the concurrency for the input script(s).
 
 *-E*, *--edit*::
 
-Edit the input script(s) before running them using $EDITOR. If $EDITOR is undefined then emacs will be used, if emacs is not found then vi will be used.
+Edit the input script(s) before running them using $EDITOR. This falls
+back to emacs and then vi. The tabootv command will choose vi
+automatically.
 
 
 

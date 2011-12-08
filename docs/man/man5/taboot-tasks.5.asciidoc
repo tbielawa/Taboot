@@ -2,7 +2,7 @@ taboot-tasks(5)
 ===============
 :doctype:manpage
 :man source:   Taboot
-:man version:  0.3.x
+:man version:  0.4.x
 
 
 NAME
@@ -15,7 +15,7 @@ taboot-tasks - quick reference for the built in tasks
 DESCRIPTION
 -----------
 
-Taboot is a tool for written for scripting and automating the task of
+Taboot is a tool written for scripting and automating the task of
 performing software releases in a large-scale infrastructure. Release
 scripts are written using YAML syntax.
 
@@ -26,7 +26,7 @@ __tasks__ blocks. The syntax of each possible tasks varies. Taboot
 comes with many built-in tasks.
 
 This quick-reference is example based and only uses abbreviated forms
-where possible. Additionally, the options for the __Output__ block are
+where possible. Additionally, the options for the __output__ block are
 provided.
 
 

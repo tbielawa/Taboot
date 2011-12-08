@@ -64,7 +64,7 @@ mod_jk via it's xml web api.
 %{__mkdir_p} %{buildroot}%{_mandir}/{man1,man5}
 %{__gzip} -c docs/man/man1/taboot.1 > %{buildroot}/%{_mandir}/man1/taboot.1.gz
 %{__gzip} -c docs/man/man5/taboot-tasks.5 > %{buildroot}/%{_mandir}/man5/taboot-tasks.5.gz
-
+%{__mv} share/edit-header %{buildroot}/%{_datadir}/%{_name}
 
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
@@ -72,8 +72,9 @@ mod_jk via it's xml web api.
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/taboot
+%{_bindir}/taboot*
 %{python_sitelib}/*%{_name}*
+%{_datadir}/%{_name}*
 %doc docs/rst LICENSE AUTHORS README
 %doc %{_mandir}/man1/taboot.*
 %doc %{_mandir}/man5/taboot-tasks.*

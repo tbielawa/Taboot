@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from taboot.tasks import command, TaskResult
-
+import puppet
 
 class PuppetBase(command.Run):
     """

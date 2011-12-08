@@ -13,7 +13,7 @@ Required Tools
  #. `python <http://www.python.org>`_ - The python programming language
  #. `distutils <http://docs.python.org/lib/module-distutils.html>`_ - Python building and packaging library
  #. `git <http://git.or.cz/>`_ - Source code management 
- #. `Func <https://fedorahosted.org/func/>`_ - The Fedora Unified Network Controller.
+ #. `Func <https://fedorahosted.org/func/>`_ - The Fedora Unified Network Controller
  #. `an <http://www.vim.org>`_ `editor <http://www.gnu.org/software/emacs/>`_ or `ide <http://pida.co.uk/>`_ `that <http://scribes.sourceforge.net/>`_ doesn't suck
 
 Optional Tools
@@ -23,7 +23,7 @@ Optional Tools
 
 Source
 ------
-You can clone the repo over http via :program:`git` through the following command:::
+You can clone the repo via :program:`git` through the following command:::
 
    $ git clone git://git.fedorahosted.org/Taboot.git
 
@@ -99,17 +99,3 @@ Now we pretend you are all finished and have done at least one commit to the xml
 You now have patch sets which you can send in for perusal and
 acceptance. Open a new ticket in our issue tracker or attach them to
 an existing ticket.
-
-
-Running Unit Tests
-``````````````````
-
-
-Running the test suite is as simple as running :command:`setup.py test`. The results look like:::
-
-   $ ./setup.py test
-   <snip>
-   Ran 12 tests in 0.049s
-
-   OK
-   $ 

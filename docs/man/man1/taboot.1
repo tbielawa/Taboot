@@ -2,12 +2,12 @@
 .\"     Title: taboot
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 08/02/2011
+.\"      Date: 12/08/2011
 .\"    Manual: System administration commands
-.\"    Source: Taboot 0.3.x
+.\"    Source: Taboot 0.4.x
 .\"  Language: English
 .\"
-.TH "TABOOT" "1" "08/02/2011" "Taboot 0\&.3\&.x" "System administration commands"
+.TH "TABOOT" "1" "12/08/2011" "Taboot 0\&.4\&.x" "System administration commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -84,7 +84,7 @@ Sets the concurrency for the input script(s)\&.
 .PP
 \fB\-E\fR, \fB\-\-edit\fR
 .RS 4
-Edit the input script(s) before running them using $EDITOR\&. If $EDITOR is undefined then emacs will be used, if emacs is not found then vi will be used\&.
+Edit the input script(s) before running them using $EDITOR\&. This falls back to emacs and then vi\&. The tabootv command will choose vi automatically\&.
 .RE
 .SH "AUTHOR"
 .sp

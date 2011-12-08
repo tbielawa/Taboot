@@ -175,7 +175,9 @@ setup(name = "python-taboot",
                 'taboot.tasks',
                 'taboot-func'],
 
-    scripts = ['bin/taboot'],
+    scripts = ['bin/taboot', 'bin/tabootv'],
+
+    data_files = [('/usr/share/taboot', ['share/edit-header'])],
 
     classifiers = [
         'License :: OSI Approved :: GNU General Public License (GPL)',

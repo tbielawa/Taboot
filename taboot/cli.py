@@ -23,11 +23,27 @@ import re
 import datetime
 import tempfile
 import os
+import taboot
 from subprocess import call
 from taboot import __version__
 from tabootScript import TabootScript, ConcurrencyException
 from util import resolve_types, log_update
 
+
+def make_blob_copy(blob):
+    header = open(taboot.edit_header).read()
+    tmpfile = tempfile.NamedTemporaryFile(suffix=".yaml",
+                                          prefix="taboot-")
+    header = header.replace("$TMPFILE$", tmpfile.name)
+    tmpfile.write(header)
+    tmpfile.write(blob)
+    tmpfile.flush()
+    return tmpfile
+
+def sync_blob_copy(tmpfile):
+    blob = open(tmpfile.name).read()
+    tmpfile.close()
+    return blob
 
 class MalformedYAML(Exception):
     pass
@@ -39,9 +55,9 @@ def removeTask(doc, task):
         t2r = []
         for t in b['tasks']:
             if ((isinstance(t, str)
-                        and t == task)
-                    or (isinstance(t, dict)
-                        and task in t)):
+                 and t == task)
+                or (isinstance(t, dict)
+                    and task in t)):
                 t2r.append(t)
         for t in t2r:
             b['tasks'].remove(t)
@@ -66,9 +82,9 @@ def main():
     overrideConcurrency = False
 
     parser = argparse.ArgumentParser(
-                 formatter_class=argparse.RawDescriptionHelpFormatter,
-                 description="Run a Taboot release script.",
-                 epilog="""Taboot is a tool for written for scripting \
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="Run a Taboot release script.",
+        epilog="""Taboot is a tool for written for scripting \
 and automating the task of
 performing software releases in a large-scale infrastructure. Release
 scripts are written using YAML syntax.
@@ -147,20 +163,16 @@ Taboot is released under the terms of the GPLv3+ license""")
             else:
                 blob = open(infile).read()
                 if args.edit:
-                    tmpfile = tempfile.NamedTemporaryFile(suffix=".tmp",
-                                              prefix="taboot-")
-                    tmpfile.write(blob)
-                    tmpfile.flush()
+                    tmpfile = make_blob_copy(blob)
                     try:
                         EDITOR = os.environ.get('EDITOR', 'emacs')
                         call([EDITOR, tmpfile.name])
                     except OSError, e:
                         call(['vi', tmpfile.name])
-                    blob = open(tmpfile.name).read()
-                    tmpfile.close()
+                    blob = sync_blob_copy(tmpfile)
         except IOError, e:
             print "Failed to read input file '%s'. Are you sure it exists?" \
-                  % infile
+                % infile
             sys.exit(1)
 
         # Print a helpful message when loading the YAML fails

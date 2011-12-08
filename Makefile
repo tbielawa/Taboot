@@ -6,10 +6,13 @@ NAME := python-taboot
 VERSION := $(shell cat VERSION)
 RELEASE := $(shell awk '/Release/{print $$2}' < python-taboot.spec | cut -d "%" -f1)
 CURVERSION := $(shell python -c "import taboot; print taboot.__version__")
-FULLNAME = $(NAME)-$(VERSION)
+FULLNAME := $(NAME)-$(VERSION)
 MANPAGES := docs/man/man1/taboot.1 docs/man/man5/taboot-tasks.5
 DOCPATH := /usr/share/doc/$(NAME)
 SITELIB = $(shell python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
+DIST := $(shell rpm --eval "%dist")
+RPMNAME := python-taboot-$(VERSION)-$(RELEASE)$(DIST).noarch.rpm
+SRPMNAME := python-taboot-$(VERSION)-$(RELEASE)$(DIST).src.rpm
 
 viewdoc: docs
 	python ./setup.py viewdoc
@@ -50,32 +53,31 @@ uninstall:
 	rm -fR $(SITELIB)/taboot/
 	rm -f /usr/bin/taboot
 
-version:
-	@echo $(VERSION)
-
-testdist: clean
-	tito build --test --tgz
-
 sdist: clean
 	python ./setup.py sdist
 
-srpm: clean
-	@echo "Remember that you shold only srpm if you've tagged this release first."
-	tito build --srpm
+# I need to come up with a better way to maintain the version
+# information. This next command will fail in interesting ways if
+# ./VERSION doesn't match ./taboot/__init__.py's version and the
+# version parameter in the spec file.
+rpm: clean docs sdist
+	mkdir -p ~/rpmbuild/{SOURCES,RPMS,SRPMS}
+	cp ./dist/$(NAME)-$(CURVERSION).tar.gz ~/rpmbuild/SOURCES
+	rpmbuild -ba python-taboot.spec
+	cp ~/rpmbuild/RPMS/noarch/$(RPMNAME) .
+	cp ~/rpmbuild/SRPMS/$(SRPMNAME) .
 
-rpm:
-	@echo "Remember that you should only rpm if you've tagged this release first."
-	tito build --rpm
 
+# Formats the change log entry, increments spec file version, tags this
+# release in git.
 tag: clean
 	tito tag
 
 release:
 	@echo $(RELEASE)
 
-testrelease:
-# Like a release but in a "build --test" kind of way.
-	tito build --test --rpm
+version:
+	@echo $(VERSION)
 
 clean:
 	find . -type f -name "*.pyc" -delete

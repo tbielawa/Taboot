@@ -41,6 +41,24 @@ You would use this in this manner:
   $ taboot httpd-update.yaml
 
 
+Building (Makefile Targets)
+===========================
+
+Useful makefile targets:
+
+clean - Clean out obvious trash
+
+docs - Compiles the HTML and manpage documentation
+
+viewdoc - Compiles the HTML documentation and loads it in a browser
+
+(un)install - An RPM free (un)install
+
+sdist - Create a source distribution suitable for building RPMs from
+
+rpm - Quick-build an RPM for your platform (not recommended for GA releases)
+
+
 See also
 ========
 

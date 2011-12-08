@@ -2,68 +2,55 @@ Install
 =======
 
 
-From a source distribution
---------------------------
+From Yum
+--------
+
+Taboot is in the Fedora package repositories. Installing it should be as simple as::
+
+    sudo yum install python-taboot
+
+
+From Source
+-----------
+
+You'll need these dependencies to build/install:
 
  #. `python <http://www.python.org>`_ - The python programming language along with python-setuptools
  #. `distutils <http://docs.python.org/lib/module-distutils.html>`_ - Python building and packaging library
 
-With these requires met you can run the install command::
+Building documentation requires some more deps. These are **required**
+if you're building RPMs, and optional if you're installing manually:
+
+ #. python-sphinx
+ #. asciidoc
+ #. libxslt
+
+
+Building RPMs from source
+`````````````````````````
+
+This is the recommended installation method if you're pulling Taboot
+from source::
+
+    make rpm
+    sudo yum localinstall /path/to/rpm
+
+
+Installing From source
+``````````````````````
+
+I **don't** recommend this. But if you're dead set on installing
+directly from source you still can. This calls the python
+``distutils`` installer directly::
 
     sudo make install
 
-If you wish to install the optional documentation you'll need some
-additional packages so it can be built fully:
-
- #. python-sphinx
- #. asciidoc
- #. libxslt
-
-To install the documentation you can run::
+If you wish to build and install the optional documentation you'll
+need some additional packages so it can be built fully. Install the
+documentation with this command::
 
     sudo make installdocs
 
-
-Bonus: Uninstall
-`````````````````
-
-Uninstalling is just as easy as installing Taboot was::
+Uninstall everything with::
 
     sudo make uninstall
-
-
-
-Building RPMs from git
-----------------------
-
-Taboot uses `tito` for building RPM releases so you'll need to install
-it too to build RPMs that match what comes from the project.
-
- #. tito
- #. python-devel
- #. python-sphinx
- #. asciidoc
- #. libxslt
-
-The easiest way to cut an rpm with is with the `testrelease` make
-target::
-
-    make testrelease
-
-This will build an sdist, src.rpm, and rpm of whatever is checked into
-the local branch. It's really handing for when working on new features.
-
-To build the latest tagged release from a clone just run::
-
-    make rpm
-
-and look to /tmp/tito for the results.
-
-
-Installing the RPMs
-```````````````````
-
-As long as the package requirements have been satisfied installing
-RPMs is as simple as::
-
-    sudo rpm -Uvh python-taboot-VERSION.rpm
