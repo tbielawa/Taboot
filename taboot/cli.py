@@ -42,8 +42,15 @@ def make_blob_copy(blob):
 
 
 def sync_blob_copy(tmpfile):
+    """
+    For backwards compatibility we copy the blob back manually to
+    tmpfile. NamedTemporaryFile didn't support the 'delete' parameter
+    until py2.6.
+    """
     blob = open(tmpfile.name).read()
-    tmpfile.close()
+    tmpname = tmpfile.name
+    tmpfile.close()  # The file is erased when close()'d
+    open(tmpname, 'w').write(blob)
     return blob
 
 
@@ -172,6 +179,8 @@ Taboot is released under the terms of the GPLv3+ license""")
                     except OSError, e:
                         call(['vi', tmpfile.name])
                     blob = sync_blob_copy(tmpfile)
+                    log_update("Taboot edit mode: saved changes in %s" \
+                                   % tmpfile.name)
         except IOError, e:
             print "Failed to read input file '%s'. Are you sure it exists?" \
                 % infile
