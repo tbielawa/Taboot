@@ -13,3 +13,4 @@ dist
 build
 *.xml
 Graph/input
+rpm-build

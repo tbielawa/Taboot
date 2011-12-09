@@ -61,12 +61,16 @@ sdist: clean
 # ./VERSION doesn't match ./taboot/__init__.py's version and the
 # version parameter in the spec file.
 rpm: clean docs sdist
-	mkdir -p ~/rpmbuild/{SOURCES,RPMS,SRPMS}
-	cp ./dist/$(NAME)-$(CURVERSION).tar.gz ~/rpmbuild/SOURCES
-	rpmbuild -ba python-taboot.spec
-	cp ~/rpmbuild/RPMS/noarch/$(RPMNAME) .
-	cp ~/rpmbuild/SRPMS/$(SRPMNAME) .
-
+	mkdir -p rpm-build
+	cp dist/*.gz rpm-build/
+	rpmbuild --define "_topdir %(pwd)/rpm-build" \
+	--define "_builddir %{_topdir}" \
+	--define "_rpmdir %{_topdir}" \
+	--define "_srcrpmdir %{_topdir}" \
+	--define "_specdir %{_topdir}" \
+	--define "_sourcedir  %{_topdir}" \
+	-ba python-taboot.spec
+	@echo "RPMs have been built and placed in ./rpm-build/"
 
 # Formats the change log entry, increments spec file version, tags this
 # release in git.
