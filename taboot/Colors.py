@@ -60,7 +60,8 @@ class Colors(object):
         @rtype: str
         """
         if not self.does_color_exist(color):
-            raise(Exception("Color %s doesn't exist." % color))
+            print "Color %s doesn't exist, using default." % color
+            color = 'normal'
         end_str = ""
         if normalize:
             end_str = self.colors['normal']
@@ -94,9 +95,10 @@ class HTMLColors(Colors):
         Define the HTML color pallet
         """
         self.colors = {}
+        self.colors['normal'] = '#000000'
         self.colors['red'] = '#FF0000'
         self.colors['green'] = '#008000'
-        self.colors['yellow'] = 'FFFF00'
+        self.colors['yellow'] = '#FFFF00'
         self.colors['blue'] = '#0000FF'
         self.colors['white'] = '#FFFFFF'
 
@@ -105,11 +107,13 @@ class HTMLColors(Colors):
         Returns a color formatted string.
         """
         if not self.does_color_exist(color):
-            raise(Exception("Color %s doesn't exist." % color))
+            print "Color %s doesn't exist, using default." % color
+            color = 'normal'
         end_str = ""
         if normalize:
-            end_str = "</font>"
-        return "<font color='%s'>%s%s" % (self.colors[color], text, end_str)
+            end_str = "</tt></font>"
+        return "<font color='%s'><tt>%s%s" % \
+            (self.colors[color], text, end_str)
 
     def does_color_exist(self, color):
         """

@@ -460,9 +460,9 @@ class HTMLOutput(_FileLikeOutputObject):
         result.output = cgi.escape(result.output)
 
         if result.success:
-            success_str = self._c.format_string('OK', 'green')
+            success_str = self._c.format_string('<b>OK</b>', 'green')
         else:
-            success_str = self._c.format_string('FAIL', 'red')
+            success_str = self._c.format_string('<b>FAIL</b>', 'red')
 
         self._log_fd.write("<p><tt>%s:\n</tt></p>\n<p><tt>%s "\
                                "Finished Task[%s]: %s</tt></p>\n" %
@@ -475,23 +475,24 @@ class HTMLOutput(_FileLikeOutputObject):
             for line in lines:
                 if re.match('info:', line):
                     self._log_fd.write("%s<br />\n" %
-                                   self._c.format_string(line.strip(),
-                                                         'green'))
+                                       self._c.format_string(line.strip(),
+                                                             'green'))
                 elif re.match('notice:', line):
                     self._log_fd.write("%s<br />\n" %
-                                   self._c.format_string(line.strip(),
-                                                         'blue'))
+                                       self._c.format_string(line.strip(),
+                                                             'blue'))
                 elif re.match('warning:', line):
                     self._log_fd.write("%s<br />\n" %
-                                   self._c.format_string(line.strip(),
-                                                         'yellow'))
+                                       self._c.format_string(line.strip(),
+                                                             'yellow'))
                 elif re.match('err:', line):
                     self._log_fd.write("%s<br />\n" %
-                                   self._c.format_string(line.strip(),
-                                                         'red'))
+                                       self._c.format_string(line.strip(),
+                                                             'red'))
                 else:
                     self._log_fd.write("%s<br />\n" %
-                                   line.strip())
+                                       self._c.format_string(line.strip(),
+                                                             'normal'))
             self._log_fd.write("<br /><br />\n")
         elif isinstance(result, RPMTaskResult):
             # If result is an instance of RPMTaskResult,
@@ -500,15 +501,16 @@ class HTMLOutput(_FileLikeOutputObject):
             for line in lines:
                 if line.startswith('-'):
                     self._log_fd.write("%s<br />\n" %
-                                   self._c.format_string(line.strip(),
-                                                         'red'))
+                                       self._c.format_string(line.strip(),
+                                                             'red'))
                 elif line.startswith('+'):
                     self._log_fd.write("%s<br />\n" %
-                                   self._c.format_string(line.strip(),
-                                                         'green'))
+                                       self._c.format_string(line.strip(),
+                                                             'green'))
                 else:
                     self._log_fd.write("%s<br />\n" %
-                                   line.strip())
+                                       self._c.format_string(line.strip(),
+                                                             'normal'))
             self._log_fd.write("<br /><br />\n")
         else:
             # Use standard pass/fall coloring for output
