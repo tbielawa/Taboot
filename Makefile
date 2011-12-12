@@ -89,7 +89,7 @@ clean:
 	find . -type f -name "*~" -delete
 	find ./docs/ -type f -name "*.xml" -delete
 	find . -type f -name "#*" -delete
-	rm -fR docs/.doctrees docs/html dist build
+	rm -fR docs/.doctrees docs/html dist build ./rpm-build
 
 .PHONEY: docs manual htmldoc clean version release sdist
 vpath %.asciidoc docs/man/man1 docs/man/man5
