@@ -111,18 +111,29 @@ class Runner(object):
     def _expand_globs(self):
         """
         Returns the hosts that expand out from globs.
+
+        This is kind of a dirty hack around how Func returns minions
+        in an arbitrary order.
         """
 
         import func.overlord.client as fc
 
         if not self._hosts:
             return []
-        if isinstance(self._hosts, basestring):
+        if isinstance(hosts, basestring):
             glob = self._hosts
+            c = fc.Client(glob)
+            return c.list_minions()
         else:
-            glob = ';'.join(self._hosts)
-        c = fc.Client(glob)
-        return c.list_minions()
+            # Iterate over each given item, expand it, and then push
+            # it onto our list. But only if it doesn't exist already!
+            found_hosts = []
+            for h in self._hosts:
+                c = fc.Client(h)
+                for found_host in c.list_minions():
+                    if not found_host in found_hosts:
+                        found_hosts.append(found_host)
+            return found_hosts
 
     def __sighandler(self, signal, frame):
         """
