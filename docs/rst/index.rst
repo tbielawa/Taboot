@@ -12,12 +12,13 @@ Contents:
 
    about
    install
-   examples
+   gettingstarted
    YAMLScripts
    tasks
    development
    code
    man
+   troubleshooting
 
 
 Indices and tables

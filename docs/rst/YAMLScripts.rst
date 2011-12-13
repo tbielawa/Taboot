@@ -78,6 +78,8 @@ That's all you really need to know about YAML to get started writing
        YAML Lint gets the lint out of your YAML
 
 
+.. _elements:
+
 Elements of a Taboot script
 ---------------------------
 
