@@ -18,6 +18,7 @@
 import sys
 from errors import TabootTaskNotFoundException
 
+
 def resolve_types(ds, relative_to='taboot.tasks'):
     """
     Recursively translate string representation of a type within a

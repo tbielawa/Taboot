@@ -83,6 +83,12 @@ release:
 version:
 	@echo $(VERSION)
 
+pep8:
+	@echo "#############################################"
+	@echo "# Running PEP8 Compliance Tests"
+	@echo "#############################################"
+	pep8 taboot/
+
 clean:
 	find . -type f -name "*.pyc" -delete
 	find . -type f -name "*.pyo" -delete

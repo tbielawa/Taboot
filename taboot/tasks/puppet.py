@@ -18,6 +18,7 @@
 from taboot.tasks import command, TaskResult
 import puppet
 
+
 class PuppetBase(command.Run):
     """
     Base class for puppet commands

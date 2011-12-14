@@ -59,6 +59,46 @@ class MalformedYAML(Exception):
     pass
 
 
+def print_scripts(scripts):
+    for script in scripts:
+        print script
+    sys.exit(0)
+
+
+def validate_scripts(scripts):
+    """
+    Validate that all tasks can be located before start. Also check
+    that all required elements are present.
+    """
+    valid = True
+    unknown_tasks = []
+    missing_elements = []
+    for script in scripts:
+        try:
+            for task in script.getPreflightTypes():
+                instantiator(task, 'taboot.tasks', host="*")
+            for task in script.getTaskTypes():
+                instantiator(task, 'taboot.tasks', host="*")
+        except TabootTaskNotFoundException as e:
+            valid = False
+            unknown_tasks.append(e.args)
+        except KeyError as e:
+            valid = False
+            missing_elements.append(e.args)
+
+    if not valid:
+        print "Error: could not parse one of the YAML documents"
+        if not unknown_tasks == []:
+            print "The following were used but are not valid tasks:"
+            for task in unknown_tasks:
+                print "    - %s" % task
+        if not missing_elements == []:
+            print "The following required elements were not found:"
+            for element in missing_elements:
+                print "    - %s" % element
+        sys.exit(1)
+
+
 def removeTask(doc, task):
     task = str(task).replace('taboot.tasks.', '').replace('()', '')
     for b in doc:
@@ -137,11 +177,12 @@ Taboot is released under the terms of the GPLv3+ license""")
     args = parser.parse_args()
 
     if args.logfile:
-        # Since we are snarfing the next positional argument after -L, we may
-        # accidentally snarf up an input yaml file.  Hence the test to see if
-        # our value is a .yaml file, and if it is, we will set the logfile to
-        # the default and store the yaml file name to add to input_files
-        pattern = re.compile(".*yaml$", re.IGNORECASE)
+        # Since we are snarfing the next positional argument after -L,
+        # we may accidentally snarf up an input yaml file. Hence the
+        # test to see if our value is a .yaml file, and if it is, we
+        # will set the logfile to the default and store the yaml file
+        # name to add to input_files
+        pattern = re.compile(".*ya?ml$", re.IGNORECASE)
         if pattern.search(args.logfile):
             # We accidentally snarfed up a yaml script, add it back to
             # input_files and use the default format
@@ -165,6 +206,11 @@ Taboot is released under the terms of the GPLv3+ license""")
 
     scripts = []
 
+    ##################################################################
+    # This next big block (it's pretty big) is responsible for reading
+    # in each piece of input, breaking it down into a logical YAML
+    # document, handling the $EDITOR passoff, and finally storing each
+    # YAML document in an array ('scripts').
     for infile in input_files:
         # Open the input file for reading.
         try:
@@ -174,10 +220,12 @@ Taboot is released under the terms of the GPLv3+ license""")
                 blob = open(infile).read()
                 if args.edit:
                     tmpfile = make_blob_copy(blob)
+                    # Emacs is default editor, as if that needed be said :)
                     try:
                         EDITOR = os.environ.get('EDITOR', 'emacs')
                         call([EDITOR, tmpfile.name])
                     except OSError, e:
+                        # vi is fall-back option, I guess...
                         call(['vi', tmpfile.name])
                     blob = sync_blob_copy(tmpfile)
                     log_update("Taboot edit mode: saved changes in %s" \
@@ -209,6 +257,9 @@ The problem is on line %s, column %s.
                 msg = "Could not parse YAML. Check over %s again." % infile
                 raise MalformedYAML(msg)
 
+        # Still in the document reading loop, now we take the read in
+        # document and store each logical YAML document it contains as
+        # a TabootScript object in the 'scripts' array.
         for doc in ds:
             try:
                 scripts.append(TabootScript(doc, infile, args.edit))
@@ -224,14 +275,12 @@ Please choose one of these options:
                 elif response == "2":
                     ds.append(removeConcurrency(doc))
                 else:
-                    exit()
+                    sys.exit(1)
 
-    # If you're just validating the YAML we don't need to build
-    # the data structure.
-    if args.checkonly:
-        exit()
+    # End of input reading block
+    ##################################################################
 
-    # Apply final result of command line options
+    # Apply final result of command line options to scripts
     for script in scripts:
         # Add/Modify Logging if -L is given
         if addLogging:
@@ -245,32 +294,19 @@ Please choose one of these options:
         if args.skippreflight:
             script.deletePreflight()
 
-        # Print output only if -p is given
-        if args.printonly:
-            print script
-            continue
+    # Failed script validation WILL terminate this release
+    validate_scripts(scripts)
 
-    # Validate that all tasks can be located before start
-    valid = True
-    missing_tasks = []
-    for script in scripts:
-        try:
-            for task in script.getPreflightTypes():
-                instantiator(task, 'taboot.tasks', host="*")
-            for task in script.getTaskTypes():
-                instantiator(task, 'taboot.tasks', host="*")
-        except (TabootTaskNotFoundException, KeyError) as e:
-            valid = False
-            missing_tasks.append(e.args)
+    # Just validate the document and then stop processing ('-n')
+    if args.checkonly:
+        exit()
 
-    if not valid:
-        print "Error: Tasks or required elements not defined:"
-        for task in missing_tasks:
-            print "    - %s" % task
-        sys.exit(1)
+    # Print output ('-p'), exit() in print_scripts()
+    if args.printonly:
+        print_scripts(scripts)
 
     # Execute each (validated) script
-    for script in scritps:
+    for script in scripts:
         runner = taboot.runner.Runner(script)
         if not runner.run():
             break
