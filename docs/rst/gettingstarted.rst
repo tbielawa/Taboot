@@ -148,6 +148,12 @@ When it runs you might notice a long delay before anything
 happens. That will happen when a command takes along time to run, as
 the output only updates once a task finishes.
 
+.. seealso::
+
+    :ref:`hosts`
+        Main ``hosts`` documentation
+
+
 Output
 ++++++
 
@@ -220,6 +226,28 @@ You should see a screen similar to this when it finishes::
 
 RPM Pre/Post Manifest
 `````````````````````
+
+Two more bundled tasks are the RPM ``PreManifest`` and
+``PostManifest`` tasks. The ``PostManifest`` task is used (it
+conjunction with the ``PreManifest`` task) to show you a summary of
+the changes to your installed packages. This is especially useful for
+verification in systems where an update should only upgrade/install
+specific packages::
+
+    # package-install.yaml
+    ---
+    - hosts: [griddle]
+      tasks:
+        - rpm.PreManifest
+
+        - yum.Remove: {packages: [docbook-style-xsl]}
+        - yum.Install: {packages: [puppet, python-netaddr]}
+
+        - rpm.PostManifest
+
+
+
+
 
 
 Updating Multiple Hosts

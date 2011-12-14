@@ -120,7 +120,7 @@ class Runner(object):
 
         if not self._hosts:
             return []
-        if isinstance(hosts, basestring):
+        if isinstance(self._hosts, basestring):
             glob = self._hosts
             c = fc.Client(glob)
             return c.list_minions()

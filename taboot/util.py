@@ -16,9 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+from errors import TabootTaskNotFoundException
 
-
-def resolve_types(ds, relative_to):
+def resolve_types(ds, relative_to='taboot.tasks'):
     """
     Recursively translate string representation of a type within a
     datastructure into an actual type instance.
@@ -48,8 +48,12 @@ def resolve_types(ds, relative_to):
                     result[k] = getattr(sys.modules[relative_to], tokens[0])
                 else:
                     pkg = "%s.%s" % (relative_to, tokens[0])
-                    __import__(pkg)
-                    result[k] = getattr(sys.modules[pkg], tokens[1])
+                    the_task = ".".join([pkg, tokens[1]])
+                    try:
+                        __import__(pkg)
+                        result[k] = getattr(sys.modules[pkg], tokens[1])
+                    except (AttributeError, ImportError):
+                        raise TabootTaskNotFoundException(the_task)
             else:
                 result[k] = resolve_types(v, relative_to)
         return result
@@ -83,8 +87,13 @@ def instantiator(type_blob, relative_to, **kwargs):
             return getattr(sys.modules[relative_to], tokens[0])
         else:
             pkg = "%s.%s" % (relative_to, tokens[0])
-            __import__(pkg)
-            return getattr(sys.modules[pkg], tokens[1])
+            try:
+                __import__(pkg)
+                task = getattr(sys.modules[pkg], tokens[1])
+            except (AttributeError, ImportError):
+                missing_task = ".".join([pkg, tokens[1]])
+                raise TabootTaskNotFoundException(missing_task)
+            return task
 
     if isinstance(type_blob, basestring):
         instance_type = str2type(type_blob)

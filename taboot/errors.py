@@ -46,3 +46,10 @@ class TabootMissingKrbTkt(TabootException):
     can't find one ahead of time.
     """
     pass
+
+
+class TabootTaskNotFoundException(AttributeError):
+    """
+    Exception raised if a task can not be found during document
+    validation.
+    """

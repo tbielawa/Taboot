@@ -25,9 +25,10 @@ import tempfile
 import os
 import taboot
 from subprocess import call
+from errors import TabootTaskNotFoundException
 from taboot import __version__
 from tabootScript import TabootScript, ConcurrencyException
-from util import resolve_types, log_update
+from util import resolve_types, log_update, instantiator
 
 
 def make_blob_copy(blob):
@@ -230,6 +231,7 @@ Please choose one of these options:
     if args.checkonly:
         exit()
 
+    # Apply final result of command line options
     for script in scripts:
         # Add/Modify Logging if -L is given
         if addLogging:
@@ -248,11 +250,30 @@ Please choose one of these options:
             print script
             continue
 
-        # Run each YAML document returned from yaml.load_all
-        for runner_source in script.getYamlDoc():
-            runner = taboot.runner.Runner(script)
-            if not runner.run():
-                break
+    # Validate that all tasks can be located before start
+    valid = True
+    missing_tasks = []
+    for script in scripts:
+        try:
+            for task in script.getPreflightTypes():
+                instantiator(task, 'taboot.tasks', host="*")
+            for task in script.getTaskTypes():
+                instantiator(task, 'taboot.tasks', host="*")
+        except (TabootTaskNotFoundException, KeyError) as e:
+            valid = False
+            missing_tasks.append(e.args)
+
+    if not valid:
+        print "Error: Tasks or required elements not defined:"
+        for task in missing_tasks:
+            print "    - %s" % task
+        sys.exit(1)
+
+    # Execute each (validated) script
+    for script in scritps:
+        runner = taboot.runner.Runner(script)
+        if not runner.run():
+            break
 
 if __name__ == '__main__':
     main()

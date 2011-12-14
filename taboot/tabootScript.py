@@ -104,7 +104,7 @@ class TabootScript(YamlDoc):
             return []
 
     def getPreflightTypes(self):
-        return resolve_types(self.getPreflight(), 'taboot.tasks')
+        return resolve_types(self.getPreflight())
 
     def getPreflightLength(self):
         return len(self.getPreflight())
@@ -113,7 +113,7 @@ class TabootScript(YamlDoc):
         return self.yamlDoc[0]['tasks']
 
     def getTaskTypes(self):
-        return resolve_types(self.getTasks(), 'taboot.tasks')
+        return resolve_types(self.getTasks())
 
     def getTaskLength(self):
         return len(self.getTasks())
