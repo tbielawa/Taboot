@@ -17,7 +17,7 @@ For `taboot`, every YAML script must be a list at it's root-most
 element. Each item in the list is a dictionary. These dictionaries
 represent all the options you can use to write a `taboot` script. In
 addition, all YAML files (regardless of their association with
-`taboot` or not) should start with ```---```.
+`taboot` or not) should start with ``---``.
 
 In YAML a list can be represented in two ways. In one way all members
 of a list are lines beginning at the same indentation level starting

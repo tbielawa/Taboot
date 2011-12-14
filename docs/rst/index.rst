@@ -2,8 +2,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Taboot's documentation!
-====================================
+Documentation for Taboot!
+=========================
 
 Contents:
 
@@ -18,8 +18,6 @@ Contents:
    development
    code
    man
-   troubleshooting
-
 
 Indices and tables
 ==================

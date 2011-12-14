@@ -354,6 +354,9 @@ class HTMLOutput(_FileLikeOutputObject):
     """
     Output a :class:`taboot.tasks.TaskResult` to the command line
     with pretty formatting and colors.
+
+    .. document private functions
+    .. automethod:: _write
     """
 
     logfile_path = None
@@ -448,7 +451,11 @@ class HTMLOutput(_FileLikeOutputObject):
 
     def _write(self, result):
         """
-        DO IT!
+        Write a tasks `result` out to HTML. Handles enhanced stylizing
+        for task results that support such as:
+
+        - :py:mod:`taboot.tasks.puppet.PuppetTaskResult`
+        - :py:mod:`taboot.tasks.rpm.RPMTaskResult`
         """
         import types
         import sys

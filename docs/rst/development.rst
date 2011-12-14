@@ -16,9 +16,14 @@ Required Tools
  #. `Func <https://fedorahosted.org/func/>`_ - The Fedora Unified Network Controller
  #. `an <http://www.vim.org>`_ `editor <http://www.gnu.org/software/emacs/>`_ or `ide <http://pida.co.uk/>`_ `that <http://scribes.sourceforge.net/>`_ doesn't suck
 
+
+
 Optional Tools
 ``````````````
+These should be available via your package manager:
+
  #. `rpm-build <http://www.rpm.org/max-rpm-snapshot/rpmbuild.8.html>`_ - Should be packaged in your RPM distribution
+ #. `pep8 <https://github.com/jcrocholl/pep8>`_ - Check your patches for pep8 compliance with ``make pep8``
 
 
 Source

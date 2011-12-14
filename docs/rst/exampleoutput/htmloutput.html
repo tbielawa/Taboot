@@ -1,0 +1,92 @@
+<p><tt><a name='1068718107623486553' href='#1068718107623486553'><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b></a>:</tt></p>
+<p><tt>2011-12-09 11:00:17 Starting Task[taboot.tasks.command.Run('echo "oh hi"',)]
+</tt><p><tt><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b>:
+</tt></p>
+<p><tt>2011-12-09 11:00:20 Finished Task[taboot.tasks.command.Run('echo "oh hi"',)]: <font color='#008000'><tt><b>OK</b></tt></font></tt></p>
+<pre>oh hi</pre>
+<br /><br />
+<p><tt><a name='1068718107620486550' href='#1068718107620486550'><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b></a>:</tt></p>
+<p><tt>2011-12-09 11:00:21 Starting Task[taboot.tasks.rpm.PreManifest('rpm -qa | sort',)]
+</tt><p><tt><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b>:
+</tt></p>
+<p><tt>2011-12-09 11:00:25 Finished Task[taboot.tasks.rpm.PreManifest('rpm -qa | sort',)]: <font color='#008000'><tt><b>OK</b></tt></font></tt></p>
+<pre></pre>
+<br /><br />
+<p><tt><a name='1068718107620486546' href='#1068718107620486546'><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b></a>:</tt></p>
+<p><tt>2011-12-09 11:00:25 Starting Task[taboot.tasks.puppet.Run('puppetd --test --color=false || true',)]
+</tt><p><tt><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b>:
+</tt></p>
+<p><tt>2011-12-09 11:00:28 Finished Task[taboot.tasks.puppet.Run('puppetd --test --color=false || true',)]: <font color='#008000'><tt><b>OK</b></tt></font></tt></p>
+<font color='#FF0000'><tt>err: Could not request certificate: getaddrinfo: Name or service not known</tt></font><br />
+<font color='#000000'><tt>Exiting; failed to retrieve certificate and waitforcert is disabled</tt></font><br />
+<br /><br />
+<p><tt><a name='1068718107620486559' href='#1068718107620486559'><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b></a>:</tt></p>
+<p><tt>2011-12-09 11:00:28 Starting Task[taboot.tasks.yum.Update('yum update -y ',)]
+</tt><p><tt><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b>:
+</tt></p>
+<p><tt>2011-12-09 11:00:32 Finished Task[taboot.tasks.yum.Update('yum update -y ',)]: <font color='#008000'><tt><b>OK</b></tt></font></tt></p>
+<pre>Loaded plugins: langpacks, presto, refresh-packagekit
+Adding en_US to language list
+Setting up Update Process
+No Packages marked for Update</pre>
+<br /><br />
+<p><tt><a name='1068718107621486550' href='#1068718107621486550'><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b></a>:</tt></p>
+<p><tt>2011-12-09 11:00:32 Starting Task[taboot.tasks.command.Run('/bin/false || true',)]
+</tt><p><tt><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b>:
+</tt></p>
+<p><tt>2011-12-09 11:00:34 Finished Task[taboot.tasks.command.Run('/bin/false || true',)]: <font color='#008000'><tt><b>OK</b></tt></font></tt></p>
+<pre></pre>
+<br /><br />
+<p><tt><a name='1068718107621486544' href='#1068718107621486544'><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b></a>:</tt></p>
+<p><tt>2011-12-09 11:00:34 Starting Task[taboot.tasks.yum.Remove('yum remove -y trang',)]
+</tt><p><tt><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b>:
+</tt></p>
+<p><tt>2011-12-09 11:00:41 Finished Task[taboot.tasks.yum.Remove('yum remove -y trang',)]: <font color='#008000'><tt><b>OK</b></tt></font></tt></p>
+<pre>Loaded plugins: langpacks, presto, refresh-packagekit
+Adding en_US to language list
+Setting up Remove Process
+Resolving Dependencies
+--&gt; Running transaction check
+---&gt; Package trang.noarch 0:20091111-7.fc14 set to be erased
+--&gt; Finished Dependency Resolution
+
+Dependencies Resolved
+
+================================================================================
+ Package       Arch           Version                    Repository        Size
+================================================================================
+Removing:
+ trang         noarch         20091111-7.fc14            @updates         835 k
+
+Transaction Summary
+================================================================================
+Remove        1 Package(s)
+
+Installed size: 835 k
+Downloading Packages:
+Running rpm_check_debug
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+
+  Erasing        : trang-20091111-7.fc14.noarch                             1/1 
+
+Removed:
+  trang.noarch 0:20091111-7.fc14                                                
+
+Complete!</pre>
+<br /><br />
+<p><tt><a name='1068718107618486540' href='#1068718107618486540'><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b></a>:</tt></p>
+<p><tt>2011-12-09 11:00:41 Starting Task[taboot.tasks.command.Run('echo "I just got excited because this is still running!"',)]
+</tt><p><tt><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b>:
+</tt></p>
+<p><tt>2011-12-09 11:00:44 Finished Task[taboot.tasks.command.Run('echo "I just got excited because this is still running!"',)]: <font color='#008000'><tt><b>OK</b></tt></font></tt></p>
+<pre>I just got excited because this is still running!</pre>
+<br /><br />
+<p><tt><a name='1068718107618486537' href='#1068718107618486537'><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b></a>:</tt></p>
+<p><tt>2011-12-09 11:00:44 Starting Task[taboot.tasks.rpm.PostManifest('rpm -qa | sort',)]
+</tt><p><tt><b><font color='#0000FF'><tt>www01.ext.friendfrobber.com</tt></font></b>:
+</tt></p>
+<p><tt>2011-12-09 11:00:47 Finished Task[taboot.tasks.rpm.PostManifest('rpm -qa | sort',)]: <font color='#008000'><tt><b>OK</b></tt></font></tt></p>
+<font color='#FF0000'><tt>- trang-20091111-7.fc14.noarch</tt></font><br />
+<br /><br />

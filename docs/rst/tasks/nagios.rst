@@ -1,3 +1,5 @@
+.. _nagios:
+
 Nagios
 ^^^^^^
 
@@ -232,7 +234,7 @@ UnsilenceHost
 * API: :class:`taboot.tasks.nagios.UnsilenceHost`
 * Keys
 
-p  * ``nagios_url``
+  * ``nagios_url``
 
     * Type: String
     * Default: None

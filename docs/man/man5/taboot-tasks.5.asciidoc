@@ -44,7 +44,8 @@ documentation to learn how to set system-wide defaults for the
   output:
     # CLIOutput is the default
     - CLIOutput
-    # You can also log to a file, 'taboot.log' is the default name
+    # You can also log to a file, 'taboot-YYYY-MM-DD-HHMMSS.log' is
+    # the default format
     - LogOutput
     # The 'logfile' keyword lets you choose a different name
     - LogOutput: {logfile: update-httpd.log}

@@ -2,12 +2,12 @@
 .\"     Title: taboot-tasks
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 12/08/2011
+.\"      Date: 12/14/2011
 .\"    Manual: Taboot
 .\"    Source: Taboot 0.4.x
 .\"  Language: English
 .\"
-.TH "TABOOT\-TASKS" "5" "12/08/2011" "Taboot 0\&.4\&.x" "Taboot"
+.TH "TABOOT\-TASKS" "5" "12/14/2011" "Taboot 0\&.4\&.x" "Taboot"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -49,7 +49,8 @@ The \fIoutput\fR block lets you choose zero or more methods to log the taboot ru
   output:
     # CLIOutput is the default
     \- CLIOutput
-    # You can also log to a file, \*(Aqtaboot\&.log\*(Aq is the default name
+    # You can also log to a file, \*(Aqtaboot\-YYYY\-MM\-DD\-HHMMSS\&.log\*(Aq is
+    # the default format
     \- LogOutput
     # The \*(Aqlogfile\*(Aq keyword lets you choose a different name
     \- LogOutput: {logfile: update\-httpd\&.log}

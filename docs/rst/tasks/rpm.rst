@@ -1,3 +1,5 @@
+.. _rpm:
+
 RPM
 ^^^
 
@@ -81,6 +83,8 @@ Example::
 	- puppet.Run
 	- rpm.PostManifest
 
+
+.. _examplepostmanifest:
 
 Example PostManifest Output
 ***************************
