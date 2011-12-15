@@ -53,3 +53,7 @@ class TabootTaskNotFoundException(AttributeError):
     Exception raised if a task can not be found during document
     validation.
     """
+
+
+class TabootMalformedYAMLException(Exception):
+    pass

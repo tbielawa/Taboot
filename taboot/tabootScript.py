@@ -17,6 +17,7 @@
 
 
 import yaml
+from errors import TabootTaskNotFoundException
 from util import resolve_types, instantiator, log_update
 
 
@@ -25,7 +26,7 @@ class YamlDoc(object):
     Representation of a Yaml Document
     """
     def __init__(self, yamlDoc):
-        self.yamlDoc = yamlDoc
+        self.yamlDoc = yamlDoc[0]
 
     def getYamlDoc(self):
         return self.yamlDoc
@@ -38,68 +39,102 @@ class TabootScript(YamlDoc):
     """
     Representation of a Taboot Script
     """
-    def validateScript(self):
-        # Validate that concurrent and non-concurrent tasks don't exist in the
-        # same script.  Still need to finish, need to get concurrency value if
-        # it exists, then iterate through to see if there are any non-conurrent
-        # tasks in, if so raise a ConcurrencyException, will have to catch in
-        # cli.py and I'm thinking that we can offer the user the ability to
+    def __init__(self, yamlDoc, fileName, edited):
+        """
+        - `yamlDoc` - Dictionary representing our Taboot Script
+        - `fileName` - YAML file the script in
+        - `edited` - If we gave :option:`-E` on the command line
+        """
+        YamlDoc.__init__(self, yamlDoc)
+        self.fileName = fileName
+        self.edited = edited
+        self.unknown_tasks = set()
+        self.elements_missing = set()
+        self.valid = True
+
+    def validate_concurrency(self):
+        """
+        Validate that concurrent and non-concurrent tasks don't exist
+        in the same script.
+        """
+        # Still need to finish, need to get concurrency value if it
+        # exists, then iterate through to see if there are any
+        # non-conurrent tasks in, if so raise a ConcurrencyException,
+        # will have to catch in cli.py
+        #
+        # XX: I'm thinking that we can offer the user the ability to
         # edit the script to correct
+
         if self.getConcurrency() > 1:
             tasks = self.getTaskTypes()
             for task in tasks:
                 task = instantiator(task, 'taboot.tasks', host="*")
-                if(task.concurrentFriendly == False):
+                if not task.concurrentFriendly:
                     raise ConcurrencyException(task)
 
-        # TODO add validation logic to ensure that hosts, tasks are present
-
-        # TODO add additional validation logic and throw exception if invalid
         return True
 
-    def __init__(self, yamlDoc, fileName, edited):
-        YamlDoc.__init__(self, yamlDoc)
-        self.fileName = fileName
-        self.edited = edited
-        self.validateScript()
+    def validate(self):
+        """
+        Verify that all tasks can be located. Also verify that all
+        required elements are present.
+        """
+        script = self.yamlDoc
+        elements_required = set(["hosts", "tasks"])
+        elements_present = script.keys()
+
+        self.elements_missing = elements_required.difference(elements_present)
+        if not self.elements_missing == set():
+            self.valid = False
+
+        try:
+            for task in self.getPreflightTypes():
+                instantiator(task, host="*")
+            for task in self.getTaskTypes():
+                instantiator(task, host="*")
+        except TabootTaskNotFoundException as e:
+            self.valid = False
+            self.unknown_tasks.add(e.args)
+        except KeyError as e:
+            self.valid = False
+            self.elements_missing.add(e.args)
+
+        return self.valid
 
     def deletePreflight(self):
         if self.hasPreflight():
-            del self.yamlDoc[0]['preflight']
-        self.validateScript()
+            del self.yamlDoc['preflight']
 
     def addLogging(self, logfile):
-        if 'output' in self.yamlDoc[0]:
-            self.yamlDoc[0]['output'].append(
+        if 'output' in self.yamlDoc:
+            self.yamlDoc['output'].append(
                            {'LogOutput': {'logfile': logfile}})
         else:
-            self.yamlDoc[0]['output'] = [{'LogOutput': {'logfile': logfile}},
+            self.yamlDoc['output'] = [{'LogOutput': {'logfile': logfile}},
                                'CLIOutput']
-        self.validateScript()
 
     def setConcurrency(self, concurrency):
-        self.yamlDoc[0]['concurrency'] = concurrency
+        self.yamlDoc['concurrency'] = concurrency
         try:
             log_update("Attempting to set concurrency to: %s" % concurrency)
-            self.validateScript()
         except ConcurrencyException as e:
             log_update("Cannot set concurrency: %s" % e)
             self.setConcurrency(1)
 
     def getConcurrency(self):
-        if 'concurrency' in self.yamlDoc[0]:
-            return self.yamlDoc[0]['concurrency']
+        if 'concurrency' in self.yamlDoc:
+            return self.yamlDoc['concurrency']
         return 1
 
     def hasPreflight(self):
-        if 'preflight' in self.yamlDoc[0]:
+        if 'preflight' in self.yamlDoc:
             return True
         else:
             return False
 
     def getPreflight(self):
         if self.hasPreflight():
-            return self.yamlDoc[0]['preflight']
+            return self.yamlDoc['preflight']
         else:
             return []
 
@@ -110,7 +145,7 @@ class TabootScript(YamlDoc):
         return len(self.getPreflight())
 
     def getTasks(self):
-        return self.yamlDoc[0]['tasks']
+        return self.yamlDoc['tasks']
 
     def getTaskTypes(self):
         return resolve_types(self.getTasks())
@@ -119,22 +154,44 @@ class TabootScript(YamlDoc):
         return len(self.getTasks())
 
     def getHosts(self):
-        return self.yamlDoc[0]['hosts']
+        return self.yamlDoc['hosts']
 
     def hasOutput(self):
-        if 'output' in self.yamlDoc[0]:
+        if 'output' in self.yamlDoc:
             return True
         else:
             return False
 
     def getOutput(self):
         if self.hasOutput():
-            return self.yamlDoc[0]['output']
+            return self.yamlDoc['output']
         else:
             return ['CLIOutput']
 
     def getOutputTypes(self):
         return resolve_types(self.getOutput(), 'taboot.output')
+
+    def removeTask(self, task):
+        """
+        Build up a list of instances of ``task`` that appear in the
+        datastructure of our YAML document. Then delete them all.
+        """
+        doc = self.yamlDoc
+        task = str(task).replace('taboot.tasks.', '').replace('()', '')
+        for b in doc:
+            t2r = []
+            for t in b['tasks']:
+                if ((isinstance(t, str) and t == task) \
+                        or (isinstance(t, dict) and task in t)):
+                    t2r.append(t)
+            for t in t2r:
+                b['tasks'].remove(t)
+
+    def removeConcurrency(self):
+        doc = self.yamlDoc
+        for b in doc:
+            if 'concurrency' in b:
+                del b['concurrency']
 
 
 class ConcurrencyException(Exception):

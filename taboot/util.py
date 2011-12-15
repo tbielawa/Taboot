@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import taboot
 import sys
+import tempfile
 from errors import TabootTaskNotFoundException
 
 
@@ -62,7 +64,7 @@ def resolve_types(ds, relative_to='taboot.tasks'):
         return ds
 
 
-def instantiator(type_blob, relative_to, **kwargs):
+def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
     """
     Instantiate a type, which is defined by a type blob in the
     following format:
@@ -118,3 +120,27 @@ def instantiator(type_blob, relative_to, **kwargs):
 def log_update(msg):
     sys.stderr.write(str(msg) + "\n")
     sys.stderr.flush()
+
+
+def make_blob_copy(blob):
+    header = open(taboot.edit_header).read()
+    tmpfile = tempfile.NamedTemporaryFile(suffix=".yaml",
+                                          prefix="taboot-")
+    header = header.replace("$TMPFILE$", tmpfile.name)
+    tmpfile.write(header)
+    tmpfile.write(blob)
+    tmpfile.flush()
+    return tmpfile
+
+
+def sync_blob_copy(tmpfile):
+    """
+    For backwards compatibility we copy the blob back manually to
+    tmpfile. NamedTemporaryFile didn't support the 'delete' parameter
+    until py2.6.
+    """
+    blob = open(tmpfile.name).read()
+    tmpname = tmpfile.name
+    tmpfile.close()  # The file is erased when close()'d
+    open(tmpname, 'w').write(blob)
+    return blob
