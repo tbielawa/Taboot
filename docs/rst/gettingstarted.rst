@@ -124,7 +124,7 @@ Finally there is your administration center:
 
 * ``overlord.util.friendfrobber.com``
 
-``overord`` is the command center on which you store and run your
+``overlord`` is the command center on which you store and run your
 Taboot scripts.
 
 .. seealso::
@@ -190,20 +190,21 @@ that are entirely optional.
    * :ref:`Taboot Tasks stdlib <tasks>`
 
 
-Updating Just One Host
-``````````````````````
+Updating Just One Host (Part 1)
+```````````````````````````````
 
 Lets start simple and do a yum update on one webserver,
-``www01.ext.friendfrobber.com``. In the ``hosts`` element we specify a list
-with just one item (our web server) and in our tasks element we use
-the ``yum.Update`` task::
+``www01.ext.friendfrobber.com``. In the ``hosts`` element we specify a
+list with just one item (our web server) and in our ``tasks`` element
+we use ``command.Run`` to call yum::
 
 
     # www01-yum-update.yaml
     ---
     - hosts: [www01.ext.friendfrobber.com]
       tasks:
-        - yum.Update
+        - command.Run:
+	    command: yum -y update
 
 
 That is the entire script. Run it like this::
@@ -211,13 +212,13 @@ That is the entire script. Run it like this::
     $ taboot www01-yum-update.yaml
 
 When it runs you might notice a long delay before anything
-happens. That will happen when a command takes along time to run, as
+happens. That will happen when a command takes a long time to run, as
 the output only updates once a task finishes.
 
 .. seealso::
 
    * :ref:`hosts` - Complete ``hosts`` documentation
-   * :ref:`yum` - Complete ``yum`` task documentation
+   * :ref:`command` - Complete ``command.Run`` task documentation
 
 
 Output
@@ -228,9 +229,9 @@ You should see a screen similar to this when it finishes::
 
     [root@overlord.util.friendfrobber.com ~]# taboot www01-yum-update.yaml
     www01.ext.friendfrobber.com:
-    2011-12-13 17:32:38 Starting Task[taboot.tasks.yum.Update('yum update -y ',)]
+    2011-12-13 17:32:38 Starting Task[taboot.tasks.command.Run('yum update -y ',)]
     www01.ext.friendfrobber.com:
-    2011-12-13 17:36:11 Finished Task[taboot.tasks.yum.Update('yum update -y ',)]:
+    2011-12-13 17:36:11 Finished Task[taboot.tasks.command.Run('yum update -y ',)]:
     Loaded plugins: langpacks, presto, refresh-packagekit
     Adding en_US to language list
     Setting up Update Process
@@ -288,6 +289,30 @@ You should see a screen similar to this when it finishes::
       ypbind.x86_64 3:1.32-3.fc14
 
     Complete!
+
+
+Updating Just One Host (Part 2)
+```````````````````````````````
+
+But wait, there's more! Because yum commands are used frequently we
+made a couple of tasks to make using yum simpler:
+
+* ``yum.Install``
+* ``yum.Update``
+* ``yum.Remove``
+
+Here's the last example again, but written using the ``yum.Update``
+task::
+
+    # www01-yum-update.yaml
+    ---
+    - hosts: [www01.ext.friendfrobber.com]
+      tasks:
+        - yum.Update
+
+.. seealso::
+
+   * :ref:`yum` - Complete ``yum`` task documentation
 
 
 RPM Pre/Post Manifest
@@ -410,7 +435,6 @@ on ``www01`` becoming interleaved with the logs for a script running
 on ``www02`` at the same time.
 
 
-
 Additional Logging Techniques
 `````````````````````````````
 
@@ -505,28 +529,41 @@ main ``tasks`` body you are prompted to continue. This is especially
 useful for giving you time to run or finish any preparation steps that
 are required before you start running a script.
 
-For example, a common infrastructure configuration would use Nagios
-for host monitoring and ``Puppet`` + ``git`` for configuration
-management.
+We can use the massive concurrency of the ``preflight`` element to
+quickly schedule downtime for all our hosts. This will save us a lot
+of time that we otherwise would have spent setting this by hand. While
+that happens we can upload and verify the new `MegaFrobber` package is
+available on our Yum repository.
 
-A typical release, or *rolling upgrade*, has steps that include:
-scheduling downtime for each affected service (on each host) in
-Nagios. To prevent early-updates, before you commit your puppet
-changes to git you would likely disable the puppet agent on all of the
-target nodes. This might also be where you promote new RPMs into your
-production yum mirror as well.
+    `It's Friday again, that means that the engineers at
+    friendfrobber.com have their weekly update ready. As sysadmin it's
+    your job to deploy that to the cluster without causing any down
+    time.`
 
-The ``preflight`` element was built to automate this exact
-workflow. Lets see how that would look implemented as a Taboot script
-using the hosts described earlier in this document. ::
+    `The engineers have told you that this release requires running
+    the megafrobber "frob-db" command after the update is installed on
+    each machine.`
 
+    `In the past you may have done this step by hand, but time has
+    gone by and treated your company well. To meet increasing demands
+    your cluster has had to grow from a measley 4 machines to a full
+    rack of 40.`
+
+    `The probability of you making it to the Friday IT meetup at
+    Foobar's Pub is starting to look pretty grim.`
+
+::
 
     # www-rolling-update.yaml
     ---
     - hosts: [www*.ext.friendfrobber.com]
-      output: [CLIOutput, HTMLOutput]
+      output:
+        - HTMLOutput:
+	    destdir: /var/www/html/logs/
+	    logfile: megafrobber-%s.html
+	- CLIOutput
+
       preflight:
-        - puppet.Disable
         - nagios.ScheduleDowntime:
             nagios_url: monitor.util.friendfrobber.com
             minutes: 10
@@ -536,53 +573,64 @@ using the hosts described earlier in this document. ::
         - rpm.PreManifest
 
 	- service.Stop: {service: httpd}
+	- service.Stop: {service: megafrobber}
 
-        # Puppet handles our system configuration,
-	# so, no need for yum here.
-	- puppet.Enable
-	- puppet.Run
+	- yum.Update: {packages: [megafrobber]}
+
+	# This megafrobber release requires updating the
+	# local database.
+	- command.Run: {command: megafrobber --frob-db}
+
+	- service.Start: {service: megafrobber}
+	- service.Start: {service: httpd}
 
 	- rpm.PostManifest
 
 
-Lets highlight what's happening here
+Lets highlight what's happening here:
 
-#. We're using a glob in the ``hosts`` element to target all of our
-   web servers
+#. We're using a glob in the ``hosts`` element to target all (40) of
+   our web servers.
 
-#. Our ``preflight`` disables puppet and schedules 10 minutes of
-   downtime for the ``http`` service on our Nagios server
+#. Using ``HTMLOutput`` we're going to create a log file we can view
+   from the web browser of our phone. The ``%s`` string is replaced
+   with a datestamp in the file that is created.
+
+#. Our ``preflight`` sets 10 minutes of `downtime` so we do not get
+   paged by Nagios if it detects a server is offline in that time.
 
 #. After the preflight finishes all execution stops and we are
    prompted to continue::
 
     Pre-Flight complete, press enter to continue:
 
-#. At this point we would commit, push all puppet code changes into
-   git, promote our new RPMs, and then continue the release
+#. At this point we update our Yum repository with the new package
+   from engineering.
 
-#. A manifest of installed RPMs is taken on the target node
+#. A manifest of installed RPMs is taken on the target node.
 
-#. Apache HTTPD is stopped
+#. The `Apache httpd` and `megafrobber` services are stopped.
 
-#. We re-enable puppet and then force a manual catalog run
+#. We use yum to update the `megafrobber` package.
+
+#. We make a system call and run the command ``megafrobber --frob-db``
+
+#. `Apache httpd` and `megafrobber` services are started again.
 
 #. A manifest of the installed RPMs is taken and the diff is displayed
    against the manifest from the ``PreManifest`` so we can verify our
-   intended changes landed
+   intended changes landed.
 
+As usual, engineering got the release to you with 30 minutes left in
+the day. Looks like we just might make it though.
 
-When it comes time to run this we decide to alter the described work
-flow a little bit. We'll add the ``LogOutput`` type, so we have
-something to send to our boss later. Because we're running late to the
-Wednesday IT meetup at the local watering hole we elect to skip the
-pre-flight too. (Ouch, no Nagios downtime? Our co-workers are going to
-hate us for that later) We're also going to run this against
-everything at once (who needs rolling-updates anyway?) ::
+To speed up the release a bit we'll set the ``concurrency`` element to
+4 at run-time. If we do 4 hosts at once we'll be done real fast. With
+``HTMLOutput`` we'll be able to monitor the situation from the web
+browser on our phone at the pub if we have to take off before the
+script finishes running. ::
 
-    $ taboot -sC 4 -L new-megafrobber-update.log www-rolling-update.yaml && \
-        mail -s "Megafrobber release logs for `date`" \
-	pointy-haired-boss@friendfrobber.com < www-rolling-update.yaml
+    $ taboot -C4 www-rolling-update.yaml
 
 .. seealso::
 
@@ -607,13 +655,18 @@ The ``taboot`` command offers additional features not described above.
    sequence. Therefore they both are able to validate the result of
    any edits made with :option:`-E` or with :option:`-L`.
 
-   Taboots document validation catches basic script errors.
+   Taboots document validation catches and identifies:
 
-   Dispite it's best attempts, validation isn't accurate 100% of the
-   time when describing illegal syntax. Note however, it will never
-   throw a false positive either. t's 100% better than a stack
-   trace in the middle of a release.
+   * `YAML parsing errors`
+   * `Missing required elements`
+   * `Tasks that can not be located`
 
+.. note::
+
+   Dispite it's best attempts, the YAML library used in Taboot isn't
+   always 100% accurate in **describing** what or where illegal syntax
+   appears in YAML parsing errors. These are not false positives, you
+   just need to look around the area the error is described.
 
 .. option:: -E, --edit
 
