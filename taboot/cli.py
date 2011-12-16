@@ -117,9 +117,9 @@ Taboot is released under the terms of the GPLv3+ license""")
 
     valid = True
     # Failed script validation WILL terminate this release
-    print "DEBUG: Filtering out only the invalid scripts"
+
     for script in filter(lambda s: not s.valid, scripts.scripts):
-        print "Error: could not parse %s" % script.fileName
+        print "\nError: could not parse %s" % script.fileName
         if not script.unknown_tasks == set():
             print "The following were used but are not valid tasks:"
             for task in script.unknown_tasks:
@@ -130,13 +130,13 @@ Taboot is released under the terms of the GPLv3+ license""")
                 print "    - %s" % element
         valid = False
 
-    if not valid:
-        sys.exit(1)
-    elif valid and args.checkonly:
+    if valid and args.checkonly:
         sys.exit(0)
     elif valid and args.printonly:
         scripts.print_scripts()
         sys.exit(0)
+    elif not valid:
+        sys.exit(1)
     else:
         scripts.run()
 
