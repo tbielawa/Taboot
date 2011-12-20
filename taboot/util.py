@@ -18,6 +18,7 @@
 import taboot
 import sys
 import tempfile
+from taboot.log import *
 from errors import TabootTaskNotFoundException
 
 
