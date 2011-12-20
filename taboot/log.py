@@ -80,7 +80,7 @@ def log_wrap(origfunc):
             # flatten the positional params so we don't tuple() a
             # tuple or an array and end up with weirdness.
             a = util.flatten(args)
-            
+
             print_log_msg(log_level, msg % tuple(a))
     return orig_func_wraper
 
@@ -92,6 +92,7 @@ def print_log_msg(log_level, msg):
         except:
             # A logging mechanism never should cause a script to abort
             print "Error while processing %s message" % log_level.upper()
+
 
 @log_wrap
 def log_error(mgs, LOG_ERROR, *args):

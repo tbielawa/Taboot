@@ -92,7 +92,8 @@ The problem is on line %s, column %s.
 
 %s
 %s"""
-                log_error(msg, infile, mark.line + 1, mark.column + 1, probline, arrow)
+                log_error(msg, infile, mark.line + 1,
+                          mark.column + 1, probline, arrow)
                 sys.exit(1)
             else:
                 # No problem markers means we have to throw a generic
