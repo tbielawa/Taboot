@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Taboot - Client utility for performing deployments with Func.
 # Copyright © 2011, Red Hat, Inc.
