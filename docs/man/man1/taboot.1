@@ -2,12 +2,12 @@
 .\"     Title: taboot
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 12/08/2011
+.\"      Date: 12/19/2011
 .\"    Manual: System administration commands
 .\"    Source: Taboot 0.4.x
 .\"  Language: English
 .\"
-.TH "TABOOT" "1" "12/08/2011" "Taboot 0\&.4\&.x" "System administration commands"
+.TH "TABOOT" "1" "12/19/2011" "Taboot 0\&.4\&.x" "System administration commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 taboot \- run a taboot release script
 .SH "SYNOPSIS"
 .sp
-taboot [\-h] [\-V] [\-n] [\-p] [\-s] [\-L [LOGFILE]] [\-C CONCURRENCY] [\-E] [FILE [FILE \&...]]
+taboot [\-h] [\-V] [\-v] [\-n] [\-p] [\-s] [\-L [LOGFILE]] [\-C CONCURRENCY] [\-E] [FILE [FILE \&...]]
 .SH "DESCRIPTION"
 .sp
 Taboot is a tool written for scripting and automating the task of performing software releases in a large\-scale infrastructure\&. Release scripts are written using YAML syntax\&.
@@ -55,6 +55,11 @@ Show this help message and exit\&.
 \fB\-V\fR, \fB\-\-version\fR
 .RS 4
 Show program\(cqs version number and exit\&.
+.RE
+.PP
+\fB\-v\fR, \fB\-\-verbose\fR
+.RS 4
+Increase verbosity\&. Give up to twice\&.
 .RE
 .PP
 \fB\-n\fR, \fB\-\-checkonly\fR

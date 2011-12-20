@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import threading
-from util import instantiator
+from taboot.util import instantiator
 
 
 class Runner(object):

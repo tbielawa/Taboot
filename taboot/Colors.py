@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from taboot.log import log_warn
+
 """
 Colorizing functions and objects.
 """
@@ -60,7 +62,7 @@ class Colors(object):
         @rtype: str
         """
         if not self.does_color_exist(color):
-            print "Color %s doesn't exist, using default." % color
+            log_warn("Color %s doesn't exist, using default.", color)
             color = 'normal'
         end_str = ""
         if normalize:
@@ -107,7 +109,7 @@ class HTMLColors(Colors):
         Returns a color formatted string.
         """
         if not self.does_color_exist(color):
-            print "Color %s doesn't exist, using default." % color
+            log_warn("Color %s doesn't exist, using default.", color)
             color = 'normal'
         end_str = ""
         if normalize:

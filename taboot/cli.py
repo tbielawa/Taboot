@@ -15,16 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import yaml
-import taboot.runner
 import argparse
-import re
 import datetime
 import os
+import re
+import sys
 import taboot
-from taboot.scripts import Scripts
+import taboot.runner
+import yaml
 from taboot import __version__
+from taboot import log
+from taboot.log import *
+from taboot.scripts import Scripts
 from util import log_update
 
 
@@ -58,6 +60,9 @@ Taboot is released under the terms of the GPLv3+ license""")
 
     parser.add_argument('-V', '--version', action='version',
                         version='Taboot v%s' % __version__)
+    parser.add_argument('-v', '--verbose', action='count',
+                        default=1,
+                        help='Increase verbosity. Give up to twice.')
     parser.add_argument('-n', '--checkonly', action='store_true',
                         default=False,
                         help='Don\'t execute the release, just check \
@@ -87,6 +92,9 @@ Taboot is released under the terms of the GPLv3+ license""")
                               if FILE is \'-\' or not given.')
     args = parser.parse_args()
 
+    log_debug("Setting verbosity to %s", args.verbose)
+    log.LOG_LEVEL_CURRENT = args.verbose
+
     if args.logfile:
         # Since we are snarfing the next positional argument after -L,
         # we may accidentally snarf up an input yaml file. Hence the
@@ -114,30 +122,35 @@ Taboot is released under the terms of the GPLv3+ license""")
         input_files = ['-']
 
     scripts = Scripts(input_files, args, config)
+    log_debug("scripts object created with %s items", len(scripts.scripts))
 
     valid = True
     # Failed script validation WILL terminate this release
 
     for script in filter(lambda s: not s.valid, scripts.scripts):
-        print "\nError: could not parse %s" % script.fileName
-        if not script.unknown_tasks == set():
-            print "The following were used but are not valid tasks:"
-            for task in script.unknown_tasks:
-                print "    - %s" % task
-        if not script.elements_missing == set():
-            print "The following required elements were not found:"
-            for element in script.elements_missing:
-                print "    - %s" % element
         valid = False
+        log_error("Could not parse %s", script.fileName)
+        if not script.unknown_tasks == set():
+            log_error("\nThe following were used but are not valid tasks:")
+            for task in script.unknown_tasks:
+                log_error("    - %s", task)
+        if not script.elements_missing == set():
+            log_error("The following required elements were not found:")
+            for element in script.elements_missing:
+                log_error("    - %s", element)
 
     if valid and args.checkonly:
+        log_debug("Exiting from dry run. Script verification passed.")
         sys.exit(0)
     elif valid and args.printonly:
         scripts.print_scripts()
+        log_debug("Exiting from print only run. Script verification passed.")
         sys.exit(0)
     elif not valid:
+        log_debug("Exiting due to invalid scripts.")
         sys.exit(1)
     else:
+        log_debug("Executing main run loop in scripts object")
         scripts.run()
 
 if __name__ == '__main__':

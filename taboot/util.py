@@ -110,10 +110,10 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
         return instance_type(**kwargs)
     except TypeError, e:
         import pprint
-        print "Unable to instantiate %s with the following arguments:"\
-            % instance_type
+        log_error("Unable to instantiate %s with the following arguments:",
+                  instance_type)
         pprint.pprint(kwargs)
-        print "Full backtrace below\n"
+        log_error("Full backtrace below\n")
         raise
 
 
@@ -144,3 +144,17 @@ def sync_blob_copy(tmpfile):
     tmpfile.close()  # The file is erased when close()'d
     open(tmpname, 'w').write(blob)
     return blob
+
+
+def flatten(x):
+    """
+    Flatten an arbitrary depth nested list.
+    """
+    # Lifted from: http://stackoverflow.com/a/406822/263969
+    result = []
+    for el in x:
+        if hasattr(el, "__iter__") and not isinstance(el, basestring):
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result

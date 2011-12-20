@@ -21,6 +21,7 @@ import sys
 import os
 import yaml
 from tabootScript import TabootScript
+from taboot.log import *
 from errors import TabootMalformedYAMLException
 from subprocess import call
 
@@ -66,19 +67,18 @@ class Scripts(object):
                     if self.args.edit:
                         blob = self._edit_input_file(blob)
             except IOError, e:
-                print "Failed to read input file '%s'. \
-Are you sure it exists?" % infile
+                log_error("Failed to read input file '%s'. \
+Are you sure it exists?", infile)
                 sys.exit(1)
 
-            # Print a helpful message when loading the YAML fails
-            ds = self._load_all_from_yaml(blob)
+            ds = self._load_all_from_yaml(blob, infile)
 
             # Take the read in document and store each of its logical
             # YAML documents as a TabootScript
             for doc in ds:
                 self._add_taboot_script(doc, infile)
 
-    def _load_all_from_yaml(self, blob):
+    def _load_all_from_yaml(self, blob, infile):
         try:
             ds = [doc for doc in yaml.load_all(blob)]
         except yaml.YAMLError, exc:
@@ -86,13 +86,12 @@ Are you sure it exists?" % infile
                 mark = exc.problem_mark
                 probline = blob.split("\n")[mark.line]
                 arrow = " " * mark.column + "^"
-                msg = """
-Syntax Error while loading YAML script, %s.
+                msg = """Syntax Error while loading YAML script, %s.
 The problem is on line %s, column %s.
 
 %s
-%s""" % (infile, mark.line + 1, mark.column + 1, probline, arrow)
-                print msg
+%s"""
+                log_error(msg, infile, mark.line + 1, mark.column + 1, probline, arrow)
                 sys.exit(1)
             else:
                 # No problem markers means we have to throw a generic

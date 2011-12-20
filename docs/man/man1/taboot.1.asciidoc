@@ -13,8 +13,8 @@ taboot - run a taboot release script
 
 SYNOPSIS
 --------
-taboot [-h] [-V] [-n] [-p] [-s] [-L [LOGFILE]] [-C CONCURRENCY] [-E]
-              [FILE [FILE ...]]
+taboot [-h] [-V] [-v] [-n] [-p] [-s] [-L [LOGFILE]]
+              [-C CONCURRENCY] [-E] [FILE [FILE ...]]
 
 
 
@@ -48,6 +48,12 @@ Show this help message and exit.
 *-V*, *--version*::
 
 Show program's version number and exit.
+
+
+
+*-v*, *--verbose*::
+
+Increase verbosity. Give up to twice.
 
 
 
