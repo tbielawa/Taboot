@@ -18,7 +18,7 @@
 
 import yaml
 from errors import TabootTaskNotFoundException
-from util import resolve_types, instantiator, log_update
+from util import resolve_types, instantiator
 
 
 class YamlDoc(object):
@@ -116,9 +116,9 @@ class TabootScript(YamlDoc):
     def setConcurrency(self, concurrency):
         self.yamlDoc['concurrency'] = concurrency
         try:
-            log_update("Attempting to set concurrency to: %s" % concurrency)
+            log_info("Attempting to set concurrency to: %s", concurrency)
         except ConcurrencyException as e:
-            log_update("Cannot set concurrency: %s" % e)
+            log_warn("Cannot set concurrency: %s. Falling back to 1.", e)
             self.setConcurrency(1)
 
     def getConcurrency(self):

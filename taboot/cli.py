@@ -27,7 +27,6 @@ from taboot import __version__
 from taboot import log
 from taboot.log import *
 from taboot.scripts import Scripts
-from util import log_update
 
 
 def main():
@@ -113,7 +112,7 @@ Taboot is released under the terms of the GPLv3+ license""")
             config["logfile"] = args.logfile
 
         # Notify we are adding logging and to where
-        log_update("Adding logging to file: %s" % logfile)
+        log_info("Adding logging to file: %s", logfile)
         config["addLogging"] = True
 
     if len(args.input_files) >= 1:

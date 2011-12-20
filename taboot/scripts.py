@@ -40,6 +40,7 @@ class Scripts(object):
 
     def _process_input_files(self):
         for infile in self.input_files:
+            log_debug("Processing input file: %s", infile)
             self._process_input_file(infile)
 
         for script in self.scripts:
@@ -113,8 +114,7 @@ The problem is on line %s, column %s.
             call(['vi', tmpfile.name])
 
         blob = taboot.util.sync_blob_copy(tmpfile)
-        taboot.util.log_update("Taboot edit mode: saved changes in %s" \
-                       % tmpfile.name)
+        log_info("Taboot edit mode: saved changes in %s", tmpfile.name)
         return blob
 
     def _add_taboot_script(self, ds, infile):

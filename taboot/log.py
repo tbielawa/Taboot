@@ -69,9 +69,11 @@ log_debug("In %s there is a broken %s", [something, thing])
 def log_wrap(origfunc):
     """
     DRY: Use magic instead of code to get a string for the correct log
-    level when calling ``print_log_msg``.
+    level when calling ``print_log_msg``. Because writing the same
+    boilerplate code in each log_XXX def was too painful to commit.
     """
     def orig_func_wraper(msg, *args):
+        # Take the callers name and snap it in two, result log level
         log_level = origfunc.__name__.split("_")[1]
 
         import log
@@ -86,8 +88,11 @@ def log_wrap(origfunc):
 
 def print_log_msg(log_level, msg):
     for l in msg.split("\n"):
-        print "%s: %s" % (log_level.upper(), l)
-
+        try:
+            print "%s: %s" % (log_level.upper(), l)
+        except:
+            # A logging mechanism never should cause a script to abort
+            print "Error while processing %s message" % log_level.upper()
 
 @log_wrap
 def log_error(mgs, LOG_ERROR, *args):
@@ -122,5 +127,4 @@ def _log_test():
 
 
 if __name__ == "__main__":
-    #log_debug("test wrapped message: %s/%s", "one param", "two param")
     _log_test()
