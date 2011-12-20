@@ -118,11 +118,6 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
         raise
 
 
-def log_update(msg):
-    sys.stderr.write(str(msg) + "\n")
-    sys.stderr.flush()
-
-
 def make_blob_copy(blob):
     header = open(taboot.edit_header).read()
     tmpfile = tempfile.NamedTemporaryFile(suffix=".yaml",
