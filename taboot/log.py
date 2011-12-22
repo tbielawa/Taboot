@@ -45,6 +45,9 @@ Each level includes all of the levels below it.
 * ``Error`` - Severe errors that cause premature termination. This
   would rarely be seen.
 
+For consistency, please follow this log-message style-guide:
+ - Use full sentences, and end them with FULL STOPS.
+ - Use ellipses when "doing xyz..."
 
 Examples:
 
@@ -56,11 +59,11 @@ log_debug("Something is broken!!!")
 
 log_debug("%s is broken!!!!", some_thing)
 
-log_debug("In %s there is a broken %s", something, thing)
+log_debug("In %s there is a broken %s.", something, thing)
 
-log_debug("In %s there is a broken %s", (something, thing))
+log_debug("In %s there is a broken %s.", (something, thing))
 
-log_debug("In %s there is a broken %s", [something, thing])
+log_debug("In %s there is a broken %s.", [something, thing])
 
 """
 
@@ -72,7 +75,8 @@ def log_wrap(origfunc):
     boilerplate code in each log_XXX def was too painful to commit.
     """
     def orig_func_wraper(msg, *args):
-        # Take the callers name and snap it in two, result log level
+        # Take the callers name and snap it in two, result is log
+        # level, e.g.: log_debug is DEBUG level.
         log_level = origfunc.__name__.split("_")[1]
 
         import log
@@ -86,12 +90,12 @@ def log_wrap(origfunc):
 
 
 def print_log_msg(log_level, msg):
-    for l in msg.split("\n"):
-        try:
+    try:
+        for l in msg.split("\n"):
             print "%s: %s" % (log_level.upper(), l)
-        except:
-            # A logging mechanism never should cause a script to abort
-            print "Error while processing %s message" % log_level.upper()
+    except:
+        # A logging mechanism never should cause a script to abort
+        print "Error while processing %s message" % log_level.upper()
 
 
 @log_wrap
@@ -121,9 +125,9 @@ def _log_test():
 
     log_debug("Something is broken!!!")
     log_debug("%s is broken!!!!", some_thing)
-    log_debug("In %s there is a broken %s", something, thing)
-    log_debug("In %s there is a broken %s", (something, thing))
-    log_debug("In %s there is a broken %s", [something, thing])
+    log_debug("In %s there is a broken %s.", something, thing)
+    log_debug("In %s there is a broken %s.", (something, thing))
+    log_debug("In %s there is a broken %s.", [something, thing])
 
 
 if __name__ == "__main__":

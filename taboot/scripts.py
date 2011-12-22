@@ -32,6 +32,11 @@ class Scripts(object):
     """
 
     def __init__(self, input_files, args, config):
+        """
+        - ``input_files`` should be a list of file names
+        - ``args`` should be the result of an argparser instance
+        - ``config`` is a dictionary of config values that aren't in ``args``
+        """
         self.input_files = input_files
         self.args = args
         self.config = config

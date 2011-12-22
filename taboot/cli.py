@@ -126,6 +126,7 @@ Taboot is released under the terms of the GPLv3+ license""")
     valid = True
     # Failed script validation WILL terminate this release
 
+    log_debug("Filtering for invalid scripts...")
     for script in filter(lambda s: not s.valid, scripts.scripts):
         valid = False
         log_error("Could not parse %s", script.fileName)
@@ -149,7 +150,7 @@ Taboot is released under the terms of the GPLv3+ license""")
         log_debug("Exiting due to invalid scripts.")
         sys.exit(1)
     else:
-        log_debug("Executing main run loop in scripts object")
+        log_debug("Executing main run loop in scripts object.")
         scripts.run()
 
 if __name__ == '__main__':
