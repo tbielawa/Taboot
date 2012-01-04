@@ -16,7 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import func
 import yaml
+from runner import Runner
 from errors import TabootTaskNotFoundException
 from util import resolve_types, instantiator
 
@@ -50,6 +52,7 @@ class TabootScript(YamlDoc):
         self.edited = edited
         self.unknown_tasks = set()
         self.elements_missing = set()
+        self.unmatched_globs = set()
         self.valid = True
 
     def validate_concurrency(self):
@@ -76,16 +79,15 @@ class TabootScript(YamlDoc):
 
     def validate(self):
         """
-        Verify that all tasks can be located. Also verify that all
-        required elements are present.
+        Verify that all tasks can be located, all required elements
+        are present, and all globs can be expanded.
         """
         script = self.yamlDoc
         elements_required = set(["hosts", "tasks"])
         elements_present = script.keys()
 
         self.elements_missing = elements_required.difference(elements_present)
-        if not self.elements_missing == set():
-            self.valid = False
+        self.valid = (self.elements_missing == set())
 
         try:
             for task in self.getPreflightTypes():
@@ -99,6 +101,14 @@ class TabootScript(YamlDoc):
             self.valid = False
             self.elements_missing.add(e.args)
 
+        try:
+            r = Runner(self)
+        except func.CommonErrors.Func_Client_Exception as e:
+            # Sure would be helpful if this exception told you exactly
+            # WHICH names bombed... buuuuut what can you do?
+            unmatched = e.value.split("\"")[1]
+            self.valid = False
+            self.unmatched_globs.add(unmatched)
         return self.valid
 
     def deletePreflight(self):

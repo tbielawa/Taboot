@@ -130,9 +130,13 @@ class Runner(object):
             found_hosts = []
             for h in self._hosts:
                 c = fc.Client(h)
-                for found_host in c.list_minions():
-                    if not found_host in found_hosts:
-                        found_hosts.append(found_host)
+                new_hosts = filter(lambda h: h not in found_hosts,
+                                   c.list_minions())
+                found_hosts.extend(new_hosts)
+                # for found_host in c.list_minions():
+                #     h = filter
+                #     if not found_host in found_hosts:
+                #         found_hosts.append(found_host)
             return found_hosts
 
     def __sighandler(self, signal, frame):

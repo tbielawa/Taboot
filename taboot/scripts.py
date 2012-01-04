@@ -155,3 +155,23 @@ Please choose one of these options:
             runner = taboot.runner.Runner(script)
             if not runner.run():
                 break
+
+    def validate_scripts(self):
+        valid = True
+        log_debug("Filtering for invalid scripts...")
+        for script in filter(lambda s: not s.valid, self.scripts):
+            valid = False
+            log_error("Could not parse %s", script.fileName)
+            if not script.unknown_tasks == set():
+                log_error("\nThe following were used but are not valid tasks:")
+                for task in script.unknown_tasks:
+                    log_error("    - %s", task)
+            if not script.elements_missing == set():
+                log_error("The following required elements were not found:")
+                for element in script.elements_missing:
+                    log_error("    - %s", element)
+            if not script.unmatched_globs == set():
+                log_error("Unable to match hostname:")
+                for h in script.unmatched_globs:
+                    log_error("    - %s", h)
+        return valid

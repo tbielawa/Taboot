@@ -123,21 +123,8 @@ Taboot is released under the terms of the GPLv3+ license""")
     scripts = Scripts(input_files, args, config)
     log_debug("scripts object created with %s items", len(scripts.scripts))
 
-    valid = True
+    valid = scripts.validate_scripts()
     # Failed script validation WILL terminate this release
-
-    log_debug("Filtering for invalid scripts...")
-    for script in filter(lambda s: not s.valid, scripts.scripts):
-        valid = False
-        log_error("Could not parse %s", script.fileName)
-        if not script.unknown_tasks == set():
-            log_error("\nThe following were used but are not valid tasks:")
-            for task in script.unknown_tasks:
-                log_error("    - %s", task)
-        if not script.elements_missing == set():
-            log_error("The following required elements were not found:")
-            for element in script.elements_missing:
-                log_error("    - %s", element)
 
     if valid and args.checkonly:
         log_debug("Exiting from dry run. Script verification passed.")

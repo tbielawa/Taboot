@@ -92,10 +92,11 @@ def log_wrap(origfunc):
 def print_log_msg(log_level, msg):
     try:
         for l in msg.split("\n"):
-            print "%s: %s" % (log_level.upper(), l)
+            util.print_stderr("%s: %s\n" % (log_level, l))
     except:
-        # A logging mechanism never should cause a script to abort
-        print "Error while processing %s message" % log_level.upper()
+        # A logging mechanism should never cause a script to abort if
+        # you can't expand all formatting markers
+        util.print_stderr("Error while processing %s message\n" % log_level.upper())
 
 
 @log_wrap

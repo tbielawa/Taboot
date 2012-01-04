@@ -18,6 +18,7 @@
 import taboot
 import sys
 import tempfile
+from os.path import isfile
 from taboot.log import *
 from errors import TabootTaskNotFoundException
 
@@ -119,7 +120,13 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
 
 
 def make_blob_copy(blob):
-    header = open(taboot.edit_header).read()
+    if isfile(taboot.edit_header):
+        header = open(taboot.edit_header).read()
+    else:
+        log_warn("Header file not found when launching Taboot edit mode!")
+        log_warn("Expected to find: %s", taboot.edit_header)
+        header = ""
+
     tmpfile = tempfile.NamedTemporaryFile(suffix=".yaml",
                                           prefix="taboot-")
     header = header.replace("$TMPFILE$", tmpfile.name)
@@ -154,3 +161,8 @@ def flatten(x):
         else:
             result.append(el)
     return result
+
+
+def print_stderr(msg):
+    sys.stderr.write(msg)
+    sys.stderr.flush()
