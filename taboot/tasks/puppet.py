@@ -31,14 +31,16 @@ class PuppetBase(command.Run):
 class Run(PuppetBase):
     """
     Run 'puppetd --test || true'
-
+    
     See also: SafeRun
     """
 
-    def __init__(self, server="", safe=False, **kwargs):
+    def __init__(self, server="", noop=False, safe=False, **kwargs):
         pcmd = "puppetd --test --color=false"
         if server != "":
             pcmd += " --server=%s" % server
+        if noop == True:
+            pcmd += " --noop"
         if safe == False:
             # If safe is False, ignore the return code of the puppet run
             pcmd += " || true"
