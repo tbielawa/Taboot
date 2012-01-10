@@ -112,6 +112,8 @@ forcing a catalog run.
     - puppet.Run
     # Test run with specified server
     - puppet.Run: {server: my.puppet.server}
+    # No operation run
+    - puppet.Run: {noop: true}
     # Do a paranoid test run (quit Taboot on possible errors)
     - puppet.SafeRun
     # Do a paranoid test run with specified server

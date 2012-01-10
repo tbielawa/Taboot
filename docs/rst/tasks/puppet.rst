@@ -44,7 +44,8 @@ Syntax::
 
         # Run against a different puppet master
         - puppet.Run: {server: my.puppet.server}
-
+	# No operation run
+	- puppet.Run: {noop: true}
 
 Example::
 
