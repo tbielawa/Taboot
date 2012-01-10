@@ -76,6 +76,12 @@ Skip preflight sections if they exist.
 
 
 
+*-o*, *--onlypreflight*::
+
+Only run preflight sections.
+
+
+
 *-L [LOGFILE]*, *--logfile [LOGFILE]*::
 
 Adds [LogOutput: \{logfile: LOGFILE}] to the script(s) being run. If
