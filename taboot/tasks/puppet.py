@@ -31,8 +31,13 @@ class PuppetBase(command.Run):
 class Run(PuppetBase):
     """
     Run 'puppetd --test || true'
-    
-    See also: SafeRun
+
+    :Optional Parameters:
+      - `server`: Puppetmaster to run against
+      - `noop`: If this should be a noop run (Boolean)
+      - `safe`: Abort if puppet errors (Boolean)
+
+    See also: :py:meth:`taboot.tasks.Puppet.SafeRun`
     """
 
     def __init__(self, server="", noop=False, safe=False, **kwargs):

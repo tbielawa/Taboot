@@ -17,6 +17,7 @@
 
 import threading
 from taboot.util import instantiator
+from log import *
 
 
 class Runner(object):
@@ -36,16 +37,20 @@ class Runner(object):
              them as is.
         """
         self._hosts = script.getHosts()
-        self._preflight_tasks = script.getPreflightTypes()
-        self._preflight_semaphore = self.threading.Semaphore(
-                                         script.getPreflightLength())
-        self._preflight_tasks_q = []
         self._tasks = script.getTaskTypes()
         self._concurrency = script.getConcurrency()
+        log_debug("Setting task-body concurrency to %s.",
+                  self._concurrency)
         self._output = script.getOutputTypes()
         self._task_q = []
         if expand_globs:
             self._hosts = self._expand_globs()
+
+        log_debug("Will operate on %s host(s).", len(self._hosts))
+        self._preflight_tasks = script.getPreflightTypes()
+        self._preflight_semaphore = self.threading.Semaphore(
+                                         len(self._hosts))
+        self._preflight_tasks_q = []
         self._semaphore = self.threading.Semaphore(self._concurrency)
         self._fail_event = self.threading.Event()
 
@@ -71,9 +76,9 @@ class Runner(object):
 
         while len(self.threading.enumerate()) > 1:
             # Even though all the threads may have been joined we
-            # should still for them to terminate. If we don't wait for
-            # that we will likely see the 'continue?' prompt before
-            # the preflight output gets a chance to print.
+            # should still wait for them to terminate. If we don't
+            # wait for that we will likely see the 'continue?' prompt
+            # before the preflight output gets a chance to print.
             pass
 
         ready = raw_input(rdy_msg)

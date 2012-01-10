@@ -73,6 +73,9 @@ Taboot is released under the terms of the GPLv3+ license""")
     parser.add_argument('-s', '--skippreflight', action='store_true',
                         default=False,
                         help='Skip preflight sections if they exist.')
+    parser.add_argument('-o', '--onlypreflight', action='store_true',
+                        default=False,
+                        help='Only run preflight sections.')
     parser.add_argument('-L', '--logfile', const=defaultlogfile, nargs='?',
                         help='Adds [LogOutput: {logfile: LOGFILE}] to the \
                               script(s) being run.  If LOGFILE is not \
@@ -121,10 +124,8 @@ Taboot is released under the terms of the GPLv3+ license""")
         input_files = ['-']
 
     scripts = Scripts(input_files, args, config)
-    log_debug("scripts object created with %s items", len(scripts.scripts))
-
+    log_debug("Scripts object created with %s items.", len(scripts.scripts))
     valid = scripts.validate_scripts()
-    # Failed script validation WILL terminate this release
 
     if valid and args.checkonly:
         log_debug("Exiting from dry run. Script verification passed.")

@@ -47,7 +47,8 @@ Each level includes all of the levels below it.
 
 For consistency, please follow this log-message style-guide:
  - Use full sentences, and end them with FULL STOPS.
- - Use ellipses when "doing xyz..."
+ - Use ellipses when "Doing xyz..."
+ - Start messages with a leading capital!
 
 Examples:
 
@@ -80,12 +81,13 @@ def log_wrap(origfunc):
         log_level = origfunc.__name__.split("_")[1]
 
         import log
-        if getattr(log, "LOG_%s" % log_level.upper()) <= log.LOG_LEVEL_CURRENT:
-            # flatten the positional params so we don't tuple() a
-            # tuple or an array and end up with weirdness.
-            a = util.flatten(args)
-
-            print_log_msg(log_level, msg % tuple(a))
+        if getattr(log, "LOG_%s" % log_level.upper()) <= \
+                log.LOG_LEVEL_CURRENT:
+            # flatten and stringify the positional params so we don't
+            # tuple() a tuple or an array and end up with
+            # weirdness.
+            a = map(str, util.flatten(args))
+            print_log_msg(log_level, str(msg) % tuple(a))
     return orig_func_wraper
 
 
@@ -96,7 +98,8 @@ def print_log_msg(log_level, msg):
     except:
         # A logging mechanism should never cause a script to abort if
         # you can't expand all formatting markers
-        util.print_stderr("Error while processing %s message\n" % log_level.upper())
+        util.print_stderr("Error while processing %s message\n" %
+                          log_level.upper())
 
 
 @log_wrap

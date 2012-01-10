@@ -21,6 +21,7 @@ import yaml
 from runner import Runner
 from errors import TabootTaskNotFoundException
 from util import resolve_types, instantiator
+from log import *
 
 
 class YamlDoc(object):
