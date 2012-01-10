@@ -13,7 +13,7 @@ taboot - run a taboot release script
 
 SYNOPSIS
 --------
-taboot [-h] [-V] [-v] [-n] [-p] [-s] [-L [LOGFILE]]
+taboot [-h] [-V] [-v] [-n | -p] [-s | -o] [-L [LOGFILE]]
               [-C CONCURRENCY] [-E] [FILE [FILE ...]]
 
 
