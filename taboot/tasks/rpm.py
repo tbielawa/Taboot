@@ -27,7 +27,7 @@ class RPMBase(command.Run):
         super(RPMBase, self).__init__(pcmd, **kwargs)
 
 
-class PreManifest(command.Run):
+class PreManifest(RPMBase):
     """
     Gather list of installed RPMs.  A later invocation of :class:`PostManifest`
     is then used to output the RPMs changed during intermediate tasks.
@@ -50,7 +50,7 @@ class PreManifest(command.Run):
         return result
 
 
-class PostManifest(command.Run):
+class PostManifest(RPMBase):
     """
     Gather list of installed RPMs and compare against a previously
     taken :class:`PreManifest`

@@ -134,8 +134,9 @@ The problem is on line %s, column %s.
         self.scripts.append(taboot_script)
 
         try:
+            log_debug("Validating (partial) contents of %s...", infile)
             taboot_script.validate_concurrency()
-        except ConcurrencyException as e:
+        except TabootConcurrencyException as e:
             msg = """%s
 Please choose one of these options:
 1) Use Concurrency and ignore %s
@@ -151,6 +152,7 @@ Please choose one of these options:
             else:
                 log_info("Unexpected input. Aborting.")
                 sys.exit(1)
+        log_debug("%s passed (partial) concurrency validation", infile)
 
     def print_scripts(self):
         for script in self.scripts:

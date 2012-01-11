@@ -16,7 +16,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-class FuncException(Exception):
+class TabootException(Exception):
+    """
+    Base Taboot Exception
+    """
+    pass
+
+
+class FuncException(TabootException):
     """
     Exception raised whenever a func request returns REMOTE_ERROR
     """
@@ -33,27 +40,21 @@ class FuncException(Exception):
         return repr(self)
 
 
-class TabootException(Exception):
-    """
-    Base Taboot Exception
-    """
-    pass
-
-
-class TabootMissingKrbTkt(TabootException):
-    """
-    Exception raised when an action that requires a kerberos ticket
-    can't find one ahead of time.
-    """
-    pass
-
-
-class TabootTaskNotFoundException(AttributeError):
+class TabootTaskNotFoundException(TabootException):
     """
     Exception raised if a task can not be found during document
     validation.
     """
 
 
-class TabootMalformedYAMLException(Exception):
+class TabootMalformedYAMLException(TabootException):
     pass
+
+
+class TabootConcurrencyException(TabootException):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr("Concurrency Set and Non-concurrent task: %s present"
+                    % self.value)

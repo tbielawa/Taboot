@@ -19,7 +19,7 @@
 import func
 import yaml
 from runner import Runner
-from errors import TabootTaskNotFoundException
+from errors import TabootTaskNotFoundException, TabootConcurrencyException
 from util import resolve_types, instantiator
 from log import *
 
@@ -47,6 +47,7 @@ class TabootScript(YamlDoc):
         - `yamlDoc` - Dictionary representing our Taboot Script
         - `fileName` - YAML file the script in
         - `edited` - If we gave :option:`-E` on the command line
+        - `config` - Run-time configuration parameters
         """
         YamlDoc.__init__(self, yamlDoc)
         self.config = config
@@ -65,18 +66,23 @@ class TabootScript(YamlDoc):
         """
         # Still need to finish, need to get concurrency value if it
         # exists, then iterate through to see if there are any
-        # non-conurrent tasks in, if so raise a ConcurrencyException,
-        # will have to catch in cli.py
+        # non-conurrent tasks in, if so raise a
+        # TabootConcurrencyException, will have to catch in cli.py
         #
         # XX: I'm thinking that we can offer the user the ability to
         # edit the script to correct
 
+        log_debug("Concurrency validating %s...", self.fileName)
+        log_debug("Concurrency: %s", self.getConcurrency())
         if self.getConcurrency() > 1:
             tasks = self.getTaskTypes()
             for task in tasks:
                 task = instantiator(task, 'taboot.tasks', host="*")
                 if not task.concurrentFriendly:
-                    raise ConcurrencyException(task)
+                    log_debug("Concurrency exception while validating %s",
+                              self.fileName)
+                    raise TabootConcurrencyException(task)
+        log_debug("%s passed concurrency check.", self.fileName)
 
         return True
 
@@ -131,7 +137,7 @@ class TabootScript(YamlDoc):
         self.yamlDoc['concurrency'] = concurrency
         try:
             log_info("Attempting to set concurrency to: %s", concurrency)
-        except ConcurrencyException as e:
+        except TabootConcurrencyException as e:
             log_warn("Cannot set concurrency: %s. Falling back to 1.", e)
             self.setConcurrency(1)
 
@@ -206,12 +212,3 @@ class TabootScript(YamlDoc):
         for b in doc:
             if 'concurrency' in b:
                 del b['concurrency']
-
-
-class ConcurrencyException(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr("Concurrency Set and Non-concurrent task: %s present"
-                    % self.value)
