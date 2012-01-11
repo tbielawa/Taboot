@@ -2,12 +2,12 @@
 .\"     Title: taboot
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 01/10/2012
+.\"      Date: 01/11/2012
 .\"    Manual: System administration commands
 .\"    Source: Taboot 0.4.x
 .\"  Language: English
 .\"
-.TH "TABOOT" "1" "01/10/2012" "Taboot 0\&.4\&.x" "System administration commands"
+.TH "TABOOT" "1" "01/11/2012" "Taboot 0\&.4\&.x" "System administration commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -84,17 +84,23 @@ Only run preflight sections\&.
 .PP
 \fB\-L [LOGFILE]\fR, \fB\-\-logfile [LOGFILE]\fR
 .RS 4
-Adds [LogOutput: {logfile: LOGFILE}] to the script(s) being run\&. If LOGFILE is not specified then taboot\-YYYY\-MM\-DD\-HHMMSS\&.log will be used\&.
+Adds a LogOutput type to the script(s) being run\&. If
+\fILOGFILE\fR
+is not specified then taboot\-YYYY\-MM\-DD\-HHMMSS\&.log will be used\&.
 .RE
 .PP
 \fB\-C CONCURRENCY\fR, \fB\-\-concurrency CONCURRENCY\fR
 .RS 4
-Sets the concurrency for the input script(s)\&.
+Set the concurrency for the input script(s)\&. Give as an integer, or
+\fIall\fR
+for max concurrency\&.
 .RE
 .PP
 \fB\-E\fR, \fB\-\-edit\fR
 .RS 4
-Edit the input script(s) before running them using $EDITOR\&. This falls back to emacs and then vi\&. The tabootv command will choose vi automatically\&.
+Edit the input script(s) before running them using $EDITOR\&. This falls back to emacs and then vi\&. The
+\fBtabootv\fR
+command will choose vi automatically\&.
 .RE
 .SH "AUTHOR"
 .sp

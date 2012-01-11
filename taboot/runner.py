@@ -28,7 +28,7 @@ class Runner(object):
     import threading
     import taboot.output
 
-    def __init__(self, script, expand_globs=True):
+    def __init__(self, script, config, expand_globs=True):
         """
         :Parameters:
            - `script`: an instance of tabootScript
@@ -36,29 +36,38 @@ class Runner(object):
            - `expand_globs`: whether to expand the globs or just leave
              them as is.
         """
+        self._config = config
         self._hosts = script.getHosts()
         self._tasks = script.getTaskTypes()
-        self._concurrency = script.getConcurrency()
-        log_debug("Setting task-body concurrency to %s.",
-                  self._concurrency)
         self._output = script.getOutputTypes()
         self._task_q = []
+        self._fail_event = self.threading.Event()
+
         if expand_globs:
             self._hosts = self._expand_globs()
-
         log_debug("Will operate on %s host(s).", len(self._hosts))
+
+        # Prefight threading
         self._preflight_tasks = script.getPreflightTypes()
         self._preflight_semaphore = self.threading.Semaphore(
                                          len(self._hosts))
         self._preflight_tasks_q = []
+
+        # Main task-body threading
+        if script.getConcurrency() == "all":
+            self._concurrency = len(self._hosts)
+        else:
+            self._concurrency = int(script.getConcurrency())
+        log_debug("Setting task-body concurrency to %s.",
+                  self._concurrency)
         self._semaphore = self.threading.Semaphore(self._concurrency)
-        self._fail_event = self.threading.Event()
 
     def _run_preflight(self):
         """
         Run the jobs in a prefilght section.
         """
         import signal
+
         rdy_msg = "\nPre-Flight complete, press enter to continue: "
 
         for host in self._hosts:
@@ -81,21 +90,18 @@ class Runner(object):
             # before the preflight output gets a chance to print.
             pass
 
-        ready = raw_input(rdy_msg)
+        if not self._config["onlypreflight"]:
+            ready = raw_input(rdy_msg)
 
         if self._fail_event.isSet():
             return False
         return True
 
-    def run(self):
+    def _run_tasks(self):
         """
-        Run the job.
+        Run a task body.
         """
         import signal
-
-        if len(self._preflight_tasks) > 0:
-            if not self._run_preflight():
-                return False
 
         for host in self._hosts:
             t = TaskRunner(host, self._tasks, self._semaphore, self._output,
@@ -112,6 +118,20 @@ class Runner(object):
         if self._fail_event.isSet():
             return False
         return True
+
+    def run(self):
+        """
+        Run the preflight/tasks-body
+        """
+
+        if len(self._preflight_tasks) > 0:
+            if not self._run_preflight():
+                return False
+
+        if self._config["onlypreflight"]:
+            return True
+        else:
+            return self._run_tasks()
 
     def _expand_globs(self):
         """

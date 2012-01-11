@@ -16,6 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import os.path
+import pprint
+import inspect
 import util
 
 LOG_DEBUG = 3
@@ -23,7 +26,9 @@ LOG_WARN = 2
 LOG_INFO = 1
 LOG_ERROR = 0
 LOG_LEVEL_CURRENT = 1
-
+            # error, info -> stdout
+LOG_TO_STDOUT = [LOG_ERROR, LOG_INFO]
+LOG_TO_STDERR = [LOG_DEBUG, LOG_WARN]
 
 """
 Log levels adapted from the `Apache Commons` Logging User Guide:
@@ -92,14 +97,25 @@ def log_wrap(origfunc):
 
 
 def print_log_msg(log_level, msg):
+    import log
+    ll = getattr(log, "LOG_%s" % log_level.upper())
+    file_called_from = inspect.stack()[2][1]
+    line_called_from = inspect.stack()[2][2]
+    method_called_from = inspect.stack()[2][3]
+    debug_info = "%s:%s:%s" % (os.path.basename(file_called_from),
+                                 method_called_from, line_called_from)
+
     try:
         for l in msg.split("\n"):
-            util.print_stderr("%s: %s\n" % (log_level, l))
-    except:
+            if ll in log.LOG_TO_STDOUT:
+                print "%s: %s" % (log_level, l)
+            else:
+                util.print_stderr("%s[%s]: %s\n" % (log_level, debug_info, l))
+    except Exception as e:
         # A logging mechanism should never cause a script to abort if
         # you can't expand all formatting markers
-        util.print_stderr("Error while processing %s message\n" %
-                          log_level.upper())
+        util.print_stderr("Error while processing %s message:\n%s\n" %
+                          (log_level.upper(), e))
 
 
 @log_wrap

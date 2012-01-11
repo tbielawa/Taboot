@@ -27,6 +27,7 @@ from taboot import __version__
 from taboot import log
 from taboot.log import *
 from taboot.scripts import Scripts
+from taboot.util import parse_int_or_all
 
 
 def main():
@@ -41,6 +42,8 @@ def main():
         "logfile": defaultlogfile,
         "addLogging": False,
         "overrideConcurrency": False,
+        "onlypreflight": False,
+        "skippreflight": False,
         }
 
     parser = argparse.ArgumentParser(
@@ -56,33 +59,37 @@ scripts are written using YAML syntax.
 Taboot home page: <https://fedorahosted.org/Taboot/>
 Copyright 2009-2011, Red Hat, Inc
 Taboot is released under the terms of the GPLv3+ license""")
+    preflight_options = parser.add_mutually_exclusive_group()
+    verify_options = parser.add_mutually_exclusive_group()
+    preflight_options.add_argument('-s', '--skippreflight',
+                        action='store_true', default=False,
+                        help='Skip preflight sections if they exist.')
+    preflight_options.add_argument('-o', '--onlypreflight',
+                        action='store_true', default=False,
+                        help='Only run preflight sections.')
 
     parser.add_argument('-V', '--version', action='version',
                         version='Taboot v%s' % __version__)
     parser.add_argument('-v', '--verbose', action='count',
                         default=1,
                         help='Increase verbosity. Give up to twice.')
-    parser.add_argument('-n', '--checkonly', action='store_true',
+    verify_options.add_argument('-n', '--checkonly', action='store_true',
                         default=False,
                         help='Don\'t execute the release, just check \
                               script syntax.')
-    parser.add_argument('-p', '--printonly', action='store_true',
+    verify_options.add_argument('-p', '--printonly', action='store_true',
                         default=False,
                         help='Don\'t execute the release, just check \
                               script syntax and print yaml to stdout.')
-    parser.add_argument('-s', '--skippreflight', action='store_true',
-                        default=False,
-                        help='Skip preflight sections if they exist.')
-    parser.add_argument('-o', '--onlypreflight', action='store_true',
-                        default=False,
-                        help='Only run preflight sections.')
     parser.add_argument('-L', '--logfile', const=defaultlogfile, nargs='?',
-                        help='Adds [LogOutput: {logfile: LOGFILE}] to the \
+                        help='Adds a LogOutput type to the \
                               script(s) being run.  If LOGFILE is not \
                               specified then taboot-YYYY-MM-DD-HHMMSS.log \
                               will be used')
-    parser.add_argument('-C', '--concurrency', nargs=1, type=int,
-                        help='Sets the concurrency for the input script(s)')
+    parser.add_argument('-C', '--concurrency', nargs=1, type=parse_int_or_all,
+                        help='Set the concurrency for the input script(s). \
+                               Give as an integer, or \'all\' for max \
+                               concurrency.')
     parser.add_argument('-E', '--edit', action='store_true',
                         default=False,
                         help='Edit the input script(s) before running them \
@@ -93,6 +100,9 @@ Taboot is released under the terms of the GPLv3+ license""")
                         help='Release file in YAML format.  Reads from stdin \
                               if FILE is \'-\' or not given.')
     args = parser.parse_args()
+
+    config["onlypreflight"] = args.onlypreflight
+    config["skippreflight"] = args.skippreflight
 
     log_debug("Setting verbosity to %s", args.verbose)
     log.LOG_LEVEL_CURRENT = args.verbose
@@ -115,7 +125,7 @@ Taboot is released under the terms of the GPLv3+ license""")
             config["logfile"] = args.logfile
 
         # Notify we are adding logging and to where
-        log_info("Adding logging to file: %s", logfile)
+        log_info("Adding logging to file: %s", config["logfile"])
         config["addLogging"] = True
 
     if len(args.input_files) >= 1:
@@ -123,8 +133,10 @@ Taboot is released under the terms of the GPLv3+ license""")
     else:
         input_files = ['-']
 
+    log_debug("Final run-time config values parsed into %s", str(config))
     scripts = Scripts(input_files, args, config)
-    log_debug("Scripts object created with %s items.", len(scripts.scripts))
+    log_debug("Scripts object created with %s YAML documents.",
+              len(scripts.scripts))
     valid = scripts.validate_scripts()
 
     if valid and args.checkonly:
@@ -139,7 +151,10 @@ Taboot is released under the terms of the GPLv3+ license""")
         sys.exit(1)
     else:
         log_debug("Executing main run loop in scripts object.")
-        scripts.run()
+        if scripts.run():
+            sys.exit(0)
+        else:
+            sys.exit(1)
 
 if __name__ == '__main__':
     main()

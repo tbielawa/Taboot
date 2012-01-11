@@ -37,6 +37,8 @@ class Scripts(object):
         - ``args`` should be the result of an argparser instance
         - ``config`` is a dictionary of config values that aren't in ``args``
         """
+        log_debug("Creating script object with scripts from: [%s]",
+                  ", ".join(input_files))
         self.input_files = input_files
         self.args = args
         self.config = config
@@ -45,8 +47,8 @@ class Scripts(object):
 
     def _process_input_files(self):
         for infile in self.input_files:
-            log_debug("Processing input file: %s", infile)
             self._process_input_file(infile)
+            log_debug("Finished processing %s.", infile)
 
         for script in self.scripts:
             # Add/Modify Logging if -L is given
@@ -64,25 +66,28 @@ class Scripts(object):
             script.validate()
 
     def _process_input_file(self, infile):
-        for infile in self.input_files:
-            try:
-                if infile == '-':
-                    blob = sys.stdin.read()
-                else:
-                    blob = open(infile).read()
-                    if self.args.edit:
-                        blob = self._edit_input_file(blob)
-            except IOError, e:
-                log_error("Failed to read input file '%s'. \
+        log_debug("Processing input_file: %s...", infile)
+        try:
+            if infile == '-':
+                blob = sys.stdin.read()
+                log_debug("Reading from standard input.")
+            else:
+                blob = open(infile).read()
+                if self.args.edit:
+                    log_debug("Opening %s for editing...", infile)
+                    blob = self._edit_input_file(blob, infile)
+        except IOError, e:
+            log_error("Failed to read input file '%s'. \
 Are you sure it exists?", infile)
-                sys.exit(1)
+            sys.exit(1)
 
-            ds = self._load_all_from_yaml(blob, infile)
+        ds = self._load_all_from_yaml(blob, infile)
 
-            # Take the read in document and store each of its logical
-            # YAML documents as a TabootScript
-            for doc in ds:
-                self._add_taboot_script(doc, infile)
+        # Take the read in document and store each of its logical
+        # YAML documents as a TabootScript
+        log_debug("Discovered %s YAML documents within %s.", len(ds), infile)
+        for doc in ds:
+            self._add_taboot_script(doc, infile)
 
     def _load_all_from_yaml(self, blob, infile):
         try:
@@ -107,24 +112,25 @@ The problem is on line %s, column %s.
                 raise TabootMalformedYAMLException(msg)
         return ds
 
-    def _edit_input_file(self, blob):
+    def _edit_input_file(self, blob, infile):
         """
         Edit the blob given
         """
-        tmpfile = taboot.util.make_blob_copy(blob)
+        (tmpfile, offset) = taboot.util.make_blob_copy(blob)
 
         try:
             EDITOR = os.environ.get('EDITOR', 'emacs')
-            call([EDITOR, "-nw", tmpfile.name])
+            call([EDITOR, "-nw", "+%s" % offset, tmpfile.name])
         except OSError, e:
             call(['vi', tmpfile.name])
 
         blob = taboot.util.sync_blob_copy(tmpfile)
-        log_info("Taboot edit mode: saved changes in %s", tmpfile.name)
+        log_info("Taboot edit mode: saved changes to %s in %s",
+                 infile, tmpfile.name)
         return blob
 
     def _add_taboot_script(self, ds, infile):
-        taboot_script = TabootScript(ds, infile, self.args.edit)
+        taboot_script = TabootScript(ds, infile, self.args.edit, self.config)
         self.scripts.append(taboot_script)
 
         try:
@@ -143,6 +149,7 @@ Please choose one of these options:
             elif response == "2":
                 taboot_script.removeConcurrency()
             else:
+                log_info("Unexpected input. Aborting.")
                 sys.exit(1)
 
     def print_scripts(self):
@@ -150,16 +157,38 @@ Please choose one of these options:
             print script
 
     def run(self):
+        # Last sanity check... host globs all expanded?
+        if not self.validate_host_globs():
+            return False
+
         # Execute each (validated) script
         for script in self.scripts:
-            runner = taboot.runner.Runner(script)
+            runner = taboot.runner.Runner(script, self.config)
             if not runner.run():
-                break
+                return False
+
+        return True
+
+    def validate_host_globs(self):
+        valid = True
+        log_debug("Filtering for unmatched host globs...")
+
+        for script in self.scripts:
+            script.validateGlobs()
+
+        for script in filter(lambda s: not s.globs_valid, self.scripts):
+            valid = False
+            if not script.unmatched_globs == set():
+                log_error("\nUnable to match hostname(s):")
+                for h in script.unmatched_globs:
+                    log_error("    - %s", h)
+        return valid
 
     def validate_scripts(self):
         valid = True
         log_debug("Filtering for invalid scripts...")
         for script in filter(lambda s: not s.valid, self.scripts):
+
             valid = False
             log_error("Could not parse %s", script.fileName)
             if not script.unknown_tasks == set():
@@ -167,11 +196,7 @@ Please choose one of these options:
                 for task in script.unknown_tasks:
                     log_error("    - %s", task)
             if not script.elements_missing == set():
-                log_error("The following required elements were not found:")
+                log_error("\nThe following required elements were not found:")
                 for element in script.elements_missing:
                     log_error("    - %s", element)
-            if not script.unmatched_globs == set():
-                log_error("Unable to match hostname:")
-                for h in script.unmatched_globs:
-                    log_error("    - %s", h)
         return valid

@@ -15,12 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import re
 import taboot
 import sys
 import tempfile
+from argparse import ArgumentParser, ArgumentTypeError
+from errors import TabootTaskNotFoundException
 from os.path import isfile
 from taboot.log import *
-from errors import TabootTaskNotFoundException
 
 
 def resolve_types(ds, relative_to='taboot.tasks'):
@@ -120,12 +122,22 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
 
 
 def make_blob_copy(blob):
+    """
+    Concat the header with the given blob to edit into a temporary
+    file.
+
+    Returns a tuple of the new file name and the location to position
+    the cursor at when opening.
+    """
     if isfile(taboot.edit_header):
         header = open(taboot.edit_header).read()
+        offset = len(header.split("\n"))
+        log_info("Header file is %s lines long", offset)
     else:
         log_warn("Header file not found when launching Taboot edit mode!")
         log_warn("Expected to find: %s", taboot.edit_header)
         header = ""
+        offset = 0
 
     tmpfile = tempfile.NamedTemporaryFile(suffix=".yaml",
                                           prefix="taboot-")
@@ -133,7 +145,7 @@ def make_blob_copy(blob):
     tmpfile.write(header)
     tmpfile.write(blob)
     tmpfile.flush()
-    return tmpfile
+    return (tmpfile, offset)
 
 
 def sync_blob_copy(tmpfile):
@@ -166,3 +178,16 @@ def flatten(x):
 def print_stderr(msg):
     sys.stderr.write(msg)
     sys.stderr.flush()
+
+
+def parse_int_or_all(arg):
+    """
+    Custom ArgumentParser type which accept integers and 'all' as
+    arguments to the `concurrency` parameter.
+    """
+    value = re.match(r'^((\d+)|(all))$', arg, re.IGNORECASE)
+    if not value:
+        raise ArgumentTypeError("'" + arg + "' is not a valid value. \
+Expecting an integer or 'all'.")
+    else:
+        return value.group(1)

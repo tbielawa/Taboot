@@ -84,22 +84,22 @@ Only run preflight sections.
 
 *-L [LOGFILE]*, *--logfile [LOGFILE]*::
 
-Adds [LogOutput: \{logfile: LOGFILE}] to the script(s) being run. If
-LOGFILE is not specified then taboot-YYYY-MM-DD-HHMMSS.log will be
-used.
+Adds a LogOutput type to the script(s) being run. If __LOGFILE__ is
+not specified then taboot-YYYY-MM-DD-HHMMSS.log will be used.
 
 
 
 *-C CONCURRENCY*, *--concurrency CONCURRENCY*::
 
-Sets the concurrency for the input script(s).
+Set the concurrency for the input script(s). Give as an integer, or
+'all' for max concurrency.
 
 
 
 *-E*, *--edit*::
 
 Edit the input script(s) before running them using $EDITOR. This falls
-back to emacs and then vi. The tabootv command will choose vi
+back to emacs and then vi. The **tabootv** command will choose vi
 automatically.
 
 

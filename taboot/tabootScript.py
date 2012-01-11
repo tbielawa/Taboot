@@ -42,19 +42,21 @@ class TabootScript(YamlDoc):
     """
     Representation of a Taboot Script
     """
-    def __init__(self, yamlDoc, fileName, edited):
+    def __init__(self, yamlDoc, fileName, edited, config):
         """
         - `yamlDoc` - Dictionary representing our Taboot Script
         - `fileName` - YAML file the script in
         - `edited` - If we gave :option:`-E` on the command line
         """
         YamlDoc.__init__(self, yamlDoc)
+        self.config = config
         self.fileName = fileName
         self.edited = edited
         self.unknown_tasks = set()
         self.elements_missing = set()
         self.unmatched_globs = set()
         self.valid = True
+        self.globs_valid = True
 
     def validate_concurrency(self):
         """
@@ -80,8 +82,8 @@ class TabootScript(YamlDoc):
 
     def validate(self):
         """
-        Verify that all tasks can be located, all required elements
-        are present, and all globs can be expanded.
+        Verify that all tasks can be located, and all required
+        elements are present.
         """
         script = self.yamlDoc
         elements_required = set(["hosts", "tasks"])
@@ -101,16 +103,17 @@ class TabootScript(YamlDoc):
         except KeyError as e:
             self.valid = False
             self.elements_missing.add(e.args)
+        return self.valid
 
+    def validateGlobs(self):
         try:
-            r = Runner(self)
+            r = Runner(self, self.config)
         except func.CommonErrors.Func_Client_Exception as e:
             # Sure would be helpful if this exception told you exactly
             # WHICH names bombed... buuuuut what can you do?
             unmatched = e.value.split("\"")[1]
-            self.valid = False
             self.unmatched_globs.add(unmatched)
-        return self.valid
+            self.globs_valid = False
 
     def deletePreflight(self):
         if self.hasPreflight():
