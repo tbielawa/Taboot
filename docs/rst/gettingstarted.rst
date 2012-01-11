@@ -93,7 +93,7 @@ The FriendFrobber.com Infrastructure
 
     **MegaFrobber**: `Reach out and Frob some one!` ™
 
-You are a sysadmin for `FriendFrobber.com`, makers of the widely
+You are a sysadmin for `FriendFrobber.com`, makers of the wildly
 popular social networking service `MegaFrobber`. As such, you are
 responsible for maintaining the application servers in their
 high-availability web cluster. Part of that responsibility includes
@@ -112,7 +112,7 @@ service automatically (thanks networking!).
 
 Also living in the `FriendFrobber.com` domain is a monitoring server
 with Nagios installed. This server watches the ``wwwXX`` hosts and
-pages the sysadmin team if it notices any webserver isn't responsing
+pages the sysadmin team if it notices any webserver isn't responding
 to requests.
 
 * ``monitor.util.friendfrobber.com``
@@ -164,7 +164,8 @@ in this list.
    will match the order of definition.
 
 The ``concurrency`` element specifies how many hosts Taboot will run a
-script against at a single time.
+script against at a single time. You can specify this as an integer or
+``all`` to run against all hosts at once.
 
 The ``output`` element allows you to mix and match exactly which
 logging mechanisms to process the scripts output with.
@@ -663,7 +664,7 @@ The ``taboot`` command offers additional features not described above.
 
 .. note::
 
-   Dispite it's best attempts, the YAML library used in Taboot isn't
+   Despite it's best attempts, the YAML library used in Taboot isn't
    always 100% accurate in **describing** what or where illegal syntax
    appears in YAML parsing errors. These are not false positives, you
    just need to look around the area the error is described.
@@ -690,11 +691,16 @@ The ``taboot`` command offers additional features not described above.
    elements.
 
 
+.. option:: -o, --onlypreflight
+
+   The :option:`-o` option allows you only run ``preflight`` elements.
+
+
 .. option:: -C [CONCURRENCY], --concurrency [CONCURRENCY]
 
    Allows you to change the concurrency at run-time. Give the
    :option:`-C` option followed by the desired level of concurrency
-   (as an integer).
+   (as an integer or ``all``).
 
 
 .. seealso::
