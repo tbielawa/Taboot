@@ -52,6 +52,15 @@ Like lists, dictionaries can be represented in an abbreviated form::
     # An employee record
     {name: John Eckersberg, job: Developer, skill: Elite}
 
+.. _truthiness:
+
+You can specify a boolean value (true/false) in several forms::
+
+    ---
+    knows_oop: True
+    likes_emacs: TRUE
+    uses_cvs: false
+
 Finally, you can combine these data structures::
 
     ---
@@ -59,6 +68,7 @@ Finally, you can combine these data structures::
     name: John Eckersberg
     job: Developer
     skill: Elite
+    employed: True
     foods:
         - Apple
         - Orange

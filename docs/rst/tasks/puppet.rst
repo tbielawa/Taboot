@@ -26,9 +26,22 @@ Run
   * ``server``
 
     * Type: String
-    * Default: ""
+    * Default: As specified in ``/etc/puppet/puppet.conf``
     * Required: No (has default)
     * Description: Puppet Master to run against
+
+  * ``noop``
+
+    * Type: Boolean
+    * Default: ``False``
+    * Required: No (has default)
+    * Description: Make this a "noop", or "dry-run"
+
+
+.. note::
+    See the :ref:`YAML Basics document <truthiness>` for notes on
+    specifying boolean values.
+
 
 The ``Run`` class triggers a manual catalog run. This is equivalent to
 ``puppetd --test``. This will **not** abort the release if puppet
@@ -55,10 +68,20 @@ Example::
       tasks:
         - puppet.Run
 
+    ---
+    - hosts:
+        - www*
+      tasks:
+        - puppet.Run: {noop: true, server: puppetmaster01.util.foobar.com}
+
 
 .. versionchanged:: 0.2.11
    Absolutely will **not** abort the release if puppet returns
    non-zero.
+
+.. versionchanged:: 0.4.0
+   Added ``server`` and ``noop`` keys.
+
 
 
 SafeRun
@@ -67,12 +90,7 @@ SafeRun
 * API: :class:`taboot.tasks.puppet.SafeRun`
 * Keys
 
-  * ``server``
-
-    * Type: String
-    * Default: ""
-    * Required: No (has default)
-    * Description: Puppet Master to run against
+  * Inherited from ``puppet.Run``
 
 The ``SafeRun`` class triggers a manual catalog run. This is
 equivalent to ``puppetd --test``. This **will** abort the release if
