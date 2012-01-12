@@ -13,3 +13,4 @@ All the built-in tasks are documented here.
 .. include:: tasks/yum.rst
 .. include:: tasks/rpm.rst
 .. include:: tasks/mod_jk.rst
+.. include:: tasks/misc.rst

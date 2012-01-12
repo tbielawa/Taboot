@@ -2,12 +2,12 @@
 .\"     Title: taboot-tasks
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 01/10/2012
+.\"      Date: 01/12/2012
 .\"    Manual: Taboot
 .\"    Source: Taboot 0.4.x
 .\"  Language: English
 .\"
-.TH "TABOOT\-TASKS" "5" "01/10/2012" "Taboot 0\&.4\&.x" "Taboot"
+.TH "TABOOT\-TASKS" "5" "01/12/2012" "Taboot 0\&.4\&.x" "Taboot"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -69,7 +69,7 @@ The \fIoutput\fR block lets you choose zero or more methods to log the taboot ru
 .\}
 .SH "COMMAND"
 .sp
-The \fBCommand\fR task lets you run arbitrary commands on the remote host\&.
+The \fBCommand\fR class lets you run arbitrary commands on the remote host\&.
 .sp
 .if n \{\
 .RS 4
@@ -86,7 +86,7 @@ The \fBCommand\fR task lets you run arbitrary commands on the remote host\&.
 .\}
 .SH "SERVICE"
 .sp
-The \fBService\fR task provides an interface to the system \fIservice\fR command\&.
+The \fBService\fR class provides an interface to the system \fIservice\fR command\&.
 .sp
 .if n \{\
 .RS 4
@@ -107,7 +107,7 @@ The \fBService\fR task provides an interface to the system \fIservice\fR command
 .\}
 .SH "PUPPET"
 .sp
-The \fBPuppet\fR task provides a uniform way to interact with the puppet service\&. This includes enabling/disabling the daemon and manually forcing a catalog run\&.
+The \fBPuppet\fR class provides a uniform way to interact with the puppet service\&. This includes enabling/disabling the daemon and manually forcing a catalog run\&.
 .sp
 .if n \{\
 .RS 4
@@ -132,13 +132,15 @@ The \fBPuppet\fR task provides a uniform way to interact with the puppet service
     \- puppet\&.SafeRun
     # Do a paranoid test run with specified server
     \- puppet\&.SafeRun: {server: my\&.puppet\&.server}
+    # Do a noop (dry\-run)
+    \- puppet\&.Run: {noop: True}
 .fi
 .if n \{\
 .RE
 .\}
 .SH "NAGIOS"
 .sp
-The \fBNagios\fR task lets you handle notifications and set downtime from your Taboot scripts\&.
+The \fBNagios\fR class lets you handle notifications and set downtime from your Taboot scripts\&.
 .sp
 .if n \{\
 .RS 4
@@ -171,7 +173,7 @@ The \fBNagios\fR task lets you handle notifications and set downtime from your T
 .\}
 .SH "SLEEP"
 .sp
-The \fBSleep\fR task is used to halt further task processing for a specified period of time\&.
+The \fBSleep\fR class is used to halt further task processing for a specified period of time\&.
 .sp
 .if n \{\
 .RS 4
@@ -195,7 +197,7 @@ The \fBSleep\fR task is used to halt further task processing for a specified per
 .\}
 .SH "YUM"
 .sp
-The \fBYum\fR task lets you install, remove, and update RPMs right in your Taboot scripts\&.
+The \fBYum\fR class lets you install, remove, and update RPMs right in your Taboot scripts\&.
 .sp
 .if n \{\
 .RS 4
@@ -216,7 +218,7 @@ The \fBYum\fR task lets you install, remove, and update RPMs right in your Taboo
 .\}
 .SH "RPM"
 .sp
-The \fBRPM\fR task provides two utility actions that, when used together, report any RPMs that changed between the PreManifest and PostManifest\&.
+The \fBRPM\fR class provides two utility actions that, when used together, report any RPMs that changed between the PreManifest and PostManifest\&.
 .sp
 .if n \{\
 .RS 4
@@ -238,7 +240,7 @@ The \fBRPM\fR task provides two utility actions that, when used together, report
 .\}
 .SH "AJP"
 .sp
-The \fBAJP\fR task provides a uniform way to put nodes into and out of rotation in a mod_jk AJP balancer\&. This module is a great replacement for manually adding and removing nodes in a jkmanage management panel\&.
+The \fBAJP\fR class provides a uniform way to put nodes into and out of rotation in a mod_jk AJP balancer\&. This module is a great replacement for manually adding and removing nodes in a jkmanage management panel\&.
 .sp
 .if n \{\
 .RS 4
@@ -259,6 +261,25 @@ The \fBAJP\fR task provides a uniform way to put nodes into and out of rotation 
         proxies:
             \- proxyjava01\&.web\&.prod\&.int\&.example\&.com
             \- proxyjava02\&.web\&.prod\&.int\&.example\&.com
+.fi
+.if n \{\
+.RE
+.\}
+.SH "MISC"
+.sp
+The \fBMISC\fR class has two simple tasks in it: Noop and Echo\&. They are primarily intended for instruction and as placeholders while testing scripts or major code changes\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-\-
+\- hosts: [www0*\&.company\&.com]
+  tasks:
+    # Do nothing
+    \- misc\&.Noop
+    # Echo back the \*(Aqinput\*(Aq
+    \- misc\&.Echo: {input: "Taboot Rules!"}
 .fi
 .if n \{\
 .RE

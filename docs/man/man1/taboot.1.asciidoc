@@ -128,3 +128,5 @@ SEE ALSO
 
 
 Taboot home page: <https://fedorahosted.org/Taboot/>
+
+HTML Docs: <http://people.redhat.com/~tbielawa/taboot/docs/taboot-latest/>

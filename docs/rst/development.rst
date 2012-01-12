@@ -33,22 +33,19 @@ You can clone the repo via :program:`git` through the following command:::
    $ git clone git://git.fedorahosted.org/Taboot.git
 
 
-Style
-`````
-
 :pep:`0008` should be followed. This outlines the highlights that we
 require above and beyond. Your code must follow this (or note why it
 can't) before patches will be accepted.
 
-   * Global variables should be in ALLCAPPS
-   * attributes should be all lowercase
-   * classes should be CamelCased? ... filenames should be lowercase.
-   * functions and methods should be lowercase with spaces replaced with _'s::
+ * global variables should be in ALLCAPPS
+ * attributes should be all lowercase
+ * classes should be ``CamelCased``, filenames should be ``lowercase``.
+ * functions and methods should be lowercase with spaces replaced with _'s::
 
           def a_test_method(self):
               pass
 
-   * classes should subclass object unless it subclasses a different object::
+ * classes should subclass ``object`` unless it subclasses a different object::
 
           class Person(object):
               pass
@@ -56,36 +53,31 @@ can't) before patches will be accepted.
           class Steve(Person):
               pass
 
-   * 4 spaces per indent level
-   * max length is 79 chars.
-   * Single quotes preferred over double quotes.
-   * avoid from x import * imports unless a must use
-   * modules, functions, classes, and methods all must have docstrings - doc strings should be descriptive of what objects, functions, and methods do
-   * document any potentially confusing sections of code
-   * functions and methods should be broken down in such a way as to be easily understood and self contained
-   * use descriptive variable names, only use things like x, y, etc.. when doing integer loops and even then see if you can use more descriptive names
-   * Pull the interpreter from the environment like so:::
+ * 4 spaces per indent level
+ * max length is 79 chars.
+ * single quotes preferred over double quotes.
+ * avoid ``from x import *`` imports unless a must use
+ * modules, functions, classes, and methods all must have docstrings - doc strings should be descriptive of what objects, functions, and methods do
+ * document any potentially confusing sections of code
+ * functions and methods should be broken down in such a way as to be easily understood and self contained
+ * use descriptive variable names, only use things like x, y, etc.. when doing integer loops and even then see if you can use more descriptive names
 
-      #!/usr/bin/env python
+.. note::
+   The ``Makefile`` included in the root of the source distribution
+   includes a target called ``pep8``. Run ``make pep8`` to
+   automatically scan the ``taboot/`` subdirectory for violations.
 
-   * main should use the standard main structure like:::
-
-      if __name__ == '__main__':
-          # Code goes here
 
 
 Git
 ---
-
-Branching
-`````````
 
 The best way to develop on Taboot is to branch feature sets. For
 instance, if you were to add xml deserialization you would want to
 branch locally and work on that branch.::
 
    $  git branch
-   * master
+ * master
    $ git status
    # On branch master
    nothing to commit (working directory clean)
