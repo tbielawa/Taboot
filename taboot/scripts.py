@@ -29,6 +29,9 @@ from subprocess import call
 class Scripts(object):
     """
     A collection of TabootScripts.
+
+    The important highlights here are the public methods: ``run``,
+    ``print_scripts``, ``validate_host_globs``, and ``validate_scripts``.
     """
 
     def __init__(self, input_files, args, config):
@@ -50,10 +53,19 @@ class Scripts(object):
             self._process_input_file(infile)
             log_debug("Finished processing %s.", infile)
 
+        log_debug("Finished loading and processing input files.")
         for script in self.scripts:
             script.validate()
 
     def _process_input_file(self, infile):
+        """
+        From here you move on to:
+
+        - `_edit_input_file`
+        - `_load_all_from_yaml`
+        - `_add_taboot_script`: This is where concurrency validation
+          happens
+        """
         log_debug("Processing input_file: %s...", infile)
         try:
             if infile == '-':
@@ -78,6 +90,19 @@ Are you sure it exists?", infile)
             self._add_taboot_script(doc, infile)
 
     def _load_all_from_yaml(self, blob, infile):
+        """
+        Given a blob representing a Taboot Script (in YAML format) we
+        attempt to turn it into a native Python data structure using
+        the ``yaml.load_all`` method.
+
+        Each blob may contain multiple "logical YAML documents". Which
+        is akin to having a compendium of some book series. Separate
+        logical documents, joined together in one unit.
+
+        Returns a list representing all the logical YAML documents
+        found within the blob read into memory. If the YAML conforms
+        to Taboot syntax, this will be a list of dictionaries.
+        """
         try:
             ds = [doc for doc in yaml.load_all(blob)]
         except yaml.YAMLError, exc:
@@ -140,7 +165,7 @@ Please choose one of these options:
             else:
                 log_info("Unexpected input. Aborting.")
                 sys.exit(1)
-        log_debug("%s passed (partial) concurrency validation", infile)
+        log_debug("%s passed (partial) concurrency validation.", infile)
 
     def print_scripts(self):
         for script in self.scripts:
@@ -160,6 +185,19 @@ Please choose one of these options:
         return True
 
     def validate_host_globs(self):
+        """
+        This tells each TabootScript to expand its hostnames from
+        globs into full host names. Unlike ``validate_scripts`` we
+        tell each TabootScript to run its ``validateGlobs`` method
+        now, rather then after they've been loaded in
+        ``_process_input_files``.
+
+        This is decoupled from syntax validation because it makes
+        testing new scripts much simpler. You don't need to be on ANY
+        Func infrastructure to write and test Taboot Scripts. In this
+        way Func isn't necessary until the moment right before we go
+        to run the scripts.
+        """
         valid = True
         log_debug("Filtering for unmatched host globs...")
 
@@ -175,6 +213,12 @@ Please choose one of these options:
         return valid
 
     def validate_scripts(self):
+        """
+        After each TabootScript is processed it has its ``verify``
+        method ran. In this method we look through all of the
+        "verified" TabootScripts and check for anyone who had
+        problems.
+        """
         valid = True
         log_debug("Filtering for invalid scripts...")
         for script in filter(lambda s: not s.valid, self.scripts):
@@ -189,4 +233,5 @@ Please choose one of these options:
                 log_error("\nThe following required elements were not found:")
                 for element in script.elements_missing:
                     log_error("    - %s", element)
+        log_debug("Finished filtering invalid scripts.")
         return valid

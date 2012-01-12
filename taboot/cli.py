@@ -135,6 +135,7 @@ Taboot is released under the terms of the GPLv3+ license""")
         input_files = ['-']
 
     log_debug("Final run-time config values parsed into %s", str(config))
+    log_debug("Argparser finished with: %s", str(args))
     scripts = Scripts(input_files, args, config)
     log_debug("Scripts object created with %s YAML documents.",
               len(scripts.scripts))

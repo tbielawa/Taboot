@@ -32,7 +32,7 @@ class Runner(object):
         """
         :Parameters:
            - `script`: an instance of tabootScript
-
+           - `config`: dict of run-time configuration values
            - `expand_globs`: whether to expand the globs or just leave
              them as is.
         """
