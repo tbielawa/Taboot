@@ -103,6 +103,7 @@ Taboot is released under the terms of the GPLv3+ license""")
 
     config["onlypreflight"] = args.onlypreflight
     config["skippreflight"] = args.skippreflight
+    config["concurrency"] = args.concurrency
 
     log_debug("Setting verbosity to %s", args.verbose)
     log.LOG_LEVEL_CURRENT = args.verbose

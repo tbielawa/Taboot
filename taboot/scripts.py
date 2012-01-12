@@ -22,7 +22,7 @@ import os
 import yaml
 from tabootScript import TabootScript
 from taboot.log import *
-from errors import TabootMalformedYAMLException
+from errors import TabootMalformedYAMLException, TabootConcurrencyException
 from subprocess import call
 
 
@@ -51,18 +51,6 @@ class Scripts(object):
             log_debug("Finished processing %s.", infile)
 
         for script in self.scripts:
-            # Add/Modify Logging if -L is given
-            if self.config["addLogging"]:
-                script.addLogging(self.config["logfile"])
-
-            # Add/Modify Concurrency if -C is given
-            if self.args.concurrency:
-                script.setConcurrency(self.args.concurrency[0])
-
-            # Remove the actual preflight elements if -s is given
-            if self.args.skippreflight:
-                script.deletePreflight()
-
             script.validate()
 
     def _process_input_file(self, infile):

@@ -59,6 +59,18 @@ class TabootScript(YamlDoc):
         self.valid = True
         self.globs_valid = True
 
+        # Add/Modify Logging if -L is given
+        if self.config["addLogging"]:
+            self.addLogging(self.config["logfile"])
+
+        # Add/Modify Concurrency if -C is given
+        if self.config["concurrency"]:
+            self.setConcurrency(self.config["concurrency"][0])
+
+        # Remove the actual preflight elements if -s is given
+        if self.config["skippreflight"]:
+            self.deletePreflight()
+
     def validate_concurrency(self):
         """
         Validate that concurrent and non-concurrent tasks don't exist
@@ -74,7 +86,7 @@ class TabootScript(YamlDoc):
 
         log_debug("Concurrency validating %s...", self.fileName)
         log_debug("Concurrency: %s", self.getConcurrency())
-        if self.getConcurrency() > 1:
+        if self.getConcurrency() > 1 or self.getConcurrency() == "all":
             tasks = self.getTaskTypes()
             for task in tasks:
                 task = instantiator(task, 'taboot.tasks', host="*")
@@ -196,19 +208,16 @@ class TabootScript(YamlDoc):
         Build up a list of instances of ``task`` that appear in the
         datastructure of our YAML document. Then delete them all.
         """
-        doc = self.yamlDoc
         task = str(task).replace('taboot.tasks.', '').replace('()', '')
-        for b in doc:
-            t2r = []
-            for t in b['tasks']:
-                if ((isinstance(t, str) and t == task) \
-                        or (isinstance(t, dict) and task in t)):
-                    t2r.append(t)
-            for t in t2r:
-                b['tasks'].remove(t)
+
+        t2r = []
+        for t in self.yamlDoc['tasks']:
+            if ((isinstance(t, str) and t == task) \
+                    or (isinstance(t, dict) and task in t)):
+                t2r.append(t)
+        for t in t2r:
+            self.yamlDoc['tasks'].remove(t)
 
     def removeConcurrency(self):
-        doc = self.yamlDoc
-        for b in doc:
-            if 'concurrency' in b:
-                del b['concurrency']
+        if 'concurrency' in self.yamlDoc:
+            del self.yamlDoc['concurrency']
