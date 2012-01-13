@@ -127,8 +127,8 @@ class TaskResult(object):
         """
         :Parameters:
           - `task`: The task object represented by this result
-          - `success`: Whether the task completed successfully or not
-          - `output`: Any text output produced by the task
+          - `success`: Whether the task completed successfully or not (boolean)
+          - `output`: Any text output produced by the task (string)
         """
 
         if hasattr(task, 'host'):
@@ -136,8 +136,12 @@ class TaskResult(object):
         self._task = repr(task)
         self._taskObj = task
         self._success = success
-        self._output = output
         self._ignore_errors = ignore_errors
+
+        if isinstance(output, basestring):
+            self._output = output
+        else:
+            raise Exception("Output given to TaskResult must be a string")
 
     def _gettask(self):
         return self._task
