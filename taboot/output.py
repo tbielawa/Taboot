@@ -483,7 +483,7 @@ class HTMLOutput(_FileLikeOutputObject):
                 if re.match('info:', line):
                     self._log_fd.write("%s<br />\n" %
                                        self._c.format_string(line.strip(),
-                                                             'green'))
+                                                             'normal'))
                 elif re.match('notice:', line):
                     self._log_fd.write("%s<br />\n" %
                                        self._c.format_string(line.strip(),
@@ -491,7 +491,7 @@ class HTMLOutput(_FileLikeOutputObject):
                 elif re.match('warning:', line):
                     self._log_fd.write("%s<br />\n" %
                                        self._c.format_string(line.strip(),
-                                                             'yellow'))
+                                                             'orange'))
                 elif re.match('err:', line):
                     self._log_fd.write("%s<br />\n" %
                                        self._c.format_string(line.strip(),
@@ -499,7 +499,7 @@ class HTMLOutput(_FileLikeOutputObject):
                 else:
                     self._log_fd.write("%s<br />\n" %
                                        self._c.format_string(line.strip(),
-                                                             'normal'))
+                                                             'green'))
             self._log_fd.write("<br /><br />\n")
         elif isinstance(result, RPMTaskResult):
             # If result is an instance of RPMTaskResult,

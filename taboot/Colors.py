@@ -103,6 +103,7 @@ class HTMLColors(Colors):
         self.colors['yellow'] = '#FFFF00'
         self.colors['blue'] = '#0000FF'
         self.colors['white'] = '#FFFFFF'
+        self.colors['orange'] = '#F87217'
 
     def format_string(self, text, color, normalize=True):
         """
