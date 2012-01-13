@@ -57,7 +57,6 @@ class NagiosBase(FuncTask):
             t.success = False
         else:
             t.sucess = True
-        t.success = True
         t.output = result
         return t
 
@@ -138,7 +137,7 @@ class ScheduleDowntime(NagiosBase):
                 t.success = t.success & False
             else:
                 t.sucess = t.success & True
-            t.output = result
+        t.output = "".join(result)
         return t
 
 
@@ -165,7 +164,7 @@ class SilenceHost(NagiosBase):
                 t.success = t.success & False
             else:
                 t.sucess = t.success & True
-            t.output = result
+        t.output = "".join(result)
         return t
 
 
@@ -192,5 +191,5 @@ class UnsilenceHost(NagiosBase):
                 t.success = t.success & False
             else:
                 t.sucess = t.success & True
-            t.output = result
+        t.output = "".join(result)
         return t
