@@ -526,7 +526,7 @@ class HTMLOutput(_FileLikeOutputObject):
                 self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
                                output.strip())
             else:
-                output = cgi.escape(output)
+                output = cgi.escape(result.output)
                 self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
                                output.strip())
 
