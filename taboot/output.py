@@ -17,6 +17,7 @@
 
 from taboot.tasks.puppet import PuppetTaskResult
 from taboot.tasks.rpm import RPMTaskResult
+from taboot.util import flatten
 import re
 
 
@@ -522,11 +523,12 @@ class HTMLOutput(_FileLikeOutputObject):
         else:
             # Use standard pass/fall coloring for output
             if isinstance(result.output, types.ListType):
-                for r in result.output:
-                    self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
-                                       r.strip())
+                output = flatten(result.output)
+                self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
+                               output.strip())
             else:
                 self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
                                result.output.strip())
+
 
         self._log_fd.flush()
