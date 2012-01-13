@@ -522,7 +522,7 @@ class HTMLOutput(_FileLikeOutputObject):
         else:
             # Use standard pass/fall coloring for output
             if isinstance(result.output, types.ListType):
-                output = cgi.escape(flatten(result.output))
+                output = cgi.escape(join(flatten(result.output)))
                 self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
                                output.strip())
             else:
