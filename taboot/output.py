@@ -464,9 +464,6 @@ class HTMLOutput(_FileLikeOutputObject):
 
         name = self._fmt_hostname(result.host)
 
-        # escape any html in result.output
-        result.output = cgi.escape(result.output)
-
         if result.success:
             success_str = self._c.format_string('<b>OK</b>', 'green')
         else:
@@ -481,6 +478,7 @@ class HTMLOutput(_FileLikeOutputObject):
             # colorize the puppet output
             lines = result.output.splitlines()
             for line in lines:
+                line = cgi.escape(line)
                 if re.match('info:', line):
                     self._log_fd.write("%s<br />\n" %
                                        self._c.format_string(line.strip(),
@@ -507,6 +505,7 @@ class HTMLOutput(_FileLikeOutputObject):
             # colorize the rpm.PostManifest output
             lines = result.output.splitlines()
             for line in lines:
+                line = cgi.escape(line)
                 if line.startswith('-'):
                     self._log_fd.write("%s<br />\n" %
                                        self._c.format_string(line.strip(),
@@ -523,12 +522,13 @@ class HTMLOutput(_FileLikeOutputObject):
         else:
             # Use standard pass/fall coloring for output
             if isinstance(result.output, types.ListType):
-                output = flatten(result.output)
+                output = cgi.escape(flatten(result.output))
                 self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
                                output.strip())
             else:
+                output = cgi.escape(output)
                 self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
-                               result.output.strip())
+                               output.strip())
 
 
         self._log_fd.flush()
