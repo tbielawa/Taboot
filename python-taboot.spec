@@ -63,6 +63,7 @@ mod_jk via it's xml web api.
 %{__mv} $RPM_BUILD_ROOT%{python_sitelib}/taboot-func $RPM_BUILD_ROOT%{python_sitelib}/func/minion/modules/%{_name}
 %{__mkdir_p} %{buildroot}%{_mandir}/{man1,man5}
 %{__gzip} -c docs/man/man1/taboot.1 > %{buildroot}/%{_mandir}/man1/taboot.1.gz
+%{__ln_s} ./taboot.1.gz %{buildroot}/%{_mandir}/man1/tabootv.1.gz
 %{__gzip} -c docs/man/man5/taboot-tasks.5 > %{buildroot}/%{_mandir}/man5/taboot-tasks.5.gz
 %{__mv} share/edit-header %{buildroot}/%{_datadir}/%{_name}
 
@@ -77,6 +78,7 @@ mod_jk via it's xml web api.
 %{_datadir}/%{_name}*
 %doc docs/rst LICENSE AUTHORS README
 %doc %{_mandir}/man1/taboot.*
+%doc %{_mandir}/man1/tabootv.*
 %doc %{_mandir}/man5/taboot-tasks.*
 
 
