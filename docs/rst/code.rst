@@ -2,13 +2,13 @@ Code
 ====
 
 Taboot
---------
+------
 .. automodule:: taboot
    :members:
    :undoc-members:
 
 Taboot runner
----------------
+-------------
 .. automodule:: taboot.runner
    :members:
    :undoc-members:
@@ -16,7 +16,7 @@ Taboot runner
 .. _taboot.tasks:
 
 Taboot tasks
---------------
+------------
 .. automodule:: taboot.tasks
    :members:
 
@@ -28,6 +28,11 @@ AJP Tasks
 Command tasks
 ^^^^^^^^^^^^^
 .. automodule:: taboot.tasks.command
+   :members:
+
+Misc tasks
+^^^^^^^^^^
+.. automodule:: taboot.tasks.misc
    :members:
 
 Nagios tasks
@@ -55,7 +60,7 @@ Service tasks
 .. automodule:: taboot.tasks.service
    :members:
 
-Sleep Tasks
+Sleep tasks
 ^^^^^^^^^^^
 .. automodule:: taboot.tasks.sleep
    :members:
@@ -66,7 +71,7 @@ Yum tasks
    :members:
 
 Taboot output
----------------
+-------------
 .. automodule:: taboot.output
    :members:
    :undoc-members:
