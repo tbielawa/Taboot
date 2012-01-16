@@ -189,6 +189,7 @@ that are entirely optional.
 .. seealso::
 
    * :ref:`Taboot Tasks stdlib <tasks>`
+   * `Puppet <http://puppetlabs.com/>`_ - System Configuration Management
 
 
 Updating Just One Host (Part 1)
@@ -637,7 +638,6 @@ script finishes running. ::
 
    * :ref:`nagios` - Complete ``nagios`` task documentation
    * :ref:`puppet` - Complete ``puppet`` task documentation
-   * `Puppet <http://puppetlabs.com/>`_ - System Configuration Management
 
 
 More Command Line Features
