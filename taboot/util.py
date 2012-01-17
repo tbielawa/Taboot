@@ -132,7 +132,7 @@ def make_blob_copy(blob):
     if isfile(taboot.edit_header):
         header = open(taboot.edit_header).read()
         offset = len(header.split("\n"))
-        log_info("Header file is %s lines long", offset)
+        log_debug("Header file is %s lines long", offset)
     else:
         log_warn("Header file not found when launching Taboot edit mode!")
         log_warn("Expected to find: %s", taboot.edit_header)
