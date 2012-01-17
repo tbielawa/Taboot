@@ -4,7 +4,7 @@
 Name:           python-taboot
 %define _name   taboot
 Version:        0.3.9
-Release:        1rc1%{?dist}
+Release:        1rc2%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
 Group:          Development/Languages
@@ -88,6 +88,9 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Tue Jan 17 2012 Tim Bielawa <tbielawa@redhat.com> - 0.3.9-1rc2
+- Fix EDITOR export in tabootv script
+
 * Mon Jan 16 2012 Tim Bielawa <tbielawa@redhat.com> - 0.3.9-1rc1
 - Major release, lots of internal code refactoring
 - tbielawa@redhat.com:
