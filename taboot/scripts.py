@@ -130,12 +130,26 @@ The problem is on line %s, column %s.
         Edit the blob given
         """
         (tmpfile, offset) = taboot.util.make_blob_copy(blob)
+        cursoroffset = "+%s" % offset
+        EDITOR = os.environ.get('EDITOR', 'emacs')
+        callcmd = [EDITOR, cursoroffset]
 
         try:
-            EDITOR = os.environ.get('EDITOR', 'emacs')
-            call([EDITOR, "-nw", "+%s" % offset, tmpfile.name])
+            if EDITOR == "emacs":
+                # Do not launch in graphical mode
+                callcmd.extend(["-nw", tmpfile.name])
+            else:
+                callcmd.append(tmpfile.name)
+
+            log_debug("Launching edit mode with command line options: %s",
+                      str(callcmd))
+            call(callcmd)
         except OSError, e:
-            call(['vi', tmpfile.name])
+            callcmd.extend(tmpfile.name)
+            log_warn("Problem launching default editor, falling back to \
+vi for edit mode.")
+            log_debug("Launching edit mode with options: %s", str(callcmd))
+            call(callcmd)
 
         blob = taboot.util.sync_blob_copy(tmpfile)
         log_info("Taboot edit mode: saved changes to %s in %s",
