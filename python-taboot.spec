@@ -3,8 +3,8 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.4.0
-Release:        1beta%{?dist}
+Version:        0.3.9
+Release:        1rc3%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
 Group:          Development/Languages
@@ -88,6 +88,30 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Wed Jan 18 2012 Tim Bielawa <tbielawa@redhat.com> - 0.3.9-1rc3
+- Fix vi launching with incorrect command line parameters
+
+* Tue Jan 17 2012 Tim Bielawa <tbielawa@redhat.com> - 0.3.9-1rc2
+- Fix EDITOR export in tabootv script
+
+* Mon Jan 16 2012 Tim Bielawa <tbielawa@redhat.com> - 0.3.9-1rc1
+- Major release, lots of internal code refactoring
+- tbielawa@redhat.com:
+  Fixes #25, Should have a guide for creating new scripts
+  Fixes #26, Taboot is not DRY enough
+  Fixes #28, More verbosity for debugging & development
+  Fixes #33, Add functionality for strict ordering of hosts
+  Fixes #34, Taboot 'edit' mode should hint at the file type and give instructions
+  Fixes #35, Taboot should have a "noop" task
+  Fixes #36, Preflight not doing mega concurrency as advertised
+- jdetiber@redhat.com:
+  Fixes #38, Escape HTML Tags in HTMLOutput
+  Fixes #39, Colorize various output
+  Fixes #40, Create a tabootv wrapper to make vi default EDITOR
+  Fixes #41, Add server parameter to puppet (Safe)Run tasks
+- abutcher@redhat.com:
+  Fixes #37, Add a puppet noop task
+
 * Thu Sep 29 2011 Tim Bielawa <tbielawa@redhat.com> 0.3.2-1
 - Add Nagios (Un)SilenceHost classes (Fixes: #29) (tbielawa@redhat.com)
 - Adding WaitOnInput subclass to SleepBase class for pausing until

@@ -5,12 +5,19 @@
 Documentation for Taboot!
 =========================
 
+Taboot lets you write a script of actions (:ref:`tasks`) and execute
+it on multiple hosts, concurrently if you wish. The actions come from
+a standard library, this ensures consistency. Taboot ships with
+multiple forms of logging (:ref:`output`). A little Python is all you
+need to know if you want to expand the library with your own custom
+tasks.
+
+
 Contents:
 
 .. toctree::
    :maxdepth: 3
 
-   about
    install
    gettingstarted
    YAMLScripts
