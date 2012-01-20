@@ -3,8 +3,8 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.3.9
-Release:        1rc3%{?dist}
+Version:        0.4.0
+Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
 Group:          Development/Languages
