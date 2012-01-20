@@ -45,7 +45,7 @@ When complete:
 
 ) Mount people.redhat.com/~tbielawa/ on ~/nethome
 
-) cp $RELEASEDIR/* ~/nethome/taboot/
+) cp -vr $RELEASEDIR/* ~/nethome/taboot/
 
 ) Unmount nethome
 
