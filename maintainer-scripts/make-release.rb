@@ -64,13 +64,13 @@ class TabootBuilder < KojiBuilder
   end
 end
 
-dists = %w"el5 el6 fc14"
+dists = %w"el5 el6 fc15 fc16"
 
 builders = Array.new
 builders.push TabootBuilder.new("el5", "dist-5E-epel")
 builders.push TabootBuilder.new("el6", "dist-6E-epel")
-builders.push TabootBuilder.new("fc14", "dist-f14")
 builders.push TabootBuilder.new("fc15", "dist-f15")
+builders.push TabootBuilder.new("fc16", "f16")
 
 director = BuildDirector.new(builders)
 
