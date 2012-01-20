@@ -88,6 +88,9 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Fri Jan 20 2012 Tim Bielawa <tbielawa@redhat.com> 0.4.0-1
+- Taboot 0.4.0, the "Farewell, Friend" release
+
 * Wed Jan 18 2012 Tim Bielawa <tbielawa@redhat.com> - 0.3.9-1rc3
 - Fix vi launching with incorrect command line parameters
 
