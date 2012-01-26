@@ -235,12 +235,7 @@ class CLIOutput(_FileLikeOutputObject):
                         line.strip(), 'normal'))
         else:
             # Use standard pass/fall coloring for output
-            if isinstance(result.output, types.ListType):
-                for r in result.output:
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                            r.strip(), output_color))
-            else:
-                self._sys.stdout.write("%s\n" % self._c.format_string(
+            self._sys.stdout.write("%s\n" % self._c.format_string(
                         result.output.strip(), output_color))
 
 
@@ -282,11 +277,7 @@ class LogOutput(_FileLikeOutputObject):
         self._log_fd.write("%s:\n%s Finished Task[%s]: %s\n" % (
             result.host, self.timestamp, result.task, success_str))
 
-        if isinstance(result.output, types.ListType):
-            for r in result.output:
-                self._log_fd.write("%s\n\n" % r.strip())
-        else:
-            self._log_fd.write("%s\n\n" % result.output.strip())
+        self._log_fd.write("%s\n\n" % result.output.strip())
 
 
 class EmailOutput(_FileLikeOutputObject):
@@ -464,7 +455,7 @@ class HTMLOutput(_FileLikeOutputObject):
         name = self._fmt_hostname(result.host)
 
         # escape any html in result.output
-        result.output = cgi.escape(result.output)
+        output = cgi.escape(result.output)
 
         if result.success:
             success_str = self._c.format_string('<b>OK</b>', 'green')
@@ -478,7 +469,7 @@ class HTMLOutput(_FileLikeOutputObject):
         if isinstance(result, PuppetTaskResult):
             # If result is an instance of PuppetTaskResult,
             # colorize the puppet output
-            lines = result.output.splitlines()
+            lines = output.splitlines()
             for line in lines:
                 if re.match('info:', line):
                     self._log_fd.write("%s<br />\n" %
@@ -504,7 +495,7 @@ class HTMLOutput(_FileLikeOutputObject):
         elif isinstance(result, RPMTaskResult):
             # If result is an instance of RPMTaskResult,
             # colorize the rpm.PostManifest output
-            lines = result.output.splitlines()
+            lines = output.splitlines()
             for line in lines:
                 if line.startswith('-'):
                     self._log_fd.write("%s<br />\n" %
@@ -521,12 +512,7 @@ class HTMLOutput(_FileLikeOutputObject):
             self._log_fd.write("<br /><br />\n")
         else:
             # Use standard pass/fall coloring for output
-            if isinstance(result.output, types.ListType):
-                for r in result.output:
-                    self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
-                                       r.strip())
-            else:
-                self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
-                               result.output.strip())
+            self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
+                               output.strip())
 
         self._log_fd.flush()
