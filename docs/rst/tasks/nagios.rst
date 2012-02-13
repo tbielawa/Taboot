@@ -21,8 +21,8 @@ from your Taboot scripts.
    authentication to a pure Func backend. Significant changes include:
 
    * Previously this task specified the ``nagios_url`` key as a URL,
-     it should now be given as the hostname of the Nagios server. This
-     To facilitate transitions we automatically correct URLs into
+     it should now be given as the hostname of the Nagios server. To
+     facilitate transitions we automatically correct URLs into
      hostnames. In the future the name of this key may change.
 
    * Previously the ``service`` key was defined as a scalar, like "HTTP"
