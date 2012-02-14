@@ -1,5 +1,5 @@
-AJP
-^^^
+mod_jk
+^^^^^^
 
 * API: :class:`taboot.tasks.mod_jk`
 * Classes
@@ -7,8 +7,8 @@ AJP
   * InRotation
   * OutOfRotation
 
-The ``AJP`` module provides a uniform way to put nodes into and out of
-rotation in a `mod_jk` AJP balancer. This module is a great
+The ``mod_jk`` module provides a uniform way to put nodes into and out
+of rotation in a `mod_jk` AJP balancer. This module is a great
 replacement for manually adding and removing nodes in a `jkmanage`
 management panel.
 

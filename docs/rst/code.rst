@@ -20,11 +20,6 @@ Taboot tasks
 .. automodule:: taboot.tasks
    :members:
 
-AJP Tasks
-^^^^^^^^^
-.. automodule:: taboot.tasks.mod_jk
-   :members:
-
 Command tasks
 ^^^^^^^^^^^^^
 .. automodule:: taboot.tasks.command
@@ -35,19 +30,24 @@ Misc tasks
 .. automodule:: taboot.tasks.misc
    :members:
 
+mod_jk Tasks
+^^^^^^^^^^^^
+.. automodule:: taboot.tasks.mod_jk
+   :members:
+
 Nagios tasks
 ^^^^^^^^^^^^
 .. automodule:: taboot.tasks.nagios
    :members:
 
-Polling tasks
-^^^^^^^^^^^^^
-.. automodule:: taboot.tasks.poller
-   :members:
-
 Puppet tasks
 ^^^^^^^^^^^^
 .. automodule:: taboot.tasks.puppet
+   :members:
+
+Polling tasks
+^^^^^^^^^^^^^
+.. automodule:: taboot.tasks.poller
    :members:
 
 RPM tasks
