@@ -89,13 +89,19 @@ pep8:
 	@echo "#############################################"
 	pep8 taboot/
 
-clean:
+cleanpy:
 	find . -type f -name "*.pyc" -delete
 	find . -type f -name "*.pyo" -delete
+
+cleanbackup:
 	find . -type f -name "*~" -delete
-	find ./docs/ -type f -name "*.xml" -delete
 	find . -type f -name "#*" -delete
+
+cleandocs:
+	find ./docs/ -type f -name "*.xml" -delete
 	rm -fR docs/.doctrees docs/html dist build ./rpm-build
+
+clean: cleanbackup cleanpy cleandocs
 
 .PHONEY: docs manual htmldoc clean version release sdist
 vpath %.asciidoc docs/man/man1 docs/man/man5
