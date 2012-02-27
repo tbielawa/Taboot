@@ -17,6 +17,7 @@
 
 from taboot.tasks import command, TaskResult
 import puppet
+import re
 
 
 class PuppetBase(command.Run):
@@ -106,3 +107,46 @@ class PuppetTaskResult(TaskResult):
     def __init__(self, task, success=False, output='', ignore_errors=False):
         super(PuppetTaskResult, self).__init__(task, success, output,
                                                ignore_errors)
+        self._formatters["HTMLOutput"] = PuppetHTMLOutputFormatter
+        self._formatters["CLIOutput"] = PuppetCLIOutputFormatter
+
+
+class PuppetHTMLOutputFormatter(object):
+    def __init__(self, output, colorizer):
+        self._output = output
+        self._c = colorizer
+
+    def _format_lines(self):
+        for line in self._output.splitlines():
+            if re.match('info:', line):
+                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'normal')
+            elif re.match('notice:', line):
+                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'blue')
+            elif re.match('warning:', line):
+                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'orange')
+            elif re.match('err:', line):
+                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'red')
+            else:
+                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'green')
+            yield(htmloutput)
+        yield("<br /><br />\n")
+
+
+class PuppetCLIOutputFormatter(object):
+    def __init__(self, output, colorizer):
+        self._output = output
+        self._c = colorizer
+
+    def _format_lines(self):
+        for line in self._output.splitlines():
+            if re.match('info:', line):
+                clioutput = "%s\n" % self._c.format_string(line.strip(), 'green')
+            elif re.match('notice:', line):
+                clioutput = "%s\n" % self._c.format_string(line.strip(), 'blue')
+            elif re.match('warning:', line):
+                clioutput = "%s\n" % self._c.format_string(line.strip(), 'yellow')
+            elif re.match('err:', line):
+                clioutput = "%s\n" % self._c.format_string(line.strip(), 'red')
+            else:
+                clioutput = "%s\n" % self._c.format_string(line.strip(), 'normal')
+            yield(clioutput)

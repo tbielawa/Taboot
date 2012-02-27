@@ -179,7 +179,7 @@ class CLIOutput(_FileLikeOutputObject):
         self._sys.stdout.write('%s Starting Task[%s]\n' % (
             self.timestamp, self._c.format_string(task, 'white')))
 
-    def _write(self, result):
+    def _write_result_header(self, result):
         """
         Implementation of writing to the CLI.
 
@@ -199,44 +199,13 @@ class CLIOutput(_FileLikeOutputObject):
             self.timestamp, self._c.format_string(
                 result.task, output_color)))
 
-        if isinstance(result, PuppetTaskResult):
-            # If result is an instance of PuppetTaskResult,
-            # colorize the puppet output
-            lines = result.output.splitlines()
-            for line in lines:
-                if re.match('info:', line):
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                        line.strip(), 'green'))
-                elif re.match('notice:', line):
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                        line.strip(), 'blue'))
-                elif re.match('warning:', line):
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                        line.strip(), 'yellow'))
-                elif re.match('err:', line):
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                        line.strip(), 'red'))
-                else:
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                        line.strip(), 'normal'))
-        elif isinstance(result, RPMTaskResult):
-            # If result is an instance of RPMTaskResult,
-            # colorize the rpm.PostManifest output
-            lines = result.output.splitlines()
-            for line in lines:
-                if line.startswith('-'):
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                        line.strip(), 'red'))
-                elif line.startswith('+'):
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                        line.strip(), 'green'))
-                else:
-                    self._sys.stdout.write("%s\n" % self._c.format_string(
-                        line.strip(), 'normal'))
-        else:
-            # Use standard pass/fall coloring for output
-            self._sys.stdout.write("%s\n" % self._c.format_string(
-                        result.output.strip(), output_color))
+    def _write(self, result):
+        self._write_result_header(result)
+
+        for line in result.format_lines(self.__class__.__name__, self._c):
+            self._sys.stdout.write(line)
+
+        self._sys.stdout.flush()
 
 
 class LogOutput(_FileLikeOutputObject):
@@ -440,7 +409,7 @@ class HTMLOutput(_FileLikeOutputObject):
         """
         return "<b>%s</b>" % self._c.format_string(n, 'blue')
 
-    def _write(self, result):
+    def _write_result_header(self, result):
         """
         Write a tasks `result` out to HTML. Handles enhanced stylizing
         for task results that support such as:
@@ -466,53 +435,12 @@ class HTMLOutput(_FileLikeOutputObject):
                                "Finished Task[%s]: %s</tt></p>\n" %
                            (name, self.timestamp, result.task, success_str))
 
-        if isinstance(result, PuppetTaskResult):
-            # If result is an instance of PuppetTaskResult,
-            # colorize the puppet output
-            lines = output.splitlines()
-            for line in lines:
-                if re.match('info:', line):
-                    self._log_fd.write("%s<br />\n" %
-                                       self._c.format_string(line.strip(),
-                                                             'normal'))
-                elif re.match('notice:', line):
-                    self._log_fd.write("%s<br />\n" %
-                                       self._c.format_string(line.strip(),
-                                                             'blue'))
-                elif re.match('warning:', line):
-                    self._log_fd.write("%s<br />\n" %
-                                       self._c.format_string(line.strip(),
-                                                             'orange'))
-                elif re.match('err:', line):
-                    self._log_fd.write("%s<br />\n" %
-                                       self._c.format_string(line.strip(),
-                                                             'red'))
-                else:
-                    self._log_fd.write("%s<br />\n" %
-                                       self._c.format_string(line.strip(),
-                                                             'green'))
-            self._log_fd.write("<br /><br />\n")
-        elif isinstance(result, RPMTaskResult):
-            # If result is an instance of RPMTaskResult,
-            # colorize the rpm.PostManifest output
-            lines = output.splitlines()
-            for line in lines:
-                if line.startswith('-'):
-                    self._log_fd.write("%s<br />\n" %
-                                       self._c.format_string(line.strip(),
-                                                             'red'))
-                elif line.startswith('+'):
-                    self._log_fd.write("%s<br />\n" %
-                                       self._c.format_string(line.strip(),
-                                                             'green'))
-                else:
-                    self._log_fd.write("%s<br />\n" %
-                                       self._c.format_string(line.strip(),
-                                                             'normal'))
-            self._log_fd.write("<br /><br />\n")
-        else:
-            # Use standard pass/fall coloring for output
-            self._log_fd.write("<pre>%s</pre>\n<br /><br />\n" %
-                               output.strip())
+        self._log_fd.flush()
+
+    def _write(self, result):
+        self._write_result_header(result)
+
+        for line in result.format_lines(self.__class__.__name__, self._c):
+            self._log_fd.write(line)
 
         self._log_fd.flush()

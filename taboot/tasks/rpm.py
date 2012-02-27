@@ -99,3 +99,37 @@ class RPMTaskResult(TaskResult):
     def __init__(self, task, success=False, output='', ignore_errors=False):
         super(RPMTaskResult, self).__init__(task, success, output,
                                                ignore_errors)
+#        self.formatters["HTMLOutput"] = new RPMHTMLOutputFormatter()
+
+
+# class RPMHTMLOutputFormatter(HTMLOutput):
+#     def format(self):
+#         lines = output.splitlines()
+#         for line in lines:
+#             if line.startswith('-'):
+#                 self._log_fd.write("%s<br />\n" %
+#                                    self._c.format_string(line.strip(),
+#                                                          'red'))
+#             elif line.startswith('+'):
+#                 self._log_fd.write("%s<br />\n" %
+#                                    self._c.format_string(line.strip(),
+#                                                          'green'))
+#             else:
+#                 self._log_fd.write("%s<br />\n" %
+#                                    self._c.format_string(line.strip(),
+#                                                          'normal'))
+#         self._log_fd.write("<br /><br />\n")
+
+
+# class RPMCLIOutputFormatter(object):
+#             lines = result.output.splitlines()
+#             for line in lines:
+#                 if line.startswith('-'):
+#                     self._sys.stdout.write("%s\n" % self._c.format_string(
+#                         line.strip(), 'red'))
+#                 elif line.startswith('+'):
+#                     self._sys.stdout.write("%s\n" % self._c.format_string(
+#                         line.strip(), 'green'))
+#                 else:
+#                     self._sys.stdout.write("%s\n" % self._c.format_string(
+#                         line.strip(), 'normal'))

@@ -137,6 +137,7 @@ class TaskResult(object):
         self._taskObj = task
         self._success = success
         self._ignore_errors = ignore_errors
+        self._formatters = {}
 
         if isinstance(output, basestring):
             self._output = output
@@ -172,6 +173,34 @@ class TaskResult(object):
 
     def _gethost(self):
         return self._host
+
+    def format_lines(self, target, colorizer):
+        """
+        This is the default formatter. Therefore it does not respect
+        target or utilize the colorizer.
+        """
+        if target in self._formatters:
+            fmtr = self._formatters[target](self.output, colorizer)
+            for l in fmtr._format_lines():
+                yield(l)
+        else:
+            # These are the default formatters. They should probably
+            # be broken down into a separate file. it looks bad here.
+            if target == "HTMLOutput":
+                for line in self.output.splitlines():
+                    yield("<pre>%s</pre>\n<br /><br />\n" % line.strip())
+            elif target == "CLIOutput":
+                output_color = 'red'
+                if self.success:
+                    output_color = 'green'
+
+                for line in self.output.splitlines():
+                    yield("%s\n" % colorizer.format_string(
+                            line.strip(), output_color))
+            else:
+                # Default, just return a stripped string.
+                for line in self.output.splitlines():
+                    yield("%s\n" % line.strip)
 
     task = property(_gettask, _settask)
     success = property(_getsuccess, _setsuccess)
