@@ -1,0 +1,10 @@
+---
+- hosts: [deepfryer]
+  tasks:
+    - poller.PollTask:
+        sleep_interval: 5
+        max_attempts: 5
+        task:
+          command.Run: {command: /bin/false}
+        fail_task:
+          command.Run: {command: echo "That task didn't succeed."}

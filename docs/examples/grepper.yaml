@@ -1,0 +1,6 @@
+---
+- hosts: [deepfryer]
+  tasks:
+    - sleep.FindInFile:
+        search_path: "/root/ohhider"
+        search_string: "Starting"
