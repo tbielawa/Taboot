@@ -114,6 +114,13 @@ class FindInFile(poller.PollTask):
                  sleep_interval=int(15), max_attempts=int(4),
                  ignore_case=True, egrep=False,
                  **kwargs):
+        log_debug("About to call the super to FindInFile")
+        import pdb; pdb.set_trace()
+
+        super(FindInFile, self).__init__({"task": None},
+                                         sleep_interval=sleep_interval,
+                                         max_attempts=max_attempts,
+                                         **kwargs)
         # This will become a datastructure representing a command.Run
         # task that calls out to grep on the target host.
         self._search_paths = []
@@ -126,23 +133,14 @@ class FindInFile(poller.PollTask):
 
         if ignore_case:
             self._add_grep_option('i')
-
         if egrep:
             self._add_grep_option('E')
 
         task_command = self._task_command()
         task['command.Run'] = task_command
         
-        self._sleep_interval = sleep_interval
-        self._max_attempts = max_attempts
-        print kwargs
-        #kwargs['sleep_interval'] = sleep_interval
-        #kwargs['max_attempts
-        log_debug("About to call the super to FindInFile")
-        super(FindInFile, self).__init__(task,
-                                         sleep_interval=sleep_interval,
-                                         max_attempts=max_attempts,
-                                         **kwargs)
+        self._task = {"task": task}
+        log_debug("The task you're trying to save is: %s", str(self._task))
         
     def _add_grep_option(self, option):
         """Adds another item to the grep options"""

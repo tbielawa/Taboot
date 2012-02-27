@@ -259,7 +259,7 @@ class TaskRunner(threading.Thread):
 
         ignore_errors = False
         if 'ignore_errors' in task:
-            if task['ignore_errors'] in ('True', 'true', 1):
+            if task['ignore_errors'] in ('True', 'true', 1, True):
                 ignore_errors = True
 
         task = instantiator(task, 'taboot.tasks', host=self._host)

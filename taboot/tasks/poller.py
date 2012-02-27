@@ -38,8 +38,9 @@ class PollTask(BaseTask):
 
     def __init__(self, task, sleep_interval=5, max_attempts=6,
                  fail_task=None, **kwargs):
-        from log import *
         super(PollTask, self).__init__(**kwargs)
+        from log import *
+        import pdb; pdb.set_trace()
         log_debug("Poller setting self._task with %s", str(task))
         self._task = task
         self._sleep_interval = sleep_interval

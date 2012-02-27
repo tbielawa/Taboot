@@ -106,6 +106,8 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
         instance_type = str2type(type_blob)
     else:
         if len(type_blob.keys()) != 1:
+            log_debug("Type blob: %s", type_blob)
+            log_debug("Would be... attempting to update 'kwargs' with %s", str(type_blob[type_blob.keys()[0]]))
             raise Exception("Number of keys isn't 1")
         instance_type = str2type(type_blob.keys()[0])
         log_debug("Attempting to update 'kwargs' with %s", str(type_blob[type_blob.keys()[0]]))
