@@ -52,3 +52,15 @@ class Restart(command.Run):
 
     def __init__(self, service, **kwargs):
         super(Restart, self).__init__('service %s restart' % service, **kwargs)
+
+
+class Graceful(command.Run):
+    """
+    Gracefully restart a service.
+
+    Arguments:
+      - ``service`` - The service to gracefully restart.
+    """
+
+    def __init__(self, service, **kwargs):
+        super(Graceful, self).__init__('service %s graceful' % service, **kwargs)
