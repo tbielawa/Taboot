@@ -119,15 +119,20 @@ class PuppetHTMLOutputFormatter(object):
     def _format_lines(self):
         for line in self._output.splitlines():
             if re.match('info:', line):
-                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'normal')
+                htmloutput = "%s<br />\n" %
+                self._c.format_string(line.strip(), 'normal')
             elif re.match('notice:', line):
-                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'blue')
+                htmloutput = "%s<br />\n" %
+                self._c.format_string(line.strip(), 'blue')
             elif re.match('warning:', line):
-                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'orange')
+                htmloutput = "%s<br />\n" %
+                self._c.format_string(line.strip(), 'orange')
             elif re.match('err:', line):
-                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'red')
+                htmloutput = "%s<br />\n" %
+                self._c.format_string(line.strip(), 'red')
             else:
-                htmloutput = "%s<br />\n" % self._c.format_string(line.strip(), 'green')
+                htmloutput = "%s<br />\n" %
+                self._c.format_string(line.strip(), 'green')
             yield(htmloutput)
         yield("<br /><br />\n")
 
@@ -157,5 +162,3 @@ class PuppetCLIOutputFormatter(object):
             clioutput = "%s\n" % self._c.format_string(line.strip(),
                                                        output_color)
             yield(clioutput)
-
-

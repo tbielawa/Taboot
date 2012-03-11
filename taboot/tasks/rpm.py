@@ -72,7 +72,8 @@ class PostManifest(RPMBase):
             pre_manifest = runner['rpm.PreManifest']
         except:
             return TaskResult(self, success=False,
-                              output="You must use PreManifest before PostManifest")
+                              output="You must use PreManifest\
+before PostManifest")
 
         # ok, so now we have something to compare against so we get
         # new state...
