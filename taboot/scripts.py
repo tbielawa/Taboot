@@ -76,7 +76,7 @@ class Scripts(object):
                 if self.args.edit:
                     log_debug("Opening %s for editing...", infile)
                     blob = self._edit_input_file(blob, infile)
-        except IOError, e:
+        except IOError:
             log_error("Failed to read input file '%s'. \
 Are you sure it exists?", infile)
             sys.exit(1)
@@ -144,7 +144,7 @@ The problem is on line %s, column %s.
             log_debug("Launching edit mode with command line options: %s",
                       str(callcmd))
             call(callcmd)
-        except OSError, e:
+        except OSError:
             callcmd.extend(tmpfile.name)
             log_warn("Problem launching default editor, falling back to \
 vi for edit mode.")

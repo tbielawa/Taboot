@@ -142,6 +142,6 @@ class RPMCLIOutputFormatter(object):
     def _format_lines(self):
         for line in self._output.splitlines():
             output_color = self._find_color(line)
-            cliputpt = "%s\n" % self._c.format_string(line.strip(),
+            clioutput = "%s\n" % self._c.format_string(line.strip(),
                                                       output_color)
             yield(clioutput)

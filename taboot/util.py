@@ -112,7 +112,7 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
 
     try:
         return instance_type(**kwargs)
-    except TypeError, e:
+    except TypeError:
         import pprint
         log_error("Unable to instantiate %s with the following arguments:",
                   instance_type)

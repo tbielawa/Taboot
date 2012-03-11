@@ -33,7 +33,7 @@ class EmailOutput(taboot.output._FileLikeOutputObject):
         """
         try:
             import cStringIO as StringIO
-        except ImportError, ie:
+        except ImportError:
             import StringIO
         self._to_addr = to_addr
         self._from_addr = from_addr

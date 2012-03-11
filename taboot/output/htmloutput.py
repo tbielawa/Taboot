@@ -127,12 +127,8 @@ class HTMLOutput(taboot.output._FileLikeOutputObject):
         """
         import types
         import sys
-        import cgi
 
         name = self._fmt_hostname(result.host)
-
-        # escape any html in result.output
-        output = cgi.escape(result.output)
 
         if result.success:
             success_str = self._c.format_string('<b>OK</b>', 'green')
@@ -146,9 +142,13 @@ class HTMLOutput(taboot.output._FileLikeOutputObject):
         self._log_fd.flush()
 
     def _write(self, result):
+        import cgi
+
         self._write_result_header(result)
 
         for line in result.format_lines(self.__class__.__name__, self._c):
-            self._log_fd.write(line)
+            # escape any html in result.output
+            output = cgi.escape(line)
+            self._log_fd.write(output)
 
         self._log_fd.flush()

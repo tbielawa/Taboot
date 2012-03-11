@@ -91,7 +91,7 @@ class Runner(object):
             pass
 
         if not self._config["onlypreflight"]:
-            ready = raw_input(rdy_msg)
+            raw_input(rdy_msg)
 
         if self._fail_event.isSet():
             return False

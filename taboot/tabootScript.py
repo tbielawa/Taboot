@@ -125,7 +125,7 @@ class TabootScript(YamlDoc):
 
     def validateGlobs(self):
         try:
-            r = Runner(self, self.config)
+            Runner(self, self.config)
         except func.CommonErrors.Func_Client_Exception as e:
             # Sure would be helpful if this exception told you exactly
             # WHICH names bombed... buuuuut what can you do?
