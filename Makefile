@@ -89,6 +89,12 @@ pep8:
 	@echo "#############################################"
 	pep8 taboot/
 
+pep8:
+	@echo "#############################################"
+	@echo "# Running PYFlakes Compliance Tests"
+	@echo "#############################################"
+	pyflakes taboot/
+
 clean:
 	find . -type f -name "*.pyc" -delete
 	find . -type f -name "*.pyo" -delete
