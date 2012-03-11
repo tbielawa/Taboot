@@ -72,7 +72,7 @@ class PostManifest(RPMBase):
             pre_manifest = runner['rpm.PreManifest']
         except:
             return TaskResult(self, success=False,
-                   output="You must use PreManifest before PostManifest")
+                              output="You must use PreManifest before PostManifest")
 
         # ok, so now we have something to compare against so we get
         # new state...
@@ -88,7 +88,7 @@ class PostManifest(RPMBase):
         result.output = ''.join(diff_output)
 
         return RPMTaskResult(result.taskObj, result.success,
-                                     result.output, result.ignore_errors)
+                             result.output, result.ignore_errors)
 
 
 class RPMTaskResult(TaskResult):
@@ -98,7 +98,8 @@ class RPMTaskResult(TaskResult):
 
     def __init__(self, task, success=False, output='', ignore_errors=False):
         super(RPMTaskResult, self).__init__(task, success, output,
-                                               ignore_errors)
+                                            ignore_errors)
+        self._formatters["CLIOutput"] = RPMCLIOutputFormatter
 #        self.formatters["HTMLOutput"] = new RPMHTMLOutputFormatter()
 
 
@@ -121,15 +122,25 @@ class RPMTaskResult(TaskResult):
 #         self._log_fd.write("<br /><br />\n")
 
 
-# class RPMCLIOutputFormatter(object):
-#             lines = result.output.splitlines()
-#             for line in lines:
-#                 if line.startswith('-'):
-#                     self._sys.stdout.write("%s\n" % self._c.format_string(
-#                         line.strip(), 'red'))
-#                 elif line.startswith('+'):
-#                     self._sys.stdout.write("%s\n" % self._c.format_string(
-#                         line.strip(), 'green'))
-#                 else:
-#                     self._sys.stdout.write("%s\n" % self._c.format_string(
-#                         line.strip(), 'normal'))
+class RPMCLIOutputFormatter(object):
+    def __init__(self, output, colorizer):
+        self._output = output
+        self._c = colorizer
+        self._log_colors = {
+            '-': 'red',
+            '+': 'green'
+            }
+
+    def _find_color(self, line):
+        for symbol, color in self._log_colors:
+            if line.startswith(symbol):
+                return color
+        # Didn't add or remove an RPM
+        return 'normal'
+
+    def _format_lines(self):
+        for line in self._output.splitlines():
+            output_color = self._find_color(line)
+            cliputpt = "%s\n" % self._c.format_string(line.strip(),
+                                                      output_color)
+            yield(clioutput)

@@ -136,17 +136,26 @@ class PuppetCLIOutputFormatter(object):
     def __init__(self, output, colorizer):
         self._output = output
         self._c = colorizer
+        # The log level is matched by regexp
+        self._log_colors = {
+            r'^info:': 'green',
+            r'^notice:': 'blue',
+            r'^warning:': 'yellow',
+            r'^err:': 'red'
+            }
+
+    def _find_color(self, line):
+        for level, color in self._log_colors:
+            if re.match(level, line):
+                return color
+        # Log line doesn't match anything in table
+        return 'normal'
 
     def _format_lines(self):
         for line in self._output.splitlines():
-            if re.match('info:', line):
-                clioutput = "%s\n" % self._c.format_string(line.strip(), 'green')
-            elif re.match('notice:', line):
-                clioutput = "%s\n" % self._c.format_string(line.strip(), 'blue')
-            elif re.match('warning:', line):
-                clioutput = "%s\n" % self._c.format_string(line.strip(), 'yellow')
-            elif re.match('err:', line):
-                clioutput = "%s\n" % self._c.format_string(line.strip(), 'red')
-            else:
-                clioutput = "%s\n" % self._c.format_string(line.strip(), 'normal')
+            output_color = self._find_color(line)
+            clioutput = "%s\n" % self._c.format_string(line.strip(),
+                                                       output_color)
             yield(clioutput)
+
+

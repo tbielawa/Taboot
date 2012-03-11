@@ -178,8 +178,14 @@ class TaskResult(object):
         """
         This is the default formatter. Therefore it does not respect
         target or utilize the colorizer.
+
+        Parameters:
+        * ``target`` - The type of output, like HTMLOutput, or CLIOutput
+        * ``colorizer`` - Colorized specific to this output type
         """
+        # Target is something 
         if target in self._formatters:
+            # Initialize the 
             fmtr = self._formatters[target](self.output, colorizer)
             for l in fmtr._format_lines():
                 yield(l)
