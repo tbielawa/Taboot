@@ -15,10 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from taboot.tasks.puppet import PuppetTaskResult
-from taboot.tasks.rpm import RPMTaskResult
-import re
-
 
 class _FileLikeOutputObject(object):
     """

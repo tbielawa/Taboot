@@ -46,7 +46,6 @@ class LogOutput(taboot.output._FileLikeOutputObject):
         :Parameters:
            - `result`: result object to inspect and write
         """
-        import types
 
         if result.success:
             success_str = 'OK'

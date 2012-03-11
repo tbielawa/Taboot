@@ -48,7 +48,6 @@ class CLIOutput(taboot.output._FileLikeOutputObject):
         :Parameters:
            - `result`: result object to inspect and write
         """
-        import types
 
         # Set output color
         output_color = 'red'

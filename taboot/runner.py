@@ -26,7 +26,6 @@ class Runner(object):
     """
 
     import threading
-    import taboot.output
 
     def __init__(self, script, config, expand_globs=True):
         """

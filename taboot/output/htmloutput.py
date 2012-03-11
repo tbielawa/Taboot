@@ -125,8 +125,6 @@ class HTMLOutput(taboot.output._FileLikeOutputObject):
         - :py:mod:`taboot.tasks.puppet.PuppetTaskResult`
         - :py:mod:`taboot.tasks.rpm.RPMTaskResult`
         """
-        import types
-        import sys
 
         name = self._fmt_hostname(result.host)
 

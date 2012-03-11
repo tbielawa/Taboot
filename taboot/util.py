@@ -19,7 +19,7 @@ import re
 import taboot
 import sys
 import tempfile
-from argparse import ArgumentParser, ArgumentTypeError
+from argparse import ArgumentTypeError
 from errors import TabootTaskNotFoundException
 from os.path import isfile
 from taboot.log import *

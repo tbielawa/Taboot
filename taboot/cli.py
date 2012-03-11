@@ -17,12 +17,8 @@
 
 import argparse
 import datetime
-import os
 import re
 import sys
-import taboot
-import taboot.runner
-import yaml
 from taboot import __version__
 from taboot import log
 from taboot.log import *
