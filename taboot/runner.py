@@ -30,7 +30,7 @@ class Runner(object):
     def __init__(self, script, config, expand_globs=True):
         """
         :Parameters:
-           - `script`: an instance of tabootScript
+           - `script`: an instance of TabootScript
            - `config`: dict of run-time configuration values
            - `expand_globs`: whether to expand the globs or just leave
              them as is.

@@ -20,7 +20,7 @@ import taboot.runner
 import sys
 import os
 import yaml
-from tabootScript import TabootScript
+from tabootscript import TabootScript
 from taboot.log import *
 from errors import TabootMalformedYAMLException, TabootConcurrencyException
 from subprocess import call
