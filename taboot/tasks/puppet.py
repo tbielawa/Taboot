@@ -113,7 +113,8 @@ class PuppetTaskResult(TaskResult):
 
 class PuppetHTMLOutputFormatter(object):
     def __init__(self, output, colorizer):
-        self._output = output
+        import cgi
+        self._output = cgi.escape(output)
         self._c = colorizer
 
     def _format_lines(self):
@@ -150,7 +151,7 @@ class PuppetCLIOutputFormatter(object):
             }
 
     def _find_color(self, line):
-        for level, color in self._log_colors:
+        for level, color in self._log_colors.iteritems():
             if re.match(level, line):
                 return color
         # Log line doesn't match anything in table

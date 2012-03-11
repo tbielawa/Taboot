@@ -23,6 +23,7 @@ from argparse import ArgumentTypeError
 from errors import TabootTaskNotFoundException
 from os.path import isfile
 from taboot.log import *
+from types import ModuleType, ClassType
 
 
 def resolve_types(ds, relative_to='taboot.tasks'):
@@ -84,6 +85,8 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
 
     Returns the instantiated object.
     """
+    from taboot.log import log_debug
+    log_debug("Relative to %s, importing type_blob: %s", relative_to, type_blob)
 
     __import__(relative_to)
 
@@ -91,11 +94,27 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
         import sys
         tokens = s.split('.')
         if len(tokens) == 1:
-            return getattr(sys.modules[relative_to], tokens[0])
+            try:
+                # We can't return 'module' objects from this, so make
+                # sure we aren't attempting to.
+                task = getattr(sys.modules[relative_to], tokens[0])
+                if isinstance(task, ModuleType):
+                    raise AttributeError
+                elif isinstance(task, ClassType):
+                    return task
+            except AttributeError:
+                # We may actually need to importing part of a
+                # subpackage first. If so getattr would have bombed.
+                import_try = relative_to + '.' + tokens[0]
+                taboot.log.log_debug("Trying to import %s", import_try)
+                __import__(import_try)
+                return getattr(sys.modules[import_try], tokens[0])
+
         else:
             pkg = "%s.%s" % (relative_to, tokens[0])
             try:
                 __import__(pkg)
+                taboot.log.log_debug("str2type importing %s", pkg)
                 task = getattr(sys.modules[pkg], tokens[1])
             except (AttributeError, ImportError):
                 missing_task = ".".join([pkg, tokens[1]])
@@ -104,6 +123,7 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
 
     if isinstance(type_blob, basestring):
         instance_type = str2type(type_blob)
+        log_debug("Instantiated type_blob (%s) into %s", type_blob, instance_type)
     else:
         if len(type_blob.keys()) != 1:
             raise Exception("Number of keys isn't 1")
@@ -114,10 +134,10 @@ def instantiator(type_blob, relative_to="taboot.tasks", **kwargs):
         return instance_type(**kwargs)
     except TypeError:
         import pprint
-        log_error("Unable to instantiate %s with the following arguments:",
+        taboot.log.log_error("Unable to run %s with the following arguments:",
                   instance_type)
         pprint.pprint(kwargs)
-        log_error("Full backtrace below\n")
+        taboot.log.log_error("Full backtrace below\n")
         raise
 
 
@@ -132,10 +152,10 @@ def make_blob_copy(blob):
     if isfile(taboot.edit_header):
         header = open(taboot.edit_header).read()
         offset = len(header.split("\n"))
-        log_debug("Header file is %s lines long", offset)
+        taboot.log.log_debug("Header file is %s lines long", offset)
     else:
-        log_warn("Header file not found when launching Taboot edit mode!")
-        log_warn("Expected to find: %s", taboot.edit_header)
+        taboot.log.log_warn("Header file not found when launching Taboot edit mode!")
+        taboot.log.log_warn("Expected to find: %s", taboot.edit_header)
         header = ""
         offset = 0
 

@@ -16,7 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import taboot.output
-
+import sys
+import taboot.colors as Colors
 
 class CLIOutput(taboot.output._FileLikeOutputObject):
     """
@@ -32,8 +33,6 @@ class CLIOutput(taboot.output._FileLikeOutputObject):
            - `host`: name of the host
            - `task`: name of the task
         """
-        import Colors
-        import sys
         self._c = Colors.Colors()
         self._sys = sys
         self._sys.stdout.write('%s:\n' % (

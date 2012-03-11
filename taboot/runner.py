@@ -261,10 +261,12 @@ class TaskRunner(threading.Thread):
             if task['ignore_errors'] in ('True', 'true', 1):
                 ignore_errors = True
 
+        log_debug("Instantiating task: %s", task)
         task = instantiator(task, 'taboot.tasks', host=self._host)
 
         outputters = []
         for o in self._output:
+            log_debug("Instantiating output: %s", o)
             instance = instantiator(o, 'taboot.output',
                                            host=self._host,
                                            task=task)

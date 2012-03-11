@@ -133,7 +133,7 @@ class RPMCLIOutputFormatter(object):
             }
 
     def _find_color(self, line):
-        for symbol, color in self._log_colors:
+        for symbol, color in self._log_colors.iteritems():
             if line.startswith(symbol):
                 return color
         # Didn't add or remove an RPM

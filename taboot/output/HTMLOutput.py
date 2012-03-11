@@ -16,7 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import taboot.output
-
+import sys
+import taboot.colors.htmlcolors as Colors
 
 class HTMLOutput(taboot.output._FileLikeOutputObject):
     """
@@ -50,8 +51,6 @@ class HTMLOutput(taboot.output._FileLikeOutputObject):
               with a datestamp
            - `destdir`: directory in which to save the log file to
         """
-        import Colors
-        import sys
         import os.path
         import os
 
@@ -140,13 +139,11 @@ class HTMLOutput(taboot.output._FileLikeOutputObject):
         self._log_fd.flush()
 
     def _write(self, result):
-        import cgi
+
 
         self._write_result_header(result)
 
         for line in result.format_lines(self.__class__.__name__, self._c):
-            # escape any html in result.output
-            output = cgi.escape(line)
-            self._log_fd.write(output)
+            self._log_fd.write(line)
 
         self._log_fd.flush()
