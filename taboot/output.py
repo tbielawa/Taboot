@@ -471,12 +471,13 @@ class HTMLOutput(_FileLikeOutputObject):
             # colorize the puppet output
             lines = output.splitlines()
             for line in lines:
-                if re.search('default_db', line, re.IGNORECASE)
-                            or re.search('password', line, re.IGNORECASE):
+                if re.search('default_db', line, re.IGNORECASE) or \
+                        re.search('password', line, re.IGNORECASE):
                     line = "************Password filtered out************"
                     self._log_fd.write("%s<br />\n" %
                                        self._c.format_string(line.strip(),
                                                              'red'))
+                    continue
 
                 if re.match('info:', line):
                     self._log_fd.write("%s<br />\n" %
