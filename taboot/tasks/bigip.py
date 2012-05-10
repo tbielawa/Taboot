@@ -31,7 +31,11 @@ class BigIPBaseTask(BaseTask):
     This also does nothing. But it helps to collect common tasks
     together under a base task when generating inheritance graphs.
     """
-    pass
+
+    def show_host(self):
+        cmd = ['bigip', 'show', self._host]
+        (status, output) = commands.getstatusoutput(" ".join(cmd))
+        return output
 
 
 class OutOfRotation(BigIPBaseTask):
@@ -44,10 +48,11 @@ class OutOfRotation(BigIPBaseTask):
 
         success = True
         if not status == 0:
+            # Output is the error message if success did not happen
             success = False
-
-        log_debug("Command finished with output: %s", output)
-        log_debug("Command finished with exit status: %s", status)
+        else:
+            # Output is 'bigip show...' if successful
+            output = self.show_host()
 
         return TaskResult(self, success=success, output=output)
 
@@ -62,9 +67,10 @@ class InRotation(BigIPBaseTask):
 
         success = True
         if not status == 0:
+            # Output is the error message if success did not happen
             success = False
-
-        log_debug("Command finished with output: %s", output)
-        log_debug("Command finished with exit status: %s", status)
+        else:
+            # Output is 'bigip show...' if successful
+            output = self.show_host()
 
         return TaskResult(self, success=success, output=output)
