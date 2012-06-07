@@ -67,12 +67,16 @@ class DisableAlerts(NagiosBase):
     Disable alerts for a host on a nagios instance
     """
 
-    def __init__(self, nagios_url, **kwargs):
+    def __init__(self, nagios_url, service_host='', **kwargs):
         """
         :Parameters:
           - `nagios_url`: Hostname of the Nagios server.
+          - `service_host`: Hostname of the service host. (optional)
         """
-        target_host = kwargs['host']
+        if service_host != '':
+            target_host = service_host
+        else:
+            target_host = kwargs['host']
         kwargs['host'] = self._fix_nagios_url(nagios_url)
         super(DisableAlerts, self).__init__(target_host, **kwargs)
         self._command = 'nagios.disable_host_notifications'
@@ -83,12 +87,16 @@ class EnableAlerts(NagiosBase):
     Enable alerts for a host on a nagios instance
     """
 
-    def __init__(self, nagios_url, **kwargs):
+    def __init__(self, nagios_url, service_host='', **kwargs):
         """
         :Parameters:
           - `nagios_url`: Hostname of the Nagios server.
+          - `service_host`: Hostname of service host. (optional)
         """
-        target_host = kwargs['host']
+        if service_host != '':
+            target_host = service_host
+        else:
+            target_host = kwargs['host']
         kwargs['host'] = self._fix_nagios_url(nagios_url)
         super(EnableAlerts, self).__init__(target_host, **kwargs)
         self._command = 'nagios.enable_host_notifications'
@@ -99,16 +107,20 @@ class ScheduleDowntime(NagiosBase):
     Schedule downtime for services on a host in Nagios
     """
 
-    def __init__(self, nagios_url, service='HOST', minutes=30, **kwargs):
+    def __init__(self, nagios_url, service_host='', service='HOST', minutes=30, **kwargs):
         """
         :Parameters:
           - `nagios_url`: Hostname of the Nagios server.
+          - `service_host`: Hostname of service host. (optional)
           - `service`: Service or list of services to schedule down for.
           - `minutes`: The number of minutes to schedule downtime
             for. Default is 30.
         """
         import types
-        target_host = kwargs['host']
+        if service_host != '':
+            target_host = service_host
+        else:
+            target_host = kwargs['host']
         kwargs['host'] = self._fix_nagios_url(nagios_url)
 
         if isinstance(service, types.StringTypes):
@@ -147,12 +159,17 @@ class SilenceHost(NagiosBase):
     Silence all notifications for a given host
     """
 
-    def __init__(self, nagios_url, **kwargs):
+    def __init__(self, nagios_url, service_host='', **kwargs):
         """
         :Parameters:
           - `nagios_url`: Hostname of the Nagios server.
+          - `service_host`: Hostname of service host. (optional)
         """
-        target_host = kwargs['host']
+        import types
+        if service_host != '':
+            target_host = service_host
+        else:
+            target_host = kwargs['host']
         kwargs['host'] = self._fix_nagios_url(nagios_url)
         super(SilenceHost, self).__init__(target_host, **kwargs)
         self._command = 'nagios.silence_host'
@@ -174,12 +191,17 @@ class UnsilenceHost(NagiosBase):
     Unsilence all notifications for a given host
     """
 
-    def __init__(self, nagios_url, **kwargs):
+    def __init__(self, nagios_url, service_host='', **kwargs):
         """
         :Parameters:
           - `nagios_url`: Hostname of the Nagios server.
+          - `host`: Hostname of service host. (optional)
         """
-        target_host = kwargs['host']
+        import types
+        if service_host != '':
+            target_host = service_host
+        else:
+            target_host = kwargs['host']
         kwargs['host'] = self._fix_nagios_url(nagios_url)
         super(UnsilenceHost, self).__init__(target_host, **kwargs)
         self._command = 'nagios.unsilence_host'
