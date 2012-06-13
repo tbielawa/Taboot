@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.4.2
+Version:        0.4.3
 Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
@@ -88,6 +88,9 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Wed Jun 13 2012 Tim Bielawa <tbielawa@redhat.com> - 0.4.3-1
+- Add service_host attribute to nagios task
+
 * Thu May 10 2012 Tim Bielawa <tbielawa@redhat.com> - 0.4.2-1
 - Add bigip tasks
 

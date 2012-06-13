@@ -128,6 +128,9 @@ Nagios
 The *Nagios* class lets you handle notifications and set downtime from
 your Taboot scripts.
 
+Use the *service_host* property to schedule downtime for an alternate
+host.
+
 [literal]
 ---
 - hosts: [www0*.company.com]
