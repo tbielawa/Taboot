@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.4.0
+Version:        0.4.2
 Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
@@ -88,6 +88,12 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Thu May 10 2012 Tim Bielawa <tbielawa@redhat.com> - 0.4.2-1
+- Add bigip tasks
+
+* Wed Apr 18 2012 Tim Bielawa <tbielawa@redhat.com> - 0.4.1-1
+- RHIT1 - Password filtering
+
 * Fri Jan 20 2012 Tim Bielawa <tbielawa@redhat.com> 0.4.0-1
 - Taboot 0.4.0, the "Farewell, Friend" release
 

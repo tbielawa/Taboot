@@ -61,7 +61,7 @@ class Restart(ServiceBase):
         super(Restart, self).__init__('service %s restart' % service, **kwargs)
 
 
-class Graceful(command.Run):
+class Graceful(ServiceBase):
     """
     Gracefully restart a service.
 
