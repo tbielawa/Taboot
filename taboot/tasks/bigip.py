@@ -74,3 +74,25 @@ class InRotation(BigIPBaseTask):
             output = self.show_host()
 
         return TaskResult(self, success=success, output=output)
+
+class ConfigSync(BigIPBaseTask):
+    """
+    Perform a config sync on specified environments.
+    """
+
+    def __init__(self, envs=[], **kwargs):
+        self.envs = envs
+        super(ConfigSync, self).__init__(**kwargs)
+
+    def run(self, *args):
+        cmd = ['bigip', 'sync', '-e', ' '.join(self.envs)]
+        (status, output) = commands.getstatusoutput(" ".join(cmd))
+
+        success = True
+        if not status == 0:
+            # Output is the error message if success did not happen
+            success = False
+        else:
+            output = "Success!"
+
+        return TaskResult(self, success=success, output=output)
