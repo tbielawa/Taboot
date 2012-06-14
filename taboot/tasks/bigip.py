@@ -86,13 +86,13 @@ class ConfigSync(BigIPBaseTask):
 
     def run(self, *args):
         cmd = ['bigip', 'sync', '-e', ' '.join(self.envs)]
-        (status, output) = commands.getstatusoutput(" ".join(cmd))
+        (status, output) = commands.getstatusoutput(' '.join(cmd))
 
         success = True
         if not status == 0:
             # Output is the error message if success did not happen
             success = False
         else:
-            output = "Success!"
+            output = "Successfully synced %s environments!" % (' && '.join(self.envs))
 
         return TaskResult(self, success=success, output=output)
