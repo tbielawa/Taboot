@@ -43,7 +43,7 @@ class BigIPBaseTask(BaseTask):
         ex: ['show', self._host] OR ['state', '-d', self._host]
         """
         BIGIP_MUTEX.acquire()
-        (status, output) = commands.getstatusoutput(" ".join(cmd))
+        (status, output) = commands.getstatusoutput('bigip ' + ' '.join(cmd))
         BIGIP_MUTEX.release()
         return (status, output)
 
