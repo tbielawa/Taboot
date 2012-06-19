@@ -19,22 +19,37 @@ from taboot.tasks import BaseTask, TaskResult
 import commands
 from taboot import log
 from taboot.log import *
-
+import threading
 
 """
 Enable and disable nodes in an F5 BigIP LB
 """
 
+# The bigip script is subject to a race condition which has an effect
+# of changing the 'active' partition unexpectedly. Therefore we limit
+# access to it to a single thread at a time.
+BIGIP_MUTEX = threading.Lock()
+
 
 class BigIPBaseTask(BaseTask):
     """
-    This also does nothing. But it helps to collect common tasks
-    together under a base task when generating inheritance graphs.
+    Common functions shared between the subclasses.
     """
 
-    def show_host(self):
-        cmd = ['bigip', 'show', self._host]
+    def run_bigip_cmd(self, cmd):
+        """
+        `cmd` - should be a list of arguments to the bigip command
+
+        ex: ['show', self._host] OR ['state', '-d', self._host]
+        """
+        BIGIP_MUTEX.acquire()
         (status, output) = commands.getstatusoutput(" ".join(cmd))
+        BIGIP_MUTEX.release()
+        return (status, output)
+
+    def show_host(self):
+        cmd = ['show', self._host]
+        (status, output) = self.run_bigip_cmd(cmd)
         return output
 
 
@@ -43,8 +58,8 @@ class OutOfRotation(BigIPBaseTask):
     Disable a node in the F5
     """
     def run(self, *args):
-        cmd = ['bigip', 'state', '-d', self._host]
-        (status, output) = commands.getstatusoutput(" ".join(cmd))
+        cmd = ['state', '-d', self._host]
+        (status, output) = self.run_bigip_cmd(cmd)
 
         success = True
         if not status == 0:
@@ -62,8 +77,8 @@ class InRotation(BigIPBaseTask):
     Enable a node in the F5
     """
     def run(self, *args):
-        cmd = ['bigip', 'state', '-e', self._host]
-        (status, output) = commands.getstatusoutput(" ".join(cmd))
+        cmd = ['state', '-e', self._host]
+        (status, output) = self.run_bigip_cmd(cmd)
 
         success = True
         if not status == 0:
@@ -75,6 +90,7 @@ class InRotation(BigIPBaseTask):
 
         return TaskResult(self, success=success, output=output)
 
+
 class ConfigSync(BigIPBaseTask):
     """
     Perform a config sync on specified environments.
@@ -85,14 +101,15 @@ class ConfigSync(BigIPBaseTask):
         super(ConfigSync, self).__init__(**kwargs)
 
     def run(self, *args):
-        cmd = ['bigip', 'sync', '-e', ' '.join(self.envs)]
-        (status, output) = commands.getstatusoutput(' '.join(cmd))
+        cmd = ['sync', '-e', ' '.join(self.envs)]
+        (status, output) = self.run_bigip_cmd(cmd)
 
         success = True
         if not status == 0:
             # Output is the error message if success did not happen
             success = False
         else:
-            output = "Successfully synced %s environments!" % (' && '.join(self.envs))
+            output = "Successfully synced %s environments!" % \
+                (' && '.join(self.envs))
 
         return TaskResult(self, success=success, output=output)
