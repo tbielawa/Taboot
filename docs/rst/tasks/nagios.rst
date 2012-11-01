@@ -39,6 +39,8 @@ directory) if it is missing from your installation.
 
    `Func git repo <http://git.fedorahosted.org/git/?p=func.git>`_
 
+.. versionadded:: 0.4.3
+   Added the ``service_host`` parameter for managing nagios for an alternative host.
 
 EnableAlerts
 ************
@@ -52,6 +54,13 @@ EnableAlerts
     * Default: None
     * Required: Yes
     * Description: Hostname of the nagios server.
+
+  * ``service_host``
+
+    * Type: String
+    * Default: None
+    * Required: Yes
+    * Description: Alternative host to enable alerts for.
 
 
 This class enables host alerts for the current host.
@@ -90,6 +99,13 @@ DisableAlerts
     * Default: None
     * Required: Yes
     * Description: Hostname of the nagios server.
+
+  * ``service_host``
+
+    * Type: String
+    * Default: None
+    * Required: Yes
+    * Description: Alternative host to disable alerts for.
 
 
 This class disables host alerts for the current host.
@@ -131,10 +147,10 @@ ScheduleDowntime
 
   * ``service``
 
-    * Type: String
-    * Default: None
+    * Type: String or List
+    * Default: ``HOST``
     * Required: No (has default)
-    * Description: The name of the service to be scheduled for downtime.
+    * Description: The name of the service(s) to be scheduled for downtime. Use the value ``HOST`` by itself to schedule host downtime.
 
   * ``minutes``
 
@@ -142,6 +158,13 @@ ScheduleDowntime
     * Default: 30
     * Required: No (has default)
     * Description: The number of minutes to schedule downtime for.
+
+  * ``service_host``
+
+    * Type: String
+    * Default: None
+    * Required: Yes
+    * Description: Alternative host to schedule downtime for.
 
 
 .. versionchanged:: 0.2.14
@@ -199,6 +222,14 @@ SilenceHost
     * Required: Yes
     * Description: Hostname of the nagios server.
 
+  * ``service_host``
+
+    * Type: String
+    * Default: None
+    * Required: Yes
+    * Description: Alternative host to silence.
+
+
 
 This class disables all host and service notifications for the current
 host.
@@ -241,6 +272,12 @@ UnsilenceHost
     * Required: Yes
     * Description: Hostname of the nagios server.
 
+  * ``service_host``
+
+    * Type: String
+    * Default: None
+    * Required: Yes
+    * Description: Alternative host unsilence.
 
 This class enables all host and service notifications for the current
 host.

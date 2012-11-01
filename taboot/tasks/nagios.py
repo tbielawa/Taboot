@@ -133,12 +133,12 @@ class ScheduleDowntime(NagiosBase):
                                 "Expecting int type.",
                                 "Got '%s'." % minutes)
 
-        super(ScheduleDowntime, self).__init__(target_host, service,
-                                               minutes, **kwargs)
-
-        if service == 'HOST':
+        if service[0] == 'HOST':
+            super(ScheduleDowntime, self).__init__(target_host, minutes, **kwargs)
             self._command = "nagios.schedule_host_downtime"
         else:
+            super(ScheduleDowntime, self).__init__(target_host, service,
+                                                   minutes, **kwargs)
             self._command = 'nagios.schedule_svc_downtime'
 
     def _process_result(self, result):
