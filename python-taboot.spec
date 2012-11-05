@@ -3,7 +3,7 @@
 
 Name:           python-taboot
 %define _name   taboot
-Version:        0.4.5
+Version:        0.4.6
 Release:        1%{?dist}
 Summary:        Client utility for scripted multi-system administration over Func
 
@@ -88,6 +88,9 @@ mod_jk via it's xml web api.
 
 
 %changelog
+* Mon Nov  5 2012 Tim Bielawa <tim@redhat.com> - 0.4.6-1
+- Update to 0.4.6, fix HOST downtime and update docs"
+
 * Tue Jun 19 2012 Tim Bielawa <tbielawa@redhat.com> - 0.4.5-1
 - Set up a mutex to control access to the bigip command
 

@@ -2,12 +2,12 @@
 .\"     Title: taboot-tasks
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 06/13/2012
+.\"      Date: 11/05/2012
 .\"    Manual: Taboot
 .\"    Source: Taboot 0.4.x
 .\"  Language: English
 .\"
-.TH "TABOOT\-TASKS" "5" "06/13/2012" "Taboot 0\&.4\&.x" "Taboot"
+.TH "TABOOT\-TASKS" "5" "11/05/2012" "Taboot 0\&.4\&.x" "Taboot"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -142,7 +142,7 @@ The \fBPuppet\fR class provides a uniform way to interact with the puppet servic
 .sp
 The \fBNagios\fR class lets you handle notifications and set downtime from your Taboot scripts\&.
 .sp
-Use the \fBservice_host\fR property to schedule downtime for an alternate host\&.
+Use the \fBservice_host\fR property to schedule downtime for an alternate host\&. When setting downtime you can use the value \fBHOST\fR by itself to schedule host level downtime (services will still alert if downtime isn\(cqt set for them explicitly)\&.
 .sp
 .if n \{\
 .RS 4
