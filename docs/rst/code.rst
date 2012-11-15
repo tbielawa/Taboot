@@ -25,6 +25,11 @@ AJP Tasks
 .. automodule:: taboot.tasks.mod_jk
    :members:
 
+Cobbler tasks
+^^^^^^^^^^^^^
+.. automodule:: taboot.tasks.cobbler
+   :members:
+
 Command tasks
 ^^^^^^^^^^^^^
 .. automodule:: taboot.tasks.command
@@ -75,4 +80,3 @@ Taboot output
 .. automodule:: taboot.output
    :members:
    :undoc-members:
-
